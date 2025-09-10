@@ -1,0 +1,34 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Status • Intreen</title>
+<link rel="stylesheet" href="/assets/css/styles.css"/></head>
+<body>
+  <div id="site-navbar"></div>
+  <main class="container mt-8">
+
+<h1>Status</h1>
+<section class="card status-hero" style="padding:16px; margin-top:8px">
+  <span class="dot ok"></span>
+  <div><div style="font-weight:800">All Systems Operational</div><div class="meta">Updated just now</div></div>
+</section>
+<section class="card" style="padding:0; margin-top:14px">
+  <div class="status-table">
+    <div class="row head"><div>Component</div><div>Status</div><div>Uptime (30d)</div></div>
+    <div class="row"><div>Core API</div><div><span class="dot ok"></span> Operational</div><div>99.98%</div></div>
+    <div class="row"><div>LMS</div><div><span class="dot ok"></span> Operational</div><div>99.97%</div></div>
+    <div class="row"><div>Marketplace</div><div><span class="dot ok"></span> Operational</div><div>99.96%</div></div>
+    <div class="row"><div>Events</div><div><span class="dot ok"></span> Operational</div><div>99.99%</div></div>
+    <div class="row"><div>Events API</div><div><span class="dot down"></span> Outage</div><div>99.40%</div></div>
+    <div class="row"><div>Payments</div><div><span class="dot ok"></span> Operational</div><div>99.95%</div></div>
+  </div>
+</section>
+<section class="grid listing mt-4">
+  <article class="card"><div class="p"><h3>Incidents</h3><p class="meta">Recent items and ongoing updates.</p></div></article>
+  <article class="card"><div class="p"><h3>Subscribe</h3><p class="meta">Get email alerts when status changes.</p></div></article>
+</section>
+
+  <div id="FOOTER_FILLER_V35" style="height:400px"></div>
+</main>
+  <div id="site-footer"></div>
+  <script type="module">import { bootLayout } from '/assets/js/layout.js'; bootLayout('status');</script>
+</body></html>

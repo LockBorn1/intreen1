@@ -1,0 +1,29 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Login • Intreen</title>
+<link rel="stylesheet" href="/assets/css/styles.css"/></head>
+<body>
+<div id="site-navbar"></div>
+<main class="container mt-8">
+  <h1>Log in</h1>
+  <form id="login-form" class="card" style="padding:18px;max-width:480px">
+    <label>Email<br/><input id="email" type="email" placeholder="you@example.com" required/></label><br/><br/>
+    <label>Password<br/><input id="password" type="password" placeholder="••••••••" required/></label><br/><br/>
+    <button class="btn" type="submit">Log in</button>
+    <p class="meta" style="margin-top:8px">Demo credentials: <code>admin@intreen.com</code> / <code>admin</code></p>
+  </form>
+</main>
+<div id="site-footer"></div>
+<script type="module">
+  import { bootLayout } from '/assets/js/layout.js'; bootLayout('login');
+  document.getElementById('login-form').addEventListener('submit', (e)=>{ 
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    const pw = document.getElementById('password').value;
+    if(email==='admin@intreen.com' && pw==='admin'){ 
+      sessionStorage.setItem('auth_demo','1'); 
+      location.href='/admin/index.html'; 
+    } else { alert('Invalid credentials (demo).'); }
+  });
+</script>
+</body></html>
