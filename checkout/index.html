@@ -1,0 +1,144 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Checkout • Intreen</title>
+<link rel="stylesheet" href="/assets/css/styles.css"/></head>
+<body>
+  <div id="site-navbar"></div>
+  <main class="container tight mt-8">
+  <h1>Checkout</h1>
+  <div class="checkout-wrap mt-4">
+    <form id="checkout-form" class="card" style="padding:16px">
+      <h3>Contact</h3>
+      <div class="form-row">
+        <label>First name<br/><input class="input" required/></label>
+        <label>Last name<br/><input class="input" required/></label>
+      </div>
+      <label class="mt-2">Email<br/><input id="email" class="input" type="email" required/></label>
+      <h3 class="mt-4">Shipping</h3>
+      <label>Address<br/><input class="input" required/></label>
+      <div class="form-row-3">
+        <label>City<br/><input class="input" required/></label>
+        <label>State<br/><input class="input" required/></label>
+        <label>ZIP<br/><input class="input" inputmode="numeric" maxlength="10" required/></label>
+      </div>
+      <div class="mt-2">
+        <strong>Method</strong><br/>
+        <label><input type="radio" name="ship" value="standard" checked/> Standard (3–5 days)</label>
+        <label style="margin-left:12px"><input type="radio" name="ship" value="express"/> Express (1–2 days)</label>
+      </div>
+      <h3 class="mt-4">Payment</h3>
+      <label>Card number<br/>
+        <input id="card" class="input" placeholder="4242 4242 4242 4242" inputmode="numeric" maxlength="19" pattern="\d{13,19}" required/>
+      </label>
+      <div class="form-row-3">
+        <label>Exp<br/><input id="exp" class="input" placeholder="MM/YY" inputmode="numeric" maxlength="5" required/></label>
+        <label>CVC<br/><input id="cvc" class="input" placeholder="123" inputmode="numeric" maxlength="3" pattern="\d{3}" required/></label>
+        <label>Name on card<br/><input class="input" required/></label>
+      </div>
+      <div class="mt-2">
+        <label>Promo code<br/><input id="promo" class="input" placeholder="SAVE10"/></label>
+      </div>
+      <div class="order-totals">
+        <div style="display:flex;justify-content:space-between"><span>Subtotal</span><strong id="subtotal">$0.00</strong></div>
+        <div style="display:flex;justify-content:space-between"><span>Shipping</span><strong id="shipcost">$0.00</strong></div>
+        <div style="display:flex;justify-content:space-between"><span>Discount</span><strong id="discount">-$0.00</strong></div>
+        <div style="display:flex;justify-content:space-between;font-size:18px;margin-top:6px"><span>Total</span><strong id="order-total">$0.00</strong></div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:12px">
+        <button class="btn" type="submit">Place order</button>
+      </div>
+    </form>
+    <aside class="card order-summary" style="padding:16px">
+      <h3>Order Summary</h3>
+      <div id="order-lines" class="mt-2"></div>
+    </aside>
+  </div>
+</main>
+  <div id="site-footer"></div>
+  <script type="module">
+    import { bootLayout } from '/assets/js/layout.js'; bootLayout('shop');
+    const CART_KEY = "intreen_cart_v1";
+    function load(){ try{ return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }catch(e){ return [] } }
+    function money(n){ return `$${Number(n).toFixed(2)}`; }
+    const items = load();
+    const lines = document.getElementById('order-lines');
+    const subtotalEl = document.getElementById('subtotal');
+    const shipEl = document.getElementById('shipcost');
+    const discEl = document.getElementById('discount');
+    const totalEl = document.getElementById('order-total');
+    function calc(){
+      const sub = items.reduce((t,i)=>t+i.price*i.qty,0);
+      const ship = document.querySelector('input[name=ship]:checked').value==='express' ? 14 : 6;
+      const promo = (document.getElementById('promo').value.trim().toUpperCase()==='SAVE10') ? 10 : 0;
+      subtotalEl.textContent = money(sub);
+      shipEl.textContent = money(sub>0?ship:0);
+      discEl.textContent = promo?`-${money(promo)}`:`-${money(0)}`;
+      totalEl.textContent = money(Math.max(0, sub + (sub>0?ship:0) - promo));
+    }
+    if(items.length===0){ lines.innerHTML = '<p class="meta">Your cart is empty.</p>'; }
+    else{
+      lines.innerHTML = items.map(i=>`<div style="display:flex;justify-content:space-between"><span>${i.title} × ${i.qty}</span><span>$${(i.price*i.qty).toFixed(2)}</span></div>`).join('');
+    }
+    calc();
+    document.querySelectorAll('input[name=ship]').forEach(r=>r.addEventListener('change', calc));
+    document.getElementById('promo').addEventListener('input', calc);
+    document.getElementById('checkout-form').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      // demo success
+      localStorage.setItem(CART_KEY, "[]");
+      alert('Order placed successfully! (demo)');
+      location.href = '/shop/index.html';
+    });
+  
+    // LUHN_VALIDATION + simple field checks
+    function luhnOk(num){
+      num = num.replace(/\s+/g,'');
+      if(!/^\d{13,19}$/.test(num)) return false;
+      let sum=0, alt=false;
+      for(let i=num.length-1;i>=0;i--){
+        let n = parseInt(num[i],10);
+        if(alt){ n*=2; if(n>9) n-=9; }
+        sum+=n; alt=!alt;
+      }
+      return sum%10===0;
+    }
+    function expOk(v){
+      const m = v.match(/^(0[1-9]|1[0-2])\/(\d{2})$/);
+      if(!m) return false;
+      const mm = parseInt(m[1],10), yy = 2000 + parseInt(m[2],10);
+      const now = new Date(); const exp = new Date(yy, mm);
+      return exp > now;
+    }
+    function cvcOk(v){ return /^\d{3,4}$/.test(v); }
+    function emailOk(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+    document.getElementById('checkout-form').addEventListener('submit', (e)=>{
+      const email = document.getElementById('email').value.trim();
+      const card = document.getElementById('card').value.trim();
+      const exp = document.querySelector('input[placeholder="MM/YY"]').value.trim();
+      const cvc = document.querySelector('input[placeholder="123"]').value.trim();
+      if(!emailOk(email)){ alert('Please enter a valid email.'); e.preventDefault(); return; }
+      if(!luhnOk(card)){ alert('Please enter a valid card number.'); e.preventDefault(); return; }
+      if(!expOk(exp)){ alert('Please enter a valid expiry (MM/YY).'); e.preventDefault(); return; }
+      if(!cvcOk(cvc)){ alert('Please enter a valid CVC.'); e.preventDefault(); return; }
+    });
+  
+  // Format card as XXXX XXXX XXXX XXXX and enforce digits only + max len
+  const card = document.getElementById('card');
+  card.addEventListener('input', ()=>{
+    let v = card.value.replace(/\D+/g,'');
+    if(v.length>19) v = v.slice(0,19);
+    card.value = v.replace(/(.{4})/g,'$1 ').trim();
+  });
+  const exp = document.getElementById('exp');
+  exp.addEventListener('input', ()=>{
+    let v = exp.value.replace(/\D+/g,'');
+    if(v.length>4) v=v.slice(0,4);
+    if(v.length>=3) v = v.slice(0,2)+'/'+v.slice(2);
+    exp.value = v;
+  });
+  const cvc = document.getElementById('cvc');
+  cvc.addEventListener('input', ()=>{
+    cvc.value = cvc.value.replace(/\D+/g,'').slice(0,3);
+  });
+</script>
+</body></html>

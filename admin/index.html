@@ -1,0 +1,37 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Admin • Intreen</title>
+<link rel="stylesheet" href="/assets/css/styles.css"/></head>
+<body>
+<div id="site-navbar"></div>
+<main class="container mt-8">
+  <h1>Admin Dashboard</h1>
+  <p class="meta">Demo panel — charts and management sections.</p>
+  <div class="grid cols-3 mt-4">
+    <article class="card" style="padding:14px"><h3>Sales (7d)</h3><div id="sparks" style="height:90px"></div></article>
+    <article class="card" style="padding:14px"><h3>Users</h3><p class="meta">1,482 total • 86 new this week</p></article>
+    <article class="card" style="padding:14px"><h3>Orders</h3><p class="meta">132 pending • 1,024 completed</p></article>
+  </div>
+  <section class="card" style="padding:14px;margin-top:14px">
+    <h3>Products</h3>
+    <table style="width:100%;border-collapse:collapse"><thead><tr><th align="left">Name</th><th align="right">Price</th><th align="right">Stock</th></tr></thead>
+    <tbody id="prod-rows"></tbody></table>
+  </section>
+  <section class="grid cols-2 mt-4">
+    <article class="card" style="padding:14px"><h3>Courses</h3><ul><li>Intro to Intreen</li><li>Selling on the Marketplace</li><li>HR Compliance Basics</li></ul></article>
+    <article class="card" style="padding:14px"><h3>Jobs</h3><ul><li>Frontend Engineer</li><li>Support Specialist</li><li>Event Coordinator</li></ul></article>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script type="module">
+  import { bootLayout } from '/assets/js/layout.js'; bootLayout('admin');
+  if(sessionStorage.getItem('auth_demo')!=='1'){ location.href='/login.html'; }
+  const el = document.getElementById('sparks');
+  const c = document.createElement('canvas'); c.width=460; c.height=90; el.appendChild(c);
+  const ctx = c.getContext('2d');
+  const pts = Array.from({length:24}, (_,i)=> [i*(c.width/23), Math.random()*c.height*0.6 + c.height*0.2 ]);
+  ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); pts.forEach(p=>ctx.lineTo(p[0],p[1])); ctx.lineWidth=3; ctx.strokeStyle='#1565c0'; ctx.stroke();
+  const prods=[['Premium Tee',24,120],['Hoodie',49,80],['Mug',12,240],['Bottle',16,150],['Cap',18,200],['Headphones',89,32],['Backpack',54,54],['Notebook',9,640]];
+  document.getElementById('prod-rows').innerHTML = prods.map(p=>`<tr style="border-top:1px solid var(--border)"><td>${p[0]}</td><td align="right">$${p[1].toFixed(2)}</td><td align="right">${p[2]}</td></tr>`).join('');
+</script>
+</body></html>

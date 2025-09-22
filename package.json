@@ -1,0 +1,13 @@
+{
+  "name": "intreen1-main",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "scrape:events": "node scripts/scrape-events.mjs"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "node-fetch": "^3.3.2"
+  }
+}

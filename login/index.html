@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Sign In • Intreen</title>
+<link rel="stylesheet" href="/assets/css/styles.css"/>
+</head>
+<body>
+  <div id="site-navbar"></div>
+  <main class="container mt-8">
+    
+<h1>Sign In</h1>
+<form class="mt-4" style="max-width:460px">
+  <label>Email<input type="email" required></label>
+  <label class="mt-2">Password<input type="password" required></label>
+  <div class="mt-4"><button class="btn" type="submit">Continue</button></div>
+</form>
+<p class="meta mt-4">No admin UI exposed here. Admin is CLI-only on AWS.</p>
+
+  </main>
+  <div id="site-footer"></div>
+  <script type="module">
+    import { bootLayout } from '/assets/js/layout.js';
+    import { mountCartUI } from '/assets/js/cart.js';
+    bootLayout('login'); mountCartUI();
+  </script>
+</body></html>

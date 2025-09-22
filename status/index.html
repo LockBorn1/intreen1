@@ -1,0 +1,35 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Status • Intreen</title>
+<link rel="stylesheet" href="/assets/css/styles.css"/></head>
+<body class="page">
+  <div id="site-navbar"></div>
+  <main class="container mt-8">
+    <section class="card p status-hero">
+      <div class="title" style="font-weight:800;font-size:20px;margin-bottom:6px">System Status</div>
+      <div class="meta">Updated just now</div>
+    </section>
+    <section class="card p mt-4">
+      <h3>Components</h3>
+      <div class="status-table"></div>
+    </section>
+    <section class="grid listing mt-4">
+      <article class="card"><div class="p">
+        <h3>Incidents</h3>
+        <div id="incidents"></div>
+      </div></article>
+      <article class="card"><div class="p">
+        <h3>Subscribe</h3>
+        <form class="subscribe"><input type="email" placeholder="you@example.com" aria-label="Email"/><button class="btn sm">Subscribe</button></form>
+      </div></article>
+    </section>
+    <section class="card p mt-4"><h3>Scheduled Maintenance</h3><div id="scheduled"></div></section>
+    <section class="card p mt-4"><h3>History</h3><div class="status-table" id="history"></div><div style="padding:12px"><button class="btn sm" id="history-more">Show More</button></div></section>
+  </main>
+  <div style="height:160px"></div>
+  <div id="site-footer"></div>
+  <script type="module">
+    import { bootLayout } from '/assets/js/layout.js'; bootLayout('status');
+    import { bootStatus } from '/assets/js/status.js'; bootStatus();
+  </script>
+</body></html>

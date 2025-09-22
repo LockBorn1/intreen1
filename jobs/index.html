@@ -1,0 +1,53 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Careers • Intreen</title>
+<link rel="stylesheet" href="/assets/css/styles.css"/>
+<meta name="description" content="Join Intreen. View open roles across engineering, IT, and more."/>
+</head>
+<body class="page">
+  <div id="site-navbar"></div>
+  <main class="container mt-8">
+    <h1>Careers</h1>
+    <p class="meta">We’re building tools that help people learn, work, and grow. Come work with us.</p>
+    <section class="card p">
+      <div class="jobs-controls">
+        <input id="job-search" type="search" placeholder="Search job titles or teams" aria-label="Search jobs"/>
+        <select id="job-location"><option value="">All locations</option><option>Remote</option><option>Remote (US)</option><option>New York, NY</option></select>
+      </div>
+      <div id="jobs-list" class="list"></div>
+    </section>
+  </main>
+  
+  <div id="site-footer"></div>
+  <script type="module">
+    import { bootLayout } from '/assets/js/layout.js';
+    bootLayout('jobs');
+    async function loadJobs(){
+      const res = await fetch('/assets/jobs.json');
+      const data = await res.json();
+      const list = document.getElementById('jobs-list');
+      const q = document.getElementById('job-search');
+      const loc = document.getElementById('job-location');
+      function render(){
+        const term = (q.value||'').toLowerCase();
+        const selected = loc.value;
+        const items = data.open_roles.filter(j=>{
+          const matchesTerm = [j.title,j.team].join(' ').toLowerCase().includes(term);
+          const matchesLoc = !selected || j.location===selected || (selected==='Remote' && j.location.toLowerCase().includes('remote'));
+          return matchesTerm && matchesLoc;
+        });
+        list.innerHTML = items.map(j=>`
+          <a class="row job" href="/jobs/${j.id}.html">
+            <div class="title">${j.title}</div>
+            <div class="meta">${j.team} • ${j.location} • ${j.type}</div>
+            <div class="posted">Posted ${j.posted}</div>
+          </a>
+        `).join('') || '<div class="empty">No roles match right now.</div>';
+      }
+      q.addEventListener('input', render);
+      loc.addEventListener('change', render);
+      render();
+    }
+    loadJobs();
+  </script>
+</body></html>

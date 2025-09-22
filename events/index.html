@@ -1,0 +1,146 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Events • Intreen</title>
+<link rel="stylesheet" href="/assets/css/styles.css"/>
+
+<script type="application/ld+json" id="events-jsonld">{ "@context":"https://schema.org", "@type":"ItemList", "itemListElement":[] }</script>
+</head>
+<body class="page">
+  <div id="site-navbar"></div>
+  
+<main class="container mt-8">
+  <section class="card p">
+    <h1>Events</h1>
+    <div class="events-filters jobs-controls">
+      <input id="ev-search" type="search" placeholder="Search events or islands"/>
+      <select id="ev-island"><option value="">All islands</option><option>Barbados</option><option>Jamaica</option><option>Trinidad</option><option>Saint Eustatius</option></select>
+      <select id="ev-type"><option value="">All types</option><option>Carnival</option><option>Festival</option><option>Concert</option><option>Market</option><option>Conference</option><option>Summit</option><option>Expo</option></select>
+      <input id="ev-month" type="month" />
+    </div>
+  </section>
+  <section class="card p mt-4" id="events-calendar">
+    <h3>Calendar</h3>
+    <div id="calendar-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px"></div>
+  </section>
+  <section class="card p mt-4">
+    <h3>All Events</h3>
+    <div id="events-list" class="grid listing" style="grid-template-columns: repeat(auto-fill,minmax(260px,1fr));"></div>
+  </section>
+</main>
+<div id="footer-spacer-evt-1" style="height:160px"></div>
+<div id="footer-spacer-evt-2" style="height:160px"></div>
+<div id="footer-spacer-evt-3" style="height:160px"></div>
+<div id="footer-spacer-evt" style="height:220px"></div>
+
+
+  
+  <div id="site-footer"></div>
+  <script type="module">
+    import { bootLayout } from '/assets/js/layout.js'; bootLayout('events');
+  async function loadEvents(){
+    async function fetchAPI(){
+      try { const r = await fetch('/api/events'); if(r.ok) return await r.json(); } catch(e){}
+      const r2 = await fetch('/events/events.json'); return await r2.json();
+    }
+    const data = await fetchAPI();
+    const list = document.getElementById('events-list');
+    const q = document.getElementById('ev-search');
+    const island = document.getElementById('ev-island');
+    const typ = document.getElementById('ev-type');
+    const month = document.getElementById('ev-month');
+
+    function asDateStr(s){ return (s||'').slice(0,10); }
+    function matchesMonth(item){
+      if(!month?.value) return true;
+      const y = month.value.split('-')[0], m = month.value.split('-')[1];
+      return (item.when||'').includes(`${y}-${m}`) || (item.start||'').includes(`${y}-${m}`);
+    }
+
+    function render(){
+      const term = (q?.value||'').toLowerCase();
+      const items = (data.items||[]).filter(e => {
+        const hay = (e.title+' '+(e.island||'')+' '+(e.type||'')+' '+(e.when||'')).toLowerCase();
+        const okTerm = hay.includes(term);
+        const okIsland = !island?.value || (e.island||'') === island.value;
+        const okType = !typ?.value || (e.type||'') === typ.value;
+        return okTerm && okIsland && okType && matchesMonth(e);
+      });
+      // Render with schema.org microdata in attributes
+      list.innerHTML = items.map((e, i) => `
+        <a class="row job" href="${e.url}" target="_blank" rel="noopener nofollow" itemprop="itemListElement" itemscope itemtype="https://schema.org/Event">
+          <div class="title" itemprop="name">${e.title}</div>
+          <div class="meta"><span itemprop="location">${e.island||''}</span> • <span>${e.type||''}</span></div>
+          <div class="posted"><time itemprop="startDate" datetime="${asDateStr(e.when)}">${asDateStr(e.when)}</time></div>
+          <meta itemprop="url" content="${e.url}"/>
+        </a>`).join('') || '<div class="empty">No events found.</div>';
+      // JSON-LD
+      const ld = { "@context":"https://schema.org","@type":"ItemList","itemListElement": items.map((e,i)=> ({
+        "@type":"ListItem","position": i+1,"item": { "@type":"Event","name": e.title,"startDate": asDateStr(e.when),"url": e.url,"location": e.island||"" }
+      }))};
+      const tag = document.getElementById('events-jsonld'); if(tag) tag.textContent = JSON.stringify(ld);
+    }
+    q?.addEventListener('input', render);
+    island?.addEventListener('change', render);
+    typ?.addEventListener('change', render);
+    month?.addEventListener('change', render);
+    render();
+  }
+  loadEvents();
+</script>
+
+<script type="module">
+  import { bootLayout } from '/assets/js/layout.js'; bootLayout('events');
+  function abbrMonth(n){ return ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][n]||''; }
+  function dateParts(s){
+    if(!s) return {month:'',day:'',year:''};
+    const d = new Date(s); if(isFinite(d)) return {month:abbrMonth(d.getUTCMonth()), day:('0'+d.getUTCDate()).slice(-2), year:d.getUTCFullYear()+''};
+    // fallback: try to parse raw text like 'OCT 10-2025'
+    const m = s.match(/([A-Za-z]{3,})\s+(\d{1,2})[-,\s]+(\d{4})/); 
+    if(m) return {month:m[1].slice(0,3).toUpperCase(), day:('0'+m[2]).slice(-2), year:m[3]};
+    return {month:'',day:'',year:''};
+  }
+  async function fetchEvents(){
+    try{ const r = await fetch('/api/events'); if(r.ok) return await r.json(); }catch(e){}
+    const r2 = await fetch('/events/events.json'); return await r2.json();
+  }
+  function card(e){
+    const parts = dateParts(e.when||e.start);
+    const badge = `<div style="position:absolute;left:16px;bottom:0;transform:translateY(50%);">
+      <div style="width:64px;height:64px;border-radius:999px;background:#ef4444;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;font-weight:800;box-shadow:0 6px 20px rgba(0,0,0,.2)">
+        <div style="font-size:12px">${parts.month}</div>
+        <div style="font-size:16px">${parts.day}</div>
+        <div style="font-size:10px">${parts.year}</div>
+      </div>
+    </div>`;
+    return `<div class="card" style="overflow:hidden">
+      <div style="position:relative">
+        ${e.image ? `<img src="${e.image}" alt="" style="width:100%;height:220px;object-fit:cover;display:block">` : `<div style="height:220px;background:#e5e7eb"></div>`}
+        ${badge}
+      </div>
+      <div class="p">
+        <h3 style="margin:6px 0">${e.title}</h3>
+        <div class="meta">Upcoming</div>
+        ${e.excerpt ? `<p class="meta" style="margin-top:6px">${e.excerpt.slice(0,120)}...</p>` : ''}
+        <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+          <a class="btn primary" href="${e.url}" target="_blank" rel="noopener">Learn More</a>
+        </div>
+      </div>
+    </div>`;
+  }
+  (async function init(){
+    const data = await fetchEvents();
+    const grid = document.getElementById('ev-grid');
+    const chips = Array.from(document.querySelectorAll('#ev-chips .chip'));
+    function render(cat=''){
+      const items = (data.items||[]).filter(e => !cat || (e.type||'').toLowerCase().includes(cat.toLowerCase()) || (e.title||'').toLowerCase().includes(cat.toLowerCase()));
+      grid.innerHTML = items.map(card).join('') || '<div class="empty">No upcoming events.</div>';
+    }
+    chips.forEach(b=> b.addEventListener('click', ()=>{
+      chips.forEach(x=>x.classList.remove('active'));
+      b.classList.add('active'); render(b.dataset.cat||'');
+    }));
+    render('');
+  })();
+</script>
+
+</body></html>

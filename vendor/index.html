@@ -1,0 +1,106 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Vendor Sign Up • Intreen</title>
+<link rel="stylesheet" href="/assets/css/styles.css"/></head>
+<body>
+  <div id="site-navbar"></div>
+  <main class="container tight mt-8">
+  <h1>Register as Vendor</h1>
+  <div class="checkout-wrap mt-4">
+    <form id="vendor-form" class="card" style="padding:16px">
+      <h3>Store</h3>
+      <label>Store Name<br/><input class="input" placeholder="My Awesome Shop" maxlength="60" required/></label>
+      <div class="form-row">
+        <label>Category<br/>
+          <select class="input" required>
+            <option value="">Select a category</option>
+            <option>Apparel</option><option>Accessories</option><option>Home & Living</option><option>Electronics</option>
+          </select>
+        </label>
+        <label>Website (optional)<br/><input class="input" placeholder="https://"/></label>
+      </div>
+      <label class="mt-2">Logo (optional)<br/><input class="input" type="file" accept="image/*"/></label>
+
+      <h3 class="mt-4">Owner</h3>
+      <div class="form-row">
+        <label>First Name<br/><input class="input" required/></label>
+        <label>Last Name<br/><input class="input" required/></label>
+      </div>
+      <div class="form-row">
+        <label>Email<br/><input class="input" type="email" required/></label>
+        <label>Phone<br/><input class="input" inputmode="tel" pattern="\+?[0-9\-\s]{7,15}" placeholder="+1 555 555 5555"/></label>
+      </div>
+      <div class="form-row-3">
+        <label>Country<br/><select id="country" class="input"><option value="US" selected>United States</option><option>Canada</option><option>United Kingdom</option><option>Australia</option><option>Germany</option><option>France</option><option>India</option><option>Brazil</option><option>Japan</option><option>Mexico</option></select></label>
+        <label>State/Region<br/><select id="region" class="input"></select></label>
+        <label>ZIP<br/><input class="input" inputmode="numeric" maxlength="10"/></label>
+      </div>
+
+      <h3 class="mt-4">Plan</h3>
+      <label><input type="radio" name="plan" value="starter" checked/> Starter — $0/mo + fees</label><br/>
+      <label><input type="radio" name="plan" value="pro"/> Pro — $29/mo + lower fees</label><br/>
+      <label><input type="radio" name="plan" value="business"/> Business — $99/mo</label>
+
+      <div class="mt-2"><label><input type="checkbox" id="agree" required/> I agree to the Terms & Conditions</label></div>
+
+      <div class="order-totals">
+        <div style="display:flex;justify-content:space-between"><span>Platform Fee</span><strong id="fee">$0.00/mo</strong></div>
+        <div style="display:flex;justify-content:space-between"><span>Transaction Fee</span><strong id="txfee">Depends on card issuer</strong></div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;margin-top:12px">
+        <button class="btn" type="submit">Submit for Approval</button>
+      </div>
+    </form>
+    <aside class="card order-summary" style="padding:16px">
+      <h3>Submission Summary</h3>
+      <p class="meta">We review new shops within 1–2 business days.</p>
+      <ul class="meta">
+        <li>Ensure your email is correct</li>
+        <li>Provide a real product or service category</li>
+        <li>Upload a logo to speed up approval (optional)</li>
+      </ul>
+    </aside>
+  </div>
+</main>
+  <div id="site-footer"></div>
+  <script type="module">import { bootLayout } from '/assets/js/layout.js'; bootLayout('vendor');</script>
+<script type="module">
+  import { bootLayout } from '/assets/js/layout.js'; bootLayout('vendor');
+  document.getElementById('vendor-form').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    alert('Thanks! Your vendor application has been received (demo).');
+    location.href='/shop/index.html';
+  });
+</script><script type="module">
+  import { bootLayout } from '/assets/js/layout.js'; bootLayout('vendor');
+  const fee = document.getElementById('fee');
+  function recalc(){
+    const plan = (document.querySelector('input[name=plan]:checked')||{}).value;
+    fee.textContent = plan==='pro' ? '$29.00/mo' : (plan==='business' ? '$99.00/mo' : '$0.00/mo');
+  }
+  document.querySelectorAll('input[name=plan]').forEach(r=>r.addEventListener('change', recalc));
+  recalc();
+  document.getElementById('vendor-form').addEventListener('submit', (e)=>{
+    if(!document.getElementById('agree').checked){ e.preventDefault(); alert('Please agree to the Terms & Conditions.'); return; }
+    e.preventDefault();
+    alert('Your shop was submitted for approval (demo).');
+    location.href='/shop/index.html';
+  });
+
+  const US_STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"];
+  const CA_PROVINCES = ["AB","BC","MB","NB","NL","NS","NT","NU","ON","PE","QC","SK","YT"];
+  function fillRegions(country){
+    const r = document.getElementById('region');
+    r.innerHTML='';
+    const list = country==='Canada'? CA_PROVINCES : (country==='United States' || country==='US'? US_STATES : []);
+    if(list.length){
+      list.forEach(x=>{ const o=document.createElement('option'); o.textContent=x; o.value=x; r.appendChild(o); });
+    }else{
+      const o=document.createElement('option'); o.textContent='N/A'; r.appendChild(o);
+    }
+  }
+  const cSel = document.getElementById('country');
+  fillRegions(cSel.value);
+  cSel.addEventListener('change', ()=>fillRegions(cSel.value));
+</script></body></html>
