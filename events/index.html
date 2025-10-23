@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Events • Intreen</title>
+<link rel="stylesheet" href="/assets/css/styles.css"/>
+<link rel="stylesheet" href="/assets/css/gradient-theme.css"/>
+<script src="/assets/js/gate.js" defer></script>
+
+<!-- SEO / Rich Results -->
+<script type="application/ld+json" id="events-jsonld">
+{ "@context":"https://schema.org", "@type":"ItemList", "itemListElement":[] }
+</script>
+
+<style>
+  :root{ --g1:#007cf0; --g2:#6a00f4; --ink:#111; --line:rgba(0,0,0,.08); --chip:#f1f5f9; --card:#ffffffee; }
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px;}
+  .p{padding:12px}
+  .btn{display:inline-block; padding:10px 14px; border-radius:12px; text-decoration:none}
+  .btn.primary{color:#fff; background:linear-gradient(90deg,var(--g1),var(--g2))}
+  .btn.outline{background:#fff; border:1px solid var(--line); color:var(--ink)}
+  .btn.sm{padding:8px 12px}
+  .chip{display:inline-block; padding:6px 10px; border-radius:9999px; background:var(--chip); cursor:pointer; user-select:none}
+  .chip.active{outline:2px solid var(--g1)}
+  .grid{display:grid; gap:12px}
+  .grid.cards{grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));}
+  .controls{display:grid; grid-template-columns:1fr auto auto auto; gap:8px; align-items:center}
+  .controls .row{display:flex; gap:8px; flex-wrap:wrap}
+  .controls input, .controls select{padding:10px 12px; border-radius:12px; border:1px solid rgba(0,0,0,.15)}
+  @media (max-width:1000px){ .controls{grid-template-columns:1fr} }
+  .section-title{color:#fff; margin:0 0 8px}
+  .hero{background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.25); border-radius:18px}
+  .thumb{width:100%; height:220px; object-fit:cover; display:block; border-top-left-radius:12px; border-top-right-radius:12px; background:#e5e7eb}
+  .meta{opacity:.78}
+  .pill{border-radius:9999px; padding:2px 8px; font-size:.8rem; background:#eef2ff; color:#3730a3; display:inline-block}
+  .toast{position:fixed; right:16px; bottom:16px; background:#111; color:#fff; padding:10px 14px; border-radius:10px; opacity:.95; z-index:9999}
+  /* Calendar */
+  #calendar{display:grid; gap:8px}
+  .cal-head{display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-top:8px; color:#fff; opacity:.85}
+  #calendar-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:8px}
+  .cal-day{padding:8px 10px; background:#fff; border:1px solid var(--line); border-radius:10px; min-height:72px; position:relative; cursor:pointer}
+  .cal-day .num{font-weight:700}
+  .cal-day .badge{position:absolute; right:8px; bottom:8px; background:linear-gradient(90deg,var(--g1),var(--g2)); color:#fff; border-radius:8px; font-size:.75rem; padding:2px 6px}
+  .row{display:grid; grid-template-columns:1fr auto; align-items:center; gap:8px; padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:#fff}
+  .toolbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+</style>
+</head>
+<body class="page">
+  <div id="site-navbar"></div>
+
+  <main class="container mt-8">
+    <!-- HERO / QUICK FILTERS -->
+    <section class="card p hero">
+      <h1 class="section-title">Caribbean Events</h1>
+      <p style="color:#e6efff;margin:6px 0 12px">Carnivals, festivals, concerts, markets & more — submit your event for approval and get featured.</p>
+
+      <div class="controls">
+        <div class="row">
+          <input id="ev-search" type="search" placeholder="Search events, islands, artists…"/>
+          <select id="ev-island">
+            <option value="">All islands</option>
+            <option>Barbados</option><option>Jamaica</option><option>Trinidad</option>
+            <option>Saint Eustatius</option><option>Dominica</option><option>Saint Lucia</option>
+            <option>Antigua</option><option>St. Kitts</option><option>Grenada</option>
+          </select>
+          <select id="ev-type">
+            <option value="">All types</option>
+            <option>Carnival</option><option>Festival</option><option>Concert</option>
+            <option>Market</option><option>Conference</option><option>Summit</option><option>Expo</option>
+          </select>
+          <input id="ev-month" type="month" />
+        </div>
+        <div id="ev-chips" class="row">
+          <span class="chip active" data-cat="">All</span>
+          <span class="chip" data-cat="Carnival">Carnivals</span>
+          <span class="chip" data-cat="Festival">Festivals</span>
+          <span class="chip" data-cat="Concert">Concerts</span>
+          <span class="chip" data-cat="Market">Markets</span>
+          <span class="chip" data-cat="Conference">Conferences</span>
+        </div>
+        <div class="toolbar" style="margin-left:auto">
+          <select id="ev-sort">
+            <option value="upcoming">Sort: Upcoming</option>
+            <option value="recent">Sort: Recently Added</option>
+            <option value="alpha">Sort: A–Z</option>
+          </select>
+          <a class="btn primary sm" href="#submit">Submit Event</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALENDAR -->
+    <section class="card p mt-4" id="calendar">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <h3 style="margin:0">Calendar</h3>
+        <div class="pill" id="cal-label">This Month</div>
+        <div style="margin-left:auto;display:flex;gap:8px">
+          <button class="btn outline sm" id="cal-prev" type="button">Prev</button>
+          <button class="btn outline sm" id="cal-next" type="button">Next</button>
+          <button class="btn outline sm" id="cal-today" type="button">Today</button>
+        </div>
+      </div>
+      <div class="cal-head">
+        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+      </div>
+      <div id="calendar-grid" class="mt-2"></div>
+    </section>
+
+    <!-- EVENTS NEAR YOU -->
+    <section class="card p mt-4">
+      <h3 style="margin:0 0 8px">Events Near You</h3>
+      <div id="near-you" class="grid cards"></div>
+      <div id="near-you-empty" class="meta" style="display:none">We couldn’t detect your location. Showing all events instead.</div>
+    </section>
+
+    <!-- FEATURED -->
+    <section class="card p mt-4">
+      <h3 style="margin:0 0 8px">Featured</h3>
+      <div id="ev-featured" class="grid cards"></div>
+    </section>
+
+    <!-- ALL EVENTS -->
+    <section class="card p mt-4">
+      <h3 style="margin:0 0 8px">All Events</h3>
+      <div id="events-list" class="grid cards"></div>
+    </section>
+
+    <!-- SUBMIT EVENT -->
+    <section id="submit" class="card p mt-4">
+      <h3 style="margin:0 0 8px">Submit an Event for Approval</h3>
+      <p class="meta" style="margin-top:-4px">Submissions are reviewed by Intreen staff before publishing.</p>
+      <form id="submit-form" class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:8px">
+        <input required name="title" placeholder="Event title">
+        <input name="island" placeholder="Island (e.g., Dominica)">
+        <select name="type">
+          <option value="">Type</option><option>Carnival</option><option>Festival</option><option>Concert</option>
+          <option>Market</option><option>Conference</option><option>Summit</option><option>Expo</option>
+        </select>
+        <input name="when" type="date" placeholder="Date">
+        <input name="url" type="url" placeholder="Official link (https://)">
+        <input name="image" type="url" placeholder="Image URL (optional)">
+        <textarea name="excerpt" placeholder="Short description" style="grid-column:1/-1;min-height:80px"></textarea>
+        <div style="display:flex;gap:8px;align-items:center;grid-column:1/-1">
+          <button class="btn primary" type="submit">Submit for Approval</button>
+          <span class="meta">We’ll email you if we need more info.</span>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <div style="height:120px"></div>
+
+<script type="module">
+  import { bootLayout } from '/assets/js/layout.js';
+  bootLayout('events');
+
+  /* ---------- Filler dataset (fallback if /api/events or /events/events.json not available) ---------- */
+  const FALLBACK_EVENTS = {
+    items: [
+      { title:"Dominica World Creole Music Festival", island:"Dominica", type:"Festival", when:"2025-10-24", url:"https://discoverdominica.com", image:"https://picsum.photos/seed/dominica/900/600", excerpt:"Three nights of rhythm, culture, and cuisine on The Nature Island." },
+      { title:"Trinidad Carnival Launch", island:"Trinidad", type:"Carnival", when:"2025-11-05", url:"#", image:"https://picsum.photos/seed/trini/900/600", excerpt:"Costume bands, soca showcases, and pre-carnival fetes." },
+      { title:"Reggae Waves Live", island:"Jamaica", type:"Concert", when:"2025-12-12", url:"#", image:"https://picsum.photos/seed/reggae/900/600", excerpt:"Roots, rock, reggae under the stars." },
+      { title:"Barbados Food & Rum Fest", island:"Barbados", type:"Festival", when:"2025-11-18", url:"#", image:"https://picsum.photos/seed/rum/900/600", excerpt:"Chefs, mixologists, and the island’s best flavors." },
+      { title:"St. Lucia Jazz Nights", island:"Saint Lucia", type:"Concert", when:"2025-11-22", url:"#", image:"https://picsum.photos/seed/jazz/900/600", excerpt:"Smooth sets by regional and international artists." },
+      { title:"Kingstown Makers Market", island:"Grenada", type:"Market", when:"2025-10-30", url:"#", image:"https://picsum.photos/seed/market/900/600", excerpt:"Local crafts, food trucks, and live steelpan." },
+      { title:"Blue Harbor Tech Expo", island:"Jamaica", type:"Expo", when:"2025-12-03", url:"#", image:"https://picsum.photos/seed/expo/900/600", excerpt:"Startups, fintech demos, and workshops." },
+      { title:"Caribbean Creators Summit", island:"Barbados", type:"Conference", when:"2025-11-09", url:"#", image:"https://picsum.photos/seed/summit/900/600", excerpt:"Content, commerce, and community." },
+      { title:"Port-of-Spain Street Fete", island:"Trinidad", type:"Carnival", when:"2025-10-29", url:"#", image:"https://picsum.photos/seed/fete/900/600", excerpt:"Road march preview with DJs and mas bands." },
+      { title:"Soca on the Beach", island:"Antigua", type:"Concert", when:"2025-11-15", url:"#", image:"https://picsum.photos/seed/soca/900/600", excerpt:"Sunset set with top soca artists." },
+      { title:"Island Wellness Expo", island:"Saint Eustatius", type:"Expo", when:"2025-11-27", url:"#", image:"https://picsum.photos/seed/wellness/900/600", excerpt:"Holistic health, yoga, and island wellness brands." },
+      { title:"Kingston Film Week", island:"Jamaica", type:"Festival", when:"2025-12-08", url:"#", image:"https://picsum.photos/seed/film/900/600", excerpt:"Premieres, panels, and outdoor screenings." }
+    ]
+  };
+
+  /* ---------- Utilities ---------- */
+  const islandCentroids = {
+    "Barbados": {lat:13.1939, lon:-59.5432},
+    "Jamaica": {lat:18.1096, lon:-77.2975},
+    "Trinidad": {lat:10.6918, lon:-61.2225},
+    "Saint Eustatius": {lat:17.4890, lon:-62.9736},
+    "Dominica": {lat:15.4150, lon:-61.3710},
+    "Saint Lucia": {lat:13.9094, lon:-60.9789},
+    "Antigua": {lat:17.0608, lon:-61.7964},
+    "St. Kitts": {lat:17.3434, lon:-62.7559},
+    "Grenada": {lat:12.1165, lon:-61.6790}
+  };
+  const R=6371, toRad=d=>d*Math.PI/180;
+  const dist=(a,b)=>!a||!b?Infinity:(2*R*Math.asin(Math.sqrt(Math.sin(toRad((b.lat-a.lat)/2))**2+Math.cos(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.sin(toRad((b.lon-a.lon)/2))**2)));
+  const asISO = s => (s||'').slice(0,10);
+  const ym = d => d.toISOString().slice(0,7);
+  const fmtMonth = (y,m)=> new Date(y,m,1).toLocaleString(undefined,{month:'long',year:'numeric'});
+
+  /* ---------- DOM ---------- */
+  const q=document.getElementById('ev-search');
+  const islandSel=document.getElementById('ev-island');
+  const typeSel=document.getElementById('ev-type');
+  const monthSel=document.getElementById('ev-month');
+  const sortSel=document.getElementById('ev-sort');
+  const chips=[...document.querySelectorAll('#ev-chips .chip')];
+  const featured=document.getElementById('ev-featured');
+  const list=document.getElementById('events-list');
+  const near=document.getElementById('near-you');
+  const nearEmpty=document.getElementById('near-you-empty');
+  const calGrid=document.getElementById('calendar-grid');
+  const calLabel=document.getElementById('cal-label');
+  const btnPrev=document.getElementById('cal-prev');
+  const btnNext=document.getElementById('cal-next');
+  const btnToday=document.getElementById('cal-today');
+
+  let DATA={items:[]}, userLoc=null, chip="", cal={y:new Date().getFullYear(), m:new Date().getMonth()};
+
+  /* ---------- Fetch with fallbacks ---------- */
+  async function getEvents(){
+    try{ const r=await fetch('/api/events'); if(r.ok) return await r.json(); }catch(e){}
+    try{ const r=await fetch('/events/events.json'); if(r.ok) return await r.json(); }catch(e){}
+    return FALLBACK_EVENTS;
+  }
+
+  function card(e){
+    const dt = asISO(e.when||e.start);
+    return `<article class="card">
+      ${e.image?`<img class="thumb" src="${e.image}" alt="">`:`<div class="thumb"></div>`}
+      <div class="p">
+        <h3 style="margin:4px 0">${e.title||'Untitled event'}</h3>
+        <div class="meta">${e.island||''} • ${e.type||''} • <time datetime="${dt}">${dt}</time></div>
+        ${e.excerpt?`<p class="meta" style="margin-top:6px">${e.excerpt.slice(0,120)}...</p>`:''}
+        <div style="display:flex;gap:8px;align-items:center;margin-top:10px">
+          ${e.url?`<a class="btn primary sm" href="${e.url}" target="_blank" rel="noopener">Learn More</a>`:''}
+          ${e.price?`<span class="pill">${e.price}</span>`:''}
+        </div>
+      </div>
+    </article>`;
+  }
+
+  function jsonLD(items){
+    const ld={ "@context":"https://schema.org","@type":"ItemList",
+      "itemListElement": items.map((e,i)=>({ "@type":"ListItem","position":i+1,
+        "item":{ "@type":"Event","name":e.title,"startDate":asISO(e.when||e.start),"url":e.url||location.href,"location":e.island||"" } })) };
+    const tag=document.getElementById('events-jsonld'); if(tag) tag.textContent=JSON.stringify(ld);
+  }
+
+  function filtered(){
+    const term=(q?.value||'').toLowerCase();
+    const isl=islandSel?.value||'', typ=typeSel?.value||'', month=monthSel?.value||'';
+    return (DATA.items||[]).filter(e=>{
+      const hay=(e.title+' '+(e.island||'')+' '+(e.type||'')+' '+(e.when||'')+' '+(e.excerpt||'')).toLowerCase();
+      const okTerm=!term||hay.includes(term);
+      const okIsland=!isl||(e.island||'')===isl;
+      const okType=!typ||(e.type||'')===typ;
+      const okChip=!chip||(e.type||'').toLowerCase().includes(chip.toLowerCase());
+      const okMonth=!month||(e.when||'').startsWith(month)||(e.start||'').startsWith(month);
+      return okTerm&&okIsland&&okType&&okChip&&okMonth;
+    });
+  }
+
+  function applySort(items){
+    const v=sortSel.value;
+    if(v==='alpha') return items.slice().sort((a,b)=> (a.title||'').localeCompare(b.title||''));
+    if(v==='recent') return items.slice().sort((a,b)=> (b._added||0)-(a._added||0));
+    // upcoming default
+    return items.slice().sort((a,b)=> new Date(asISO(a.when||a.start))-new Date(asISO(b.when||b.start)));
+  }
+
+  function renderLists(){
+    let items=filtered();
+    items=applySort(items);
+    // featured = top 4 future (or 4 total)
+    const now=new Date();
+    const future=items.filter(e=> new Date(asISO(e.when||e.start))>=now);
+    const feat=(future.length?future:items).slice(0,4);
+    featured.innerHTML=feat.map(card).join('')||'<div class="meta">No featured events.</div>';
+    list.innerHTML=items.map(card).join('')||'<div class="meta">No events found.</div>';
+    jsonLD(items);
+  }
+
+  function labelMonth(){ calLabel.textContent = new Date(cal.y,cal.m,1).toLocaleString(undefined,{month:'long',year:'numeric'}); }
+
+  function renderCalendar(){
+    labelMonth();
+    calGrid.innerHTML='';
+    const first=new Date(cal.y,cal.m,1).getDay();
+    for(let i=0;i<first;i++) calGrid.insertAdjacentHTML('beforeend','<div></div>');
+    const total=new Date(cal.y,cal.m+1,0).getDate();
+    const ymKey=`${cal.y}-${String(cal.m+1).padStart(2,'0')}`;
+    const haveDays=new Set(filtered().filter(e=> (e.when||e.start||'').startsWith(ymKey))
+      .map(e=> parseInt((e.when||e.start).slice(8,10),10)));
+    for(let d=1; d<=total; d++){
+      const has=haveDays.has(d);
+      calGrid.insertAdjacentHTML('beforeend', `<div class="cal-day" data-day="${d}">
+        <div class="num">${d}</div>${has?'<div class="badge">events</div>':''}</div>`);
+    }
+    calGrid.querySelectorAll('.cal-day[data-day]').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const day=String(el.dataset.day).padStart(2,'0');
+        monthSel.value=ym(new Date(cal.y,cal.m,1));
+        q.value=`${ym(new Date(cal.y,cal.m,1))}-${day}`;
+        renderLists();
+        window.scrollTo({top:list.getBoundingClientRect().top+window.scrollY-60,behavior:'smooth'});
+      });
+    });
+  }
+
+  function toast(msg){ const t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),2200); }
+
+  async function submitEvent(ev){
+    ev.preventDefault();
+    const fd=new FormData(ev.target); const payload=Object.fromEntries(fd.entries());
+    payload.when=payload.when||new Date().toISOString().slice(0,10);
+    try{
+      const r=await fetch('/api/submit-event',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      if(!r.ok) throw new Error('api');
+      toast('Submitted for approval. Thank you!');
+    }catch(e){
+      const key='intreen_event_submissions';
+      const cur=JSON.parse(localStorage.getItem(key)||'[]'); cur.push({...payload,_ts:Date.now()});
+      localStorage.setItem(key,JSON.stringify(cur));
+      toast('Saved locally for approval (offline).');
+    }
+    ev.target.reset();
+  }
+
+  function nearYouRender(){
+    const box=document.getElementById('near-you');
+    if(!userLoc){ nearEmpty.style.display='block'; box.innerHTML=''; return; }
+    nearEmpty.style.display='none';
+    const items=(DATA.items||[]).map(e=>{
+      let p=null;
+      if(e.lat!=null&&e.lon!=null) p={lat:e.lat,lon:e.lon};
+      else if(islandCentroids[e.island||'']) p=islandCentroids[e.island];
+      return {...e, __d:dist(userLoc,p)};
+    }).sort((a,b)=>a.__d-b.__d).slice(0,6);
+    box.innerHTML=items.map(card).join('')||'<div class="meta">No nearby events.</div>';
+  }
+
+  async function geolocate(){
+    return new Promise(res=>{
+      if(!navigator.geolocation) return res(null);
+      navigator.geolocation.getCurrentPosition(
+        pos=>res({lat:pos.coords.latitude,lon:pos.coords.longitude}),
+        ()=>res(null),
+        {timeout:3000,maximumAge:600000}
+      );
+    });
+  }
+
+  // Init
+  (async function init(){
+    DATA=await getEvents();
+    // tag each with _added timestamp for "recent" sort
+    DATA.items=(DATA.items||[]).map((e,i)=>({...e,_added: Date.now()-i*1000*60}));
+
+    // listeners
+    [q,islandSel,typeSel,monthSel,sortSel].forEach(el=> el && el.addEventListener('input', ()=>{renderLists(); renderCalendar();}));
+    chips.forEach(c=> c.addEventListener('click', ()=>{ chips.forEach(x=>x.classList.remove('active')); c.classList.add('active'); chip=c.dataset.cat||''; renderLists(); renderCalendar(); }));
+    document.getElementById('submit-form')?.addEventListener('submit', submitEvent);
+
+    // calendar nav
+    document.getElementById('cal-prev').addEventListener('click', ()=>{ cal.m--; if(cal.m<0){cal.m=11;cal.y--;} renderCalendar(); });
+    document.getElementById('cal-next').addEventListener('click', ()=>{ cal.m++; if(cal.m>11){cal.m=0;cal.y++;} renderCalendar(); });
+    document.getElementById('cal-today').addEventListener('click', ()=>{ const d=new Date(); cal={y:d.getFullYear(),m:d.getMonth()}; renderCalendar(); });
+
+    // render
+    renderLists(); renderCalendar();
+
+    userLoc = await geolocate();
+    nearYouRender();
+  })();
+</script>
+</body>
+</html>

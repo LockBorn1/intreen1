@@ -1,0 +1,287 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Intreen • Status</title>
+<link rel="stylesheet" href="/assets/css/styles.css"/>
+  <link rel="stylesheet" href="/assets/css/gradient-theme.css"/>
+<style>
+  :root{ --panel: rgba(17,24,39,.7); --borderD: rgba(255,255,255,.08); --mutedD:#a3aed0 }
+  body{margin:0;background:#0b1020;color:#e5e7eb;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+  .status-wrap{min-height:100vh;display:flex;flex-direction:column}
+  .status-head{padding:20px;display:flex;align-items:center;justify-content:space-between;
+    background:linear-gradient(180deg, rgba(2,6,23,.9), rgba(2,6,23,.4));backdrop-filter: blur(6px);
+    border-bottom:1px solid var(--borderD)}
+  .status-head h1{margin:0;font-size:1.25rem}
+  .status-head a{color:#93c5fd;text-decoration:none}
+  .status-body{flex:1;display:grid;gap:16px;padding:20px}
+  .grid-3{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .card{background:var(--panel);border:1px solid var(--borderD);border-radius:16px;overflow:hidden}
+  .card .p{padding:14px}
+  .kpi{font-size:1.8rem;font-weight:700}
+  .meta{color:var(--mutedD)}
+  .ok{color:#86efac}.warn{color:#fde68a}.bad{color:#fca5a5}
+  .badge{display:inline-block;border:1px solid var(--borderD);padding:4px 8px;border-radius:999px;font-size:.75rem;color:#cbd5e1}
+  .bar{height:8px;background:rgba(255,255,255,.08);border-radius:6px;overflow:hidden}
+  .bar>i{display:block;height:8px;background:#86efac;transition:width .8s ease}
+  .section h2{padding:0 14px;margin:8px 0}
+  .banner{border-left:4px solid #22c55e}
+  .banner.warn{border-left-color:#eab308}
+  .banner.bad{border-left-color:#ef4444}
+  .legend{display:flex;gap:12px;align-items:center}
+  .legend i{display:inline-block;width:16px;height:8px;border-radius:2px}
+  .legend .ok{background:#22c55e}.legend .warn{background:#eab308}.legend .bad{background:#ef4444}
+  .list{display:grid;gap:10px}
+  .list .row{display:flex;justify-content:space-between;gap:12px}
+</style>
+  <script src="/assets/js/gate.js" defer></script>
+</head>
+<body>
+<div class="status-wrap">
+  <div class="status-head">
+    <h1>Intreen Status</h1>
+    <a href="/index.html" class="btn sm">← Back to Home</a>
+  </div>
+  <div class="status-body">
+    <section class="card banner"><div class="p" id="banner">
+      <strong id="banner-title">All systems operational</strong>
+      <div class="meta" id="banner-sub">No active incidents. Performance healthy.</div>
+    </div></section>
+
+    <section class="grid-3">
+      <article class="card"><div class="p"><h3>Uptime (7d)</h3><div class="kpi ok" id="uptime-7">99.97%</div><p class="meta">All systems nominal</p></div></article>
+      <article class="card"><div class="p"><h3>Incidents (30d)</h3><div class="kpi warn" id="inc-30">2</div><p class="meta">Minor impact</p></div></article>
+      <article class="card"><div class="p"><h3>MTTR</h3><div class="kpi" id="mttr">24m</div><p class="meta">Median time to resolve</p></div></article>
+    </section>
+
+    <section class="card section">
+      <h2>Components</h2>
+      <div class="p grid-3" id="components"></div>
+    </section>
+
+    <section class="card section">
+      <h2>Active Maintenance</h2>
+      <div class="p list" id="maint-active"></div>
+    </section>
+
+    <section class="card section">
+      <h2>Recent Incidents</h2>
+      <div class="p timeline" id="incidents"></div>
+    </section>
+
+    
+    <section class="card section">
+      <h2>Uptime History</h2>
+      <div class="p" id="uptime-graph-wrap">
+        <div id="uptime-details" class="meta" style="margin-bottom:8px">Hover over a day to see details.</div>
+        <svg id="uptime-graph" width="100%" height="220" viewBox="0 0 900 220" preserveAspectRatio="none" style="display:block"></svg>
+        <div class="p legend">
+          <span class="meta">Legend:</span>
+          <i class="ok"></i><span class="meta">Operational</span>
+          <i class="warn"></i><span class="meta">Degraded</span>
+          <i class="bad"></i><span class="meta">Partial outage</span>
+        </div>
+      </div>
+    </section>
+    
+
+    <section class="card section">
+      <h2>Past Maintenance</h2>
+      <div class="p list" id="maint-past"></div>
+    </section>
+  </div>
+</div>
+<script>
+(function(){
+  const comps = [
+    {name:'Website', pct: 99.97}, {name:'API', pct: 99.90},
+    {name:'Checkout', pct: 99.98}, {name:'Email', pct: 99.84},
+    {name:'LMS', pct: 99.92}, {name:'Search', pct: 99.65}
+  ];
+  const incidents = [
+    {date:'2025-10-18', title:'API 5xx Spikes', impact:'minor', updates:[
+      {t:'09:20', txt:'We are investigating elevated 5xx errors on /v1/search.'},
+      {t:'09:36', txt:'Mitigated by scaling read replicas; error rate dropping.'},
+      {t:'09:48', txt:'Resolved. Root cause: cache stampede on surge.'}
+    ]},
+    {date:'2025-10-05', title:'Email delays', impact:'minor', updates:[
+      {t:'14:05', txt:'Mail provider reporting throttle; notifications delayed.'},
+      {t:'14:51', txt:'Switched to backup route; delays clearing.'},
+      {t:'15:12', txt:'Resolved. Backlog drained.'}
+    ]}
+  ];
+  const maintActive = [
+    {window:'2025-10-24 02:00–03:00 UTC', title:'DB routine maintenance', impact:'minor performance dips'},
+  ];
+  const maintPast = [
+    {window:'2025-09-30 01:00–01:20 UTC', title:'Search cluster patching', result:'Completed'}
+  ];
+
+  function jitter(v, r=0.08){ return Math.max(97, Math.min(99.99, v + (Math.random()*r - r/2))); }
+  function klass(p){ return p>99.9?'ok':(p>99.6?'warn':'bad'); }
+
+  // KPIs
+  document.getElementById('uptime-7').textContent = jitter(99.97, 0.06).toFixed(2) + '%';
+  document.getElementById('inc-30').textContent = incidents.length;
+  document.getElementById('mttr').textContent = Math.floor(Math.random()*30+12) + 'm';
+
+  // Components grid
+  const cwrap = document.getElementById('components');
+  cwrap.innerHTML = comps.map(c => {
+    const p = jitter(c.pct, 0.12);
+    return `<div class="card"><div class="p">
+      <h3>${c.name}</h3>
+      <div class="bar"><i style="width:${p}%"></i></div>
+      <p class="meta ${klass(p)}" style="margin-top:6px">${p.toFixed(2)}% ${p>99.9?'Operational':p>99.6?'Degraded':'Partial outage'}</p>
+    </div></div>`;
+  }).join('');
+
+  // Dynamic banner logic
+  function computeOverall(){
+    // Severity based on any component below thresholds or any incidents
+    const compStatus = Array.from(cwrap.querySelectorAll('.meta'));
+    let sev = 'ok';
+    compStatus.forEach(m => {
+      if(m.classList.contains('bad')) sev = 'bad';
+      else if(m.classList.contains('warn') && sev !== 'bad') sev = 'warn';
+    });
+    if(incidents.length && sev !== 'bad') sev = 'warn'; // incidents in last 30d => warn at least
+    return sev;
+  }
+  function setBanner(){
+    const sev = computeOverall();
+    const banner = document.getElementById('banner').parentElement;
+    banner.className = 'card banner' + (sev==='ok'?'':(' ' + sev));
+    const title = document.getElementById('banner-title');
+    const sub = document.getElementById('banner-sub');
+    if(sev==='ok'){ title.textContent='All systems operational'; sub.textContent='No active incidents. Performance healthy.'; }
+    if(sev==='warn'){ title.textContent='Minor incidents detected'; sub.textContent='Some components report degraded performance.'; }
+    if(sev==='bad'){ title.textContent='Service disruption'; sub.textContent='One or more components are experiencing an outage.'; }
+  }
+  setBanner();
+
+  // Incidents timeline
+  const twrap = document.getElementById('incidents');
+  twrap.innerHTML = incidents.map(inc => {
+    return `<article class="card incident"><div class="p">
+      <div class="head"><strong>${inc.title}</strong><span class="badge">${inc.date}</span></div>
+      ${inc.updates.map(u => `<div class="t-row"><span class="dot"></span><div><div class="meta">${u.t}</div><div>${u.txt}</div></div></div>`).join('')}
+    </div></article>`;
+  }).join('');
+
+  // Uptime History (last 30 days)
+  const hwrap = document.getElementById('history');
+  const rows = ['Website','API','Checkout','Email','LMS','Search'];
+  rows.forEach(r=>{
+    const bars = Array.from({length:30}).map(_=>{
+      const roll = Math.random();
+      const cls = roll>0.98?'bad':(roll>0.92?'warn':'');
+      return `<i class="${cls}"></i>`;
+    }).join('');
+    hwrap.innerHTML += `<div class="hist-row"><div class="meta">${r}</div><div class="hist-bars">${bars}</div></div>`;
+  });
+
+  // Active Maintenance
+  const maw = document.getElementById('maint-active');
+  maw.innerHTML = maintActive.length ? maintActive.map(m=>`<div class="row"><span>${m.title}</span><span class="meta">${m.window} • ${m.impact}</span></div>`).join('') : '<div class="meta">None</div>';
+
+  // Past Maintenance
+  const mpw = document.getElementById('maint-past');
+  mpw.innerHTML = maintPast.length ? maintPast.map(m=>`<div class="row"><span>${m.title}</span><span class="meta">${m.window} • ${m.result}</span></div>`).join('') : '<div class="meta">None</div>';
+
+  // Randomly refresh one component and recompute banner every ~7s
+  setInterval(()=>{
+    const cards = cwrap.querySelectorAll('.card');
+    if(cards.length){
+      const idx = Math.floor(Math.random()*cards.length);
+      const bar = cards[idx].querySelector('.bar>i');
+      const percent = Math.max(97, Math.min(99.99, parseFloat(bar.style.width) + (Math.random()*0.6 - 0.3)));
+      bar.style.width = percent + '%';
+      const meta = cards[idx].querySelector('.meta');
+      meta.className = 'meta ' + (percent>99.9?'ok':(percent>99.6?'warn':'bad'));
+      meta.textContent = percent.toFixed(2) + '% ' + (percent>99.9?'Operational':percent>99.6?'Degraded':'Partial outage');
+      setBanner();
+    }
+  }, 7000);
+})();
+</script>
+<script>
+// Interactive uptime graph
+(function(){
+  const svg = document.getElementById('uptime-graph');
+  const details = document.getElementById('uptime-details');
+  if(!svg || !details) return;
+  const components = ['Website','API','Checkout','Email','LMS','Search'];
+  const days = 30;
+  const W = 900, H = 220, pad = 10;
+  const colW = (W - pad*2) / days;
+  const rowH = (H - pad*2) / components.length;
+
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+  // Generate fake status per day per component
+  const data = Array.from({length:days}, (_,d)=>{
+    return components.map(c=>{
+      const roll = Math.random();
+      const cls = roll>0.98?'bad':(roll>0.92?'warn':'ok');
+      const pct = cls==='ok' ? (99.9 + Math.random()*0.09) : (cls==='warn' ? (99.6 + Math.random()*0.29) : (97 + Math.random()*2.5));
+      return {comp:c, class:cls, pct: pct};
+    });
+  });
+
+  // Draw cells
+  const bg = document.createElementNS('http://www.w3.org/2000/svg','rect');
+  bg.setAttribute('x', 0); bg.setAttribute('y', 0); bg.setAttribute('width', 900); bg.setAttribute('height', 220);
+  bg.setAttribute('fill', 'transparent');
+  svg.appendChild(bg);
+
+  const group = document.createElementNS('http://www.w3.org/2000/svg','g');
+  svg.appendChild(group);
+
+  function colorOf(cls){
+    return cls==='ok' ? '#22c55e' : (cls==='warn' ? '#eab308' : '#ef4444');
+  }
+
+  for(let d=0; d<days; d++){
+    const x = pad + d*colW;
+    for(let r=0; r<components.length; r++){
+      const y = pad + r*rowH;
+      const cell = document.createElementNS('http://www.w3.org/2000/svg','rect');
+      cell.setAttribute('x', x+2);
+      cell.setAttribute('y', y+2);
+      cell.setAttribute('rx', 2);
+      cell.setAttribute('ry', 2);
+      cell.setAttribute('width', Math.max(1, colW-4));
+      cell.setAttribute('height', Math.max(1, rowH-4));
+      const cls = data[d][r].class;
+      cell.setAttribute('fill', colorOf(cls));
+      cell.setAttribute('data-d', d);
+      group.appendChild(cell);
+    }
+  }
+
+  const hl = document.createElementNS('http://www.w3.org/2000/svg','rect');
+  hl.setAttribute('x', 0); hl.setAttribute('y', pad);
+  hl.setAttribute('width', colW); hl.setAttribute('height', H - pad*2);
+  hl.setAttribute('fill', 'rgba(255,255,255,0.06)');
+  hl.setAttribute('visibility', 'hidden');
+  svg.appendChild(hl);
+
+  svg.addEventListener('mousemove', (ev)=>{
+    const rect = svg.getBoundingClientRect();
+    const mx = ev.clientX - rect.left;
+    let d = Math.floor((mx - pad)/colW);
+    if(d<0 || d>=days){ hl.setAttribute('visibility','hidden'); details.textContent='Hover over a day to see details.'; return; }
+    const x = pad + d*colW;
+    hl.setAttribute('x', x);
+    hl.setAttribute('visibility', 'visible');
+
+    const dayData = data[d];
+    const parts = dayData.map((row,i)=>`${components[i]}: ${row.pct.toFixed(2)}% (${row.class})`);
+    details.textContent = `Day ${days-d}: ` + parts.join('  •  ');
+  });
+
+  svg.addEventListener('mouseleave', ()=>{
+    hl.setAttribute('visibility','hidden');
+    details.textContent = 'Hover over a day to see details.';
+  });
+})();</script>
+</body></html>

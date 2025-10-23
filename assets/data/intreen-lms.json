@@ -1,0 +1,79 @@
+{
+  "title": "Intreen LMS",
+  "plans": [
+    {
+      "id": "basic",
+      "name": "Starter",
+      "employees": "1\u201340",
+      "price": 49,
+      "features": [
+        "Scrum library",
+        "Team analytics (basic)",
+        "Assignments"
+      ]
+    },
+    {
+      "id": "pro",
+      "name": "Pro",
+      "employees": "41\u2013200",
+      "price": 199,
+      "features": [
+        "Everything in Starter",
+        "Custom tracks",
+        "SCIM SSO",
+        "Advanced reports"
+      ]
+    }
+  ],
+  "courses": [
+    {
+      "id": "scrum-found",
+      "title": "Scrum Foundations",
+      "price": 0,
+      "category": "scrum",
+      "level": "Beginner",
+      "duration": "1h 30m",
+      "lessons": 10,
+      "img": "https://picsum.photos/seed/intreen-lms-1/640/360",
+      "desc": "Scrum Foundations \u2014 comprehensive training with practical exercises, quizzes, and real\u2011world Scrum scenarios."
+    },
+    {
+      "id": "scrum-master",
+      "title": "Scrum Master Essentials",
+      "price": 29,
+      "category": "scrum",
+      "level": "Intermediate",
+      "duration": "3h",
+      "lessons": 18,
+      "img": "https://picsum.photos/seed/intreen-lms-2/640/360",
+      "desc": "Scrum Master Essentials \u2014 comprehensive training with practical exercises, quizzes, and real\u2011world Scrum scenarios."
+    },
+    {
+      "id": "product-owner",
+      "title": "Product Owner Playbook",
+      "price": 29,
+      "category": "scrum",
+      "level": "Intermediate",
+      "duration": "2h 15m",
+      "lessons": 14,
+      "img": "https://picsum.photos/seed/intreen-lms-3/640/360",
+      "desc": "Product Owner Playbook \u2014 comprehensive training with practical exercises, quizzes, and real\u2011world Scrum scenarios."
+    },
+    {
+      "id": "agile-est",
+      "title": "Agile Estimation & Planning",
+      "price": 19,
+      "category": "scrum",
+      "level": "Intermediate",
+      "duration": "1h 45m",
+      "lessons": 12,
+      "img": "https://picsum.photos/seed/intreen-lms-4/640/360",
+      "desc": "Agile Estimation & Planning \u2014 comprehensive training with practical exercises, quizzes, and real\u2011world Scrum scenarios."
+    }
+  ],
+  "hero": {
+    "title": "Intreen LMS for Teams",
+    "subtitle": "Train and certify your team with curated Scrum courses.",
+    "bg": "https://picsum.photos/seed/intreen-lms-hero/1600/500"
+  }
+}

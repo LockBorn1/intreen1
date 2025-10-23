@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Postmortem: 2025-09-20 API Errors • Intreen</title>
+<link rel="stylesheet" href="/assets/css/styles.css"/>
+  <link rel="stylesheet" href="/assets/css/gradient-theme.css"/>  <script src="/assets/js/gate.js" defer></script>
+</head>
+<body class="page">
+<div id="site-navbar"></div>
+<main class="container mt-8">
+  <article class="card p">
+    <h1>Postmortem: 2025-09-20 Elevated API errors</h1>
+    <p class="meta">Published 2025-09-22</p>
+    <h3>Summary</h3>
+    <p>Misconfigured cache layer caused elevated 5xx rates between 14:12–16:45 UTC.</p>
+    <h3>Impact</h3>
+    <p>~3% of API requests failed for ~2.5 hours.</p>
+    <h3>Root cause</h3>
+    <p>Incorrect TTL on a hot path leading to stale/invalid objects.</p>
+    <h3>Remediations</h3>
+    <ul><li>Fix cache TTL policy</li><li>Improve canary checks</li><li>Add error budget SLO alert</li></ul>
+  </article>
+</main><script type="module">import { bootLayout } from '/assets/js/layout.js'; bootLayout('status');</script>
+
+
+</body></html>
