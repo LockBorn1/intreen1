@@ -5,1160 +5,432 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Intreen LMS — E-Learning</title>
 
-<!-- Same assets as About page -->
 <link rel="stylesheet" href="/assets/css/styles.css"/>
 <link rel="stylesheet" href="/assets/css/gradient-theme.css"/>
 <script src="/assets/js/gate.js" defer></script>
 
 <style>
-  /* ====== Base & Theme (keep About-page vibe but boost contrast) ====== */
   :root{
-    --ink:#0b1220;
-    --ink-muted:#334155;
-    --line: rgba(0,0,0,.12);
-    --card: #ffffffe6;
-    --chip:#f1f5f9;
-    --grad1:#007cf0; --grad2:#6a00f4;
+    --ink:#0b1220; --muted:#475569; --line:rgba(0,0,0,.12);
+    --card:#ffffffe6; --grad1:#007cf0; --grad2:#6a00f4;
   }
-  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:var(--ink)}
-  body.gradient-bg{ /* keep your gradient background from About */
-    /* provided by /assets/css/gradient-theme.css */
-  }
-  main.container{max-width:1240px}
-  ::placeholder{color:#475569}
-  input,select,button{font:inherit}
+  body{margin:0;color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+  main.container{max-width:1180px}
 
   /* Layout */
-  .shell{display:grid; grid-template-columns: 264px 1fr; gap:18px; align-items:start}
-  @media (max-width:1100px){ .shell{grid-template-columns:1fr} }
-
-  /* Sidebar */
-  .sidebar{position:sticky; top:84px}
-  .navlist{display:grid; gap:8px}
-  .navitem{display:flex; align-items:center; gap:10px; padding:11px 12px; border-radius:12px;
-    background:var(--card); border:1px solid var(--line); color:var(--ink); text-decoration:none; cursor:pointer}
-  .navitem:hover{background:#fff}
-  .navitem.active{outline:2px solid rgba(0,124,240,.25); background:#fff}
-
-  /* Topbar */
-  .topbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:10px}
-  .search{flex:1; min-width:260px; display:flex; gap:8px}
-  .search input{padding:11px 12px; border-radius:12px; border:1.5px solid var(--line); flex:1; background:#fff}
-  .search button{padding:11px 14px; border-radius:12px; border:none; color:#fff;
-    background:linear-gradient(90deg,var(--grad1),var(--grad2))}
-  .qa{display:flex; gap:8px; flex-wrap:wrap}
+  .shell{display:grid;grid-template-columns:240px 1fr;gap:16px;align-items:start}
+  @media (max-width:1000px){.shell{grid-template-columns:1fr}}
+  .sidebar{position:sticky;top:84px}
+  .nav{display:grid;gap:6px}
+  .nav a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--card);
+    border:1px solid var(--line);text-decoration:none;color:var(--ink)}
+  .nav a.active{outline:2px solid rgba(0,124,240,.25);background:#fff}
 
   /* Cards */
-  .card{background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:0 6px 18px rgba(2,6,23,.06)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
   .p{padding:16px}
-  .meta{color:var(--ink-muted)}
   h1,h2,h3{margin:0 0 8px}
-  section{margin-top:14px}
+  .meta{color:var(--muted)}
 
-  /* Grids */
-  .grid{display:grid; gap:14px}
-  .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  /* Dashboard hero */
+  .hero{display:grid;grid-template-columns:260px 1fr;gap:16px;align-items:center}
+  @media (max-width:900px){.hero{grid-template-columns:1fr}}
+  .ring{width:220px;height:220px;place-self:center;display:grid;place-items:center}
+  .ring svg{width:220px;height:220px}
+  .kpi-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  @media (max-width:900px){.kpi-row{grid-template-columns:1fr}}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
+
+  /* Course grid */
+  .grid{display:grid;gap:14px}
   .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .grid-auto-3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-  @media (max-width:900px){ .grid-3,.grid-2{grid-template-columns:1fr} }
-  .rows{display:grid; gap:10px}
-  .row{display:grid; grid-template-columns:1fr auto; align-items:center; gap:10px; padding:10px 12px; border-radius:12px; border:1px solid rgba(0,0,0,.08); background:#fff}
+  .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  @media (max-width:900px){.grid-3,.grid-2{grid-template-columns:1fr}}
+  .thumb{aspect-ratio:16/9;border-radius:12px;background:linear-gradient(135deg,var(--grad1),var(--grad2));
+    display:grid;place-items:center;color:#fff;font-weight:800}
 
-  /* Buttons */
-  .btn{display:inline-block; padding:10px 14px; border-radius:12px; background:#f8fafc; color:var(--ink); border:1px solid var(--line); text-decoration:none; cursor:pointer}
-  .btn.sm{padding:8px 12px}
-  .btn.grad{background:linear-gradient(90deg,var(--grad1),var(--grad2)); color:#fff; border:none}
-  .btn.ghost{background:transparent; border:1px dashed var(--line)}
-  .btn.danger{background:#fee2e2; border-color:#fecaca; color:#991b1b}
-  .btn.ok{background:#ecfdf5; border-color:#a7f3d0; color:#065f46}
-
-  /* KPI / progress */
-  .kpi{font-weight:800; font-size:1.3rem}
-  .progress{height:10px; background:#e5ecf5; border-radius:999px; overflow:hidden}
-  .fill{height:100%; background:linear-gradient(90deg,var(--grad1),var(--grad2))}
-
-  /* Course cards */
-  .thumb{border-top-left-radius:12px; border-top-right-radius:12px; width:100%; aspect-ratio:16/9; display:grid; place-items:center; color:#fff; font-weight:800;
-    background:linear-gradient(135deg,var(--grad1),var(--grad2))}
-  .chip{display:inline-block; padding:6px 10px; border-radius:999px; background:#f1f5f9; color:#111; border:1px solid var(--line); font-size:.9rem}
-  .pill{border-radius:999px; padding:2px 8px; font-size:.8rem; background:#eef2ff; color:#3730a3; display:inline-block}
-  .tag{display:inline-block; padding:4px 8px; border-radius:8px; background:#f8fafc; border:1px solid var(--line); font-size:.8rem}
-  .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--grad2),var(--grad1)); display:inline-block}
-  .toolbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+  .progress{height:8px;background:#e5edf7;border-radius:999px;overflow:hidden}
+  .fill{height:100%;background:linear-gradient(90deg,var(--grad1),var(--grad2))}
+  .btn{display:inline-block;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:#f8fafc;color:var(--ink);text-decoration:none;cursor:pointer}
+  .btn.grad{border:none;color:#fff;background:linear-gradient(90deg,var(--grad1),var(--grad2))}
+  .btn.sm{padding:7px 10px}
+  .pill{border-radius:999px;background:#eef2ff;color:#3730a3;font-size:.8rem;padding:2px 8px}
 
   /* Tables */
-  table{width:100%; border-collapse:separate; border-spacing:0; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#fff}
-  thead th{background:#f8fafc; text-align:left; padding:10px 12px; font-weight:600; border-bottom:1px solid var(--line)}
-  tbody td{padding:10px 12px; border-bottom:1px solid rgba(0,0,0,.06)}
+  table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+  thead th{background:#f8fafc;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+  tbody td{padding:10px 12px;border-bottom:1px solid rgba(0,0,0,.06)}
   tbody tr:last-child td{border-bottom:none}
 
-  /* Drawers / Sheets */
-  .sheet{position:fixed; inset:auto 0 0 0; max-height:82vh; background:var(--card); border-top:1px solid var(--line); border-radius:16px 16px 0 0; box-shadow:0 -12px 40px rgba(0,0,0,.12); display:none; z-index:60}
-  .sheet.open{display:block; animation:slideUp .18s ease}
-  @keyframes slideUp{from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:none}}
-  .sheet .hd{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid var(--line)}
-  .sheet .bd{padding:16px; overflow:auto; max-height:calc(82vh - 56px)}
-  .sheet h3{margin:0}
+  /* Sheets / modals */
+  .sheet{position:fixed;inset:auto 0 0 0;max-height:80vh;background:var(--card);border-top:1px solid var(--line);
+    border-radius:16px 16px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.12);display:none;z-index:60}
+  .sheet.open{display:block;animation:slideUp .18s ease}
+  .sheet .hd{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line)}
+  .sheet .bd{padding:16px;overflow:auto;max-height:calc(80vh - 54px)}
+  @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
-  /* Full Player (demo course) */
-  .player{position:fixed; inset:0; background:rgba(2,6,23,.65); display:none; z-index:80; backdrop-filter:blur(2px)}
-  .player.open{display:grid; place-items:center}
-  .player .frame{width:min(100%,1000px); max-height:90vh; background:#fff; border-radius:14px; overflow:hidden; box-shadow:0 16px 60px rgba(0,0,0,.35); display:grid; grid-template-columns:300px 1fr}
-  .player .side{border-right:1px solid var(--line); background:#f8fafc}
-  .player .side .p{padding:14px}
-  .player .content{display:grid; grid-template-rows:auto 1fr auto}
-  .player .content .body{padding:16px; overflow:auto}
-  .player .content .footer{padding:12px 16px; border-top:1px solid var(--line); display:flex; gap:8px; justify-content:flex-end}
+  /* Minimal demo player (inline sheet content) */
+  .lesson{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
 
-  /* Toast + floating tools */
-  .toast{position:fixed; right:16px; bottom:16px; background:#111827; color:#fff; border-radius:12px; padding:10px 12px; opacity:0; transform:translateY(6px); transition:.2s; z-index:90}
-  .toast.show{opacity:1; transform:none}
-
-  .fab{position:fixed; right:16px; bottom:76px; display:flex; flex-direction:column; gap:8px; z-index:70}
-  .fab .btn{box-shadow:0 6px 16px rgba(0,0,0,.25)}
-
-  /* Accessibility quick-contrast */
-  .high-contrast .card{background:#fff}
-  .high-contrast .meta{color:#1f2937}
+  /* Subtle helpers */
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .rows{display:grid;gap:10px}
 </style>
 </head>
-
 <body class="gradient-bg">
-  <!-- SAME navbar + gradient as About page -->
   <div id="site-navbar"></div>
 
   <main class="container mt-8">
-    <div class="topbar">
-      <h1 style="margin-right:auto">Intreen LMS</h1>
-      <div class="search" role="search" aria-label="Global search">
-        <input id="global-q" type="search" placeholder="Search courses, tracks, instructors…" aria-label="Search"/>
-        <button id="global-search" title="Search">Search</button>
+    <!-- Title bar -->
+    <div class="toolbar" style="justify-content:space-between;margin-bottom:10px">
+      <div>
+        <h1>Intreen LMS</h1>
+        <p class="meta" id="welcome">A simple dashboard to learn, track progress, and view grades.</p>
       </div>
-      <div class="qa">
-        <button id="new-enroll" class="btn ok" title="Enroll to demo">+ Enroll (demo)</button>
-        <button id="open-settings" class="btn">Settings</button>
-        <button id="open-help" class="btn">Help</button>
+      <div class="toolbar">
+        <input id="q" type="search" class="btn" style="min-width:220px" placeholder="Search courses…"/>
+        <button id="search" class="btn grad">Search</button>
       </div>
     </div>
 
-    <p class="meta" id="welcome">Welcome back, learner. Pick up where you left off or explore the catalog.</p>
-
-    <!-- Quick Actions -->
-    <section class="card"><div class="p toolbar" style="justify-content:space-between">
-      <div class="toolbar">
-        <button class="btn sm" id="qa-resume">Resume</button>
-        <button class="btn sm" id="qa-today">Today</button>
-        <button class="btn sm" id="qa-due">Due Soon</button>
-        <button class="btn sm" id="qa-notes">My Notes</button>
-        <button class="btn sm" id="qa-export">Export JSON</button>
-        <label class="btn sm" for="qa-import">Import JSON</label>
-        <input id="qa-import" type="file" accept="application/json" style="display:none"/>
-      </div>
-      <div class="toolbar">
-        <button class="btn sm" id="toggle-contrast" title="High contrast">High Contrast</button>
-        <button class="btn sm" id="bigger-text" title="Increase text size">A+</button>
-        <button class="btn sm" id="smaller-text" title="Decrease text size">A−</button>
-      </div>
-    </div></section>
-
     <section class="shell">
-      <!-- ========= Sidebar ========= -->
+      <!-- Sidebar -->
       <aside class="sidebar">
-        <nav class="navlist" aria-label="Primary">
-          <a class="navitem active" data-view="dashboard">🏠 Dashboard</a>
-          <a class="navitem" data-view="assigned">📌 Assigned</a>
-          <a class="navitem" data-view="my-courses">🎓 My Courses</a>
-          <a class="navitem" data-view="catalog">📚 Catalog</a>
-          <a class="navitem" data-view="grades">🧮 Grades</a>
-          <a class="navitem" data-view="certs">🏅 Certificates</a>
-          <a class="navitem" data-view="transcript">📜 Transcript</a>
-          <a class="navitem" data-view="notes">📝 Notes</a>
-          <a class="navitem" data-view="discussions">💬 Discussions</a>
-          <a class="navitem" data-view="resources">📂 Resources</a>
-          <a class="navitem" data-view="calendar">🗓️ Calendar</a>
-          <a class="navitem" data-view="profile">👤 Profile</a>
+        <nav class="nav" aria-label="Primary">
+          <a class="active" data-view="dashboard">🏠 Dashboard</a>
+          <a data-view="courses">🎓 Courses</a>
+          <a data-view="grades">🧮 Grades</a>
+          <a data-view="certs">🏅 Certificates</a>
         </nav>
       </aside>
 
-      <!-- ========= Main content area ========= -->
-      <div class="grid" id="view-root">
-        <!-- ===== Dashboard ===== -->
-        <section class="grid" data-view="dashboard">
-          <!-- KPIs -->
-          <div class="grid grid-3">
-            <article class="card"><div class="p">
-              <h3>Overall Progress</h3>
-              <div class="kpi" id="kpi-progress">—</div>
-              <div class="progress" style="margin-top:8px"><div class="fill" id="kpi-progress-fill" style="width:0%"></div></div>
-              <p class="meta">Combined progress across all courses.</p>
-            </div></article>
-            <article class="card"><div class="p">
-              <h3>Learning Streak</h3>
-              <div class="kpi" id="kpi-streak">—</div>
-              <p class="meta">Consecutive days with activity.</p>
-            </div></article>
-            <article class="card"><div class="p">
-              <h3>Certificates</h3>
-              <div class="kpi" id="kpi-certs">—</div>
-              <p class="meta">Issued · Pending</p>
-            </div></article>
-          </div>
+      <!-- Main area -->
+      <div id="views">
+        <!-- Dashboard -->
+        <section data-view="dashboard">
+          <article class="card"><div class="p hero">
+            <!-- Progress Ring -->
+            <div class="ring">
+              <svg viewBox="0 0 120 120" role="img" aria-label="Overall progress">
+                <circle cx="60" cy="60" r="52" fill="none" stroke="#e6eef6" stroke-width="12"/>
+                <circle id="ring" cx="60" cy="60" r="52" fill="none" stroke-linecap="round"
+                        stroke="url(#g)" stroke-width="12" stroke-dasharray="327" stroke-dashoffset="327"
+                        transform="rotate(-90 60 60)"/>
+                <defs>
+                  <linearGradient id="g" x1="0" x2="1">
+                    <stop offset="0" stop-color="#007cf0"/><stop offset="1" stop-color="#6a00f4"/>
+                  </linearGradient>
+                </defs>
+                <text id="ringtxt" x="60" y="65" text-anchor="middle" font-size="20" font-weight="700" fill="#0b1220">0%</text>
+              </svg>
+            </div>
 
-          <!-- Continue + Assigned -->
-          <div class="grid grid-2">
-            <article class="card" id="continue-card"><div class="p">
-              <div class="toolbar">
-                <h3 style="margin-right:auto">Continue Learning</h3>
-                <div class="toolbar">
-                  <span class="tag" id="est-time">Est: — min</span>
-                  <a class="btn sm" data-nav="my-courses">View All</a>
+            <!-- Quick summary -->
+            <div class="rows">
+              <div class="kpi-row">
+                <div class="kpi">
+                  <div class="meta">Active Courses</div>
+                  <div id="kpi-courses" style="font-weight:800;font-size:1.2rem">—</div>
+                </div>
+                <div class="kpi">
+                  <div class="meta">Certificates</div>
+                  <div id="kpi-certs" style="font-weight:800;font-size:1.2rem">—</div>
+                </div>
+                <div class="kpi">
+                  <div class="meta">Streak</div>
+                  <div id="kpi-streak" style="font-weight:800;font-size:1.2rem">—</div>
                 </div>
               </div>
-              <div class="grid grid-auto-3" id="continue-grid" style="margin-top:8px"></div>
-            </div></article>
 
-            <article class="card" id="assigned-card"><div class="p">
-              <div class="toolbar">
-                <h3 style="margin-right:auto">Assigned To You</h3>
-                <span class="pill" id="assigned-count">0</span>
-              </div>
-              <div class="rows" id="assigned-list" style="margin-top:8px"></div>
-            </div></article>
-          </div>
+              <div class="grid grid-2">
+                <!-- Continue -->
+                <div class="card"><div class="p">
+                  <div class="toolbar" style="justify-content:space-between">
+                    <h3>Continue learning</h3>
+                    <button class="btn sm" data-nav="courses">View all</button>
+                  </div>
+                  <div id="continue" class="grid grid-2" style="margin-top:8px"></div>
+                </div></div>
 
-          <!-- Announcements + Calendar snapshot -->
-          <div class="grid grid-2">
-            <article class="card"><div class="p">
-              <div class="toolbar">
-                <h3 style="margin-right:auto">Announcements</h3>
-                <a class="btn sm" data-nav="announcements">Open</a>
-              </div>
-              <div class="rows" id="announc-prev" style="margin-top:8px"></div>
-            </div></article>
-
-            <article class="card"><div class="p">
-              <div class="toolbar">
-                <h3 style="margin-right:auto">Calendar</h3>
-                <a class="btn sm" data-nav="calendar">Open</a>
-              </div>
-              <div class="rows" id="calendar-mini" style="margin-top:8px">
-                <!-- populated later -->
-              </div>
-            </div></article>
-          </div>
-        </section>
-
-        <!-- ===== Assigned ===== -->
-        <section class="grid" data-view="assigned" style="display:none;">
-          <article class="card"><div class="p">
-            <div class="toolbar">
-              <h3 style="margin-right:auto">Assigned Courses</h3>
-              <div class="toolbar">
-                <button class="btn sm" id="assigned-remind">Remind Me</button>
-                <button class="btn sm" id="assigned-clear">Clear Completed</button>
+                <!-- Upcoming -->
+                <div class="card"><div class="p">
+                  <div class="toolbar" style="justify-content:space-between">
+                    <h3>Upcoming</h3>
+                    <span class="pill">This week</span>
+                  </div>
+                  <div id="upcoming" class="rows" style="margin-top:8px"></div>
+                </div></div>
               </div>
             </div>
-            <div class="rows" id="assigned-full" style="margin-top:8px"></div>
           </div></article>
         </section>
 
-        <!-- ===== My Courses ===== -->
-        <section class="grid" data-view="my-courses" style="display:none;">
+        <!-- Courses -->
+        <section data-view="courses" style="display:none">
           <article class="card"><div class="p">
-            <div class="toolbar">
-              <h3 style="margin-right:auto">My Courses</h3>
+            <div class="toolbar" style="justify-content:space-between">
+              <h3>Courses</h3>
               <div class="toolbar">
-                <input id="mc-q" type="search" placeholder="Search my courses…" class="btn sm" style="min-width:220px"/>
-                <select id="mc-sort" class="btn sm">
+                <select id="sort" class="btn sm">
                   <option value="rec">Recommended</option>
                   <option value="prog">Progress</option>
                   <option value="dur">Duration</option>
                 </select>
-                <button class="btn sm" id="mc-clear">Clear</button>
+                <button id="clear" class="btn sm">Clear</button>
               </div>
             </div>
-            <div class="grid grid-auto-3" id="my-courses-grid" style="margin-top:8px"></div>
+            <div id="courses-grid" class="grid grid-3" style="margin-top:8px"></div>
           </div></article>
         </section>
 
-        <!-- ===== Catalog ===== -->
-        <section class="grid" data-view="catalog" style="display:none;">
+        <!-- Grades -->
+        <section data-view="grades" style="display:none">
           <article class="card"><div class="p">
-            <div class="toolbar">
-              <h3 style="margin-right:auto">Catalog</h3>
-              <div class="toolbar">
-                <input id="cat-q" type="search" placeholder="Search catalog…" class="btn sm" style="min-width:220px"/>
-                <select id="cat-track" class="btn sm"><option value="">All Tracks</option></select>
-                <select id="cat-sort" class="btn sm">
-                  <option value="rec">Recommended</option>
-                  <option value="new">Newest</option>
-                  <option value="dur">Duration</option>
-                  <option value="lessons">Lessons</option>
-                </select>
-                <button class="btn sm" id="cat-clear">Clear</button>
-              </div>
-            </div>
-            <div class="rows" style="margin-top:8px">
-              <div class="toolbar">
-                <span class="tag">Filters:</span>
-                <label class="tag"><input type="checkbox" id="f-assign" /> Assigned</label>
-                <label class="tag"><input type="checkbox" id="f-bm" /> Bookmarked</label>
-                <label class="tag"><input type="checkbox" id="f-beg" /> Beginner</label>
-                <label class="tag"><input type="checkbox" id="f-quick" /> ≤ 30 min</label>
-              </div>
-            </div>
-            <div class="grid grid-auto-3" id="catalog-grid" style="margin-top:8px"></div>
-          </div></article>
-        </section>
-
-        <!-- ===== Grades ===== -->
-        <section class="grid" data-view="grades" style="display:none;">
-          <article class="card"><div class="p">
-            <div class="toolbar">
-              <h3 style="margin-right:auto">Grades</h3>
-              <button class="btn sm" id="open-gradebook">Open Gradebook</button>
-            </div>
-            <div class="rows" id="grades-list" style="margin-top:8px"></div>
-          </div></article>
-        </section>
-
-        <!-- ===== Certificates ===== -->
-        <section class="grid" data-view="certs" style="display:none;">
-          <article class="card"><div class="p">
-            <h3>Certificates</h3>
-            <div class="rows" id="certs-list" style="margin-top:8px"></div>
-          </div></article>
-        </section>
-
-        <!-- ===== Transcript ===== -->
-        <section class="grid" data-view="transcript" style="display:none;">
-          <article class="card"><div class="p">
-            <h3>Transcript</h3>
+            <h3>Grades</h3>
             <table style="margin-top:8px">
-              <thead><tr><th>Course</th><th>Lessons</th><th>Status</th><th>Progress</th></tr></thead>
-              <tbody id="trans-tbody"></tbody>
+              <thead><tr><th>Course</th><th>Assessment</th><th>Score</th><th>Status</th></tr></thead>
+              <tbody id="grades-tbody"></tbody>
             </table>
           </div></article>
         </section>
 
-        <!-- ===== Notes ===== -->
-        <section class="grid" data-view="notes" style="display:none;">
+        <!-- Certificates -->
+        <section data-view="certs" style="display:none">
           <article class="card"><div class="p">
-            <div class="toolbar"><h3 style="margin-right:auto">Notes</h3>
-              <button class="btn sm" id="note-new">New</button>
-            </div>
-            <div class="rows" id="notes-list" style="margin-top:8px"></div>
-            <div class="toolbar" style="margin-top:8px">
-              <textarea id="note-text" rows="3" style="width:100%; border-radius:12px; border:1px solid var(--line); padding:10px" placeholder="Write a note…"></textarea>
-              <button class="btn grad" id="note-save">Save</button>
-            </div>
-          </div></article>
-        </section>
-
-        <!-- ===== Discussions ===== -->
-        <section class="grid" data-view="discussions" style="display:none;">
-          <article class="card"><div class="p">
-            <h3>Discussions</h3>
-            <div class="rows" id="discuss-list" style="margin-top:8px"></div>
-            <div class="toolbar" style="margin-top:8px">
-              <input id="discuss-input" class="btn" placeholder="Start a new thread…"/>
-              <button id="discuss-post" class="btn grad">Post</button>
-            </div>
-          </div></article>
-        </section>
-
-        <!-- ===== Resources ===== -->
-        <section class="grid" data-view="resources" style="display:none;">
-          <article class="card"><div class="p">
-            <div class="toolbar"><h3 style="margin-right:auto">Resources</h3>
-              <button class="btn sm" id="res-upload">Upload</button>
-            </div>
-            <div class="rows" id="res-list" style="margin-top:8px"></div>
-          </div></article>
-        </section>
-
-        <!-- ===== Calendar ===== -->
-        <section class="grid" data-view="calendar" style="display:none;">
-          <article class="card"><div class="p">
-            <div class="toolbar">
-              <h3 style="margin-right:auto">Training Calendar</h3>
-              <button class="btn sm" id="add-event">+ Add</button>
-              <button class="btn sm" id="print-view">Print</button>
-            </div>
-            <div class="rows" id="calendar-full" style="margin-top:8px"></div>
-          </div></article>
-        </section>
-
-        <!-- ===== Profile ===== -->
-        <section class="grid" data-view="profile" style="display:none;">
-          <article class="card"><div class="p">
-            <div class="toolbar">
-              <h3 style="margin-right:auto">Profile</h3>
-              <span class="avatar" title="You"></span>
-            </div>
-            <div class="rows" style="margin-top:8px">
-              <div class="row"><div>Name</div><span class="meta">Gage</span></div>
-              <div class="row"><div>Email</div><span class="meta">you@example.com</span></div>
-              <div class="row"><div>Role</div><span class="meta">Learner</span></div>
-              <div class="row"><div>Notifications</div><button class="btn sm" id="toggle-notify">On</button></div>
-              <div class="row"><div>Learning Goal</div><button class="btn sm" id="set-goal">Set Goal</button></div>
-            </div>
-          </div></article>
-        </section>
-
-        <!-- ===== Announcements (full) ===== -->
-        <section class="grid" data-view="announcements" style="display:none;">
-          <article class="card"><div class="p">
-            <h3>Announcements</h3>
-            <div class="rows" id="ann-list" style="margin-top:8px"></div>
+            <h3>Certificates</h3>
+            <div id="certs-list" class="rows" style="margin-top:8px"></div>
           </div></article>
         </section>
       </div>
     </section>
   </main>
 
-  <!-- ===== Course Details Sheet ===== -->
+  <!-- Course sheet -->
   <section class="sheet" id="sheet-course" aria-modal="true">
     <div class="hd">
-      <h3 id="sheet-course-title">Course Details</h3>
-      <div class="toolbar">
-        <button class="btn sm danger" id="sheet-course-drop">Drop</button>
-        <button class="btn sm" id="sheet-course-close" type="button">Close</button>
-      </div>
-    </div>
-    <div class="bd">
-      <div class="thumb" id="sheet-course-thumb">Preview</div>
-      <p class="meta" id="sheet-course-desc" style="margin-top:8px">Overview, objectives, and outline.</p>
-      <div class="toolbar" style="margin-top:10px;">
-        <a class="btn grad" href="#" id="sheet-course-primary">Start</a>
-        <a class="btn" href="#" id="sheet-course-outline">Outline</a>
-        <a class="btn" href="#" id="sheet-course-syllabus">Download Syllabus</a>
-        <a class="btn" href="#" id="sheet-course-bookmark">☆ Bookmark</a>
-        <a class="btn" href="#" id="sheet-course-complete">Mark Complete</a>
-      </div>
-      <h3 style="margin-top:14px">Outline</h3>
-      <div class="rows" id="sheet-course-outline-list" style="margin-top:8px"></div>
-    </div>
-  </section>
-
-  <!-- ===== Gradebook Sheet ===== -->
-  <section class="sheet" id="sheet-gradebook">
-    <div class="hd">
-      <h3>Gradebook</h3>
-      <button class="btn sm" id="sheet-gradebook-close" type="button">Close</button>
-    </div>
-    <div class="bd">
-      <table>
-        <thead><tr><th>Course</th><th>Assessment</th><th>Score</th><th>Status</th></tr></thead>
-        <tbody id="gradebook-tbody"></tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- ===== Settings Sheet ===== -->
-  <section class="sheet" id="sheet-settings">
-    <div class="hd">
-      <h3>Settings</h3>
-      <button class="btn sm" id="sheet-settings-close" type="button">Close</button>
+      <h3 id="s-title">Course</h3>
+      <button class="btn sm" id="s-close">Close</button>
     </div>
     <div class="bd">
       <div class="rows">
-        <div class="row"><div>High Contrast</div><button class="btn sm" id="s-contrast">Toggle</button></div>
-        <div class="row"><div>Text Size</div><div class="toolbar"><button class="btn sm" id="s-text-plus">A+</button><button class="btn sm" id="s-text-minus">A−</button></div></div>
-        <div class="row"><div>Notifications</div><button class="btn sm" id="s-notify">On</button></div>
-        <div class="row"><div>Data Export</div><button class="btn sm" id="s-export">Export JSON</button></div>
-        <div class="row"><div>Data Import</div><label class="btn sm" for="s-import">Import JSON</label><input id="s-import" type="file" accept="application/json" style="display:none"/></div>
+        <div class="lesson">
+          <div class="thumb" id="s-thumb">Preview</div>
+          <p class="meta" id="s-desc" style="margin-top:8px"></p>
+          <div class="toolbar" style="margin-top:10px">
+            <button class="btn grad" id="s-primary">Start</button>
+            <button class="btn" id="s-outline">Outline</button>
+            <button class="btn" id="s-syllabus">Download Syllabus</button>
+          </div>
+        </div>
+        <div class="lesson">
+          <h3>Outline</h3>
+          <div id="s-outline-list" class="rows" style="margin-top:8px"></div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ===== Help Sheet ===== -->
-  <section class="sheet" id="sheet-help">
-    <div class="hd">
-      <h3>Help & Shortcuts</h3>
-      <button class="btn sm" id="sheet-help-close" type="button">Close</button>
-    </div>
-    <div class="bd">
-      <div class="rows">
-        <div class="row"><div>Resume last course</div><span class="meta">Dashboard → Continue</span></div>
-        <div class="row"><div>Open demo course</div><span class="meta">Catalog → Intreen Onboarding (Demo)</span></div>
-        <div class="row"><div>Gradebook</div><span class="meta">Grades → Open Gradebook</span></div>
-        <div class="row"><div>Notes</div><span class="meta">Notes → Save</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Demo Course Player (completeable) ===== -->
-  <div class="player" id="demo-player" role="dialog" aria-modal="true">
-    <div class="frame">
-      <aside class="side">
-        <div class="p"><strong id="dp-title">Intreen Onboarding (Demo)</strong><div class="meta" id="dp-sub">4 lessons • ~25 min</div></div>
-        <div class="p">
-          <div id="dp-outline" class="rows"></div>
-        </div>
-      </aside>
-      <div class="content">
-        <div class="p" style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line)">
-          <div class="toolbar">
-            <span class="pill" id="dp-lesson-pill">Lesson 1</span>
-            <span class="tag" id="dp-time">~5 min</span>
-          </div>
-          <div class="toolbar">
-            <button class="btn sm" id="dp-notes">Add Note</button>
-            <button class="btn sm" id="dp-close">Exit</button>
-          </div>
-        </div>
-        <div class="body" id="dp-body">
-          <!-- dynamic content -->
-        </div>
-        <div class="footer">
-          <button class="btn" id="dp-prev">← Prev</button>
-          <button class="btn grad" id="dp-next">Next →</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== Floating quick tools ===== -->
-  <div class="fab">
-    <button class="btn grad" id="fab-feedback">Feedback</button>
-    <button class="btn" id="fab-report">Report Issue</button>
-  </div>
-
-  <!-- ===== Toast ===== -->
-  <div class="toast" id="toast"></div>
-
-  <!-- Keep About-page navbar/gradient behavior -->
+  <!-- Keep About-page navbar / gradient -->
   <script type="module">
     import { bootLayout } from '/assets/js/layout.js';
     bootLayout('about');
   </script>
 
-  <!-- ===== Page logic ===== -->
   <script>
-    /* ---------- Data ---------- */
-    const tracks = [
-      { id:'onboarding', name:'Onboarding', courses:3, level:'Beginner' },
-      { id:'scrum',      name:'Scrum Basics', courses:6, level:'Beginner' },
-      { id:'security',   name:'Security Awareness', courses:8, level:'Beginner' },
-      { id:'tools',      name:'Team Tools 101', courses:5, level:'Beginner' },
-    ];
-
-    // Fully playable demo course
+    /* ---------- Data (simple + demo) ---------- */
     const demoCourse = {
       id:'demo',
       title:'Intreen Onboarding (Demo)',
-      track:'onboarding',
-      lessons:4,
-      duration:25,
-      progress:0,
-      assigned:true,
-      bookmarked:true,
-      level:'Beginner',
-      quick:true, // ≤30 min
-      thumb:'Onboarding',
+      lessons:4, duration:25, progress:0, thumb:'Onboarding',
       outline:[
-        {title:'Welcome to Intreen', time:5, html:`<p>Welcome! This short demo walks you through the LMS features.</p><ul><li>Navigation & layout</li><li>Assignments & progress</li><li>Notes and resources</li><li>Quiz & certificate</li></ul>`},
-        {title:'Using the Dashboard', time:6, html:`<p>The dashboard shows KPIs, Continue Learning, and upcoming items.</p><p>Try the quick actions on top to explore.</p>`},
-        {title:'Staying Secure', time:6, html:`<p>Security basics: Phishing awareness, MFA, device hygiene, and incident reporting.</p>`},
-        {title:'Quiz & Completion', time:8, quiz:[
-          {q:'What does MFA stand for?', a:['Multi-Factor Authentication','Mail Forwarding Agent','Micro Frontend Architecture'], correct:0},
-          {q:'Which is a safe password practice?', a:['Use the same password everywhere','Use a password manager','Share passwords with teammates'], correct:1},
-          {q:'Where do you find assigned items?', a:['Resources page','Dashboard & Assigned','Profile'], correct:1},
-        ]}
+        'Welcome to Intreen', 'Using the Dashboard', 'Staying Secure', 'Final Quiz'
+      ],
+      quiz:[
+        {q:'What does MFA stand for?', a:['Multi-Factor Authentication','Mail Forwarding Agent','Micro Frontend Architecture'], correct:0},
+        {q:'Where do you find assigned items?', a:['Resources','Dashboard','Profile'], correct:1}
       ]
     };
-
     let courses = [
-      { id:'scrum',    title:'Scrum Fundamentals', track:'scrum',    lessons:6, duration:45, progress:30, assigned:true,  bookmarked:false, level:'Beginner', quick:false, thumb:'Scrum',
-        outline:['Agile & Scrum','Roles','Ceremonies','Artifacts','Sprint Flow','Quiz'] },
-      { id:'security', title:'Security Awareness', track:'security', lessons:8, duration:60, progress:15, assigned:true,  bookmarked:true,  level:'Beginner', quick:false, thumb:'Security',
-        outline:['Threats','Phishing','Passwords','MFA','Devices','Data','Incidents','Final Quiz'] },
-      { id:'tools',    title:'Team Tools 101',     track:'tools',    lessons:5, duration:35, progress:0,  assigned:false, bookmarked:false, level:'Beginner', quick:false, thumb:'Tools',
-        outline:['Overview','Chat','Docs','Tasks','Automation'] },
+      { id:'scrum', title:'Scrum Fundamentals', lessons:6, duration:45, progress:30, thumb:'Scrum' },
+      { id:'security', title:'Security Awareness', lessons:8, duration:60, progress:15, thumb:'Security' },
+      { id:'tools', title:'Team Tools 101', lessons:5, duration:35, progress:0, thumb:'Tools' },
       demoCourse
     ];
-
     let assessments = [
-      { course:'scrum',    name:'Sprint Quiz',         score:88, status:'Passed' },
-      { course:'security', name:'Phishing Simulation', score:72, status:'Passed' },
-      { course:'security', name:'Final Quiz',          score:null, status:'Pending' },
+      { course:'scrum', name:'Sprint Quiz', score:88, status:'Passed' },
+      { course:'security', name:'Phishing Simulation', score:72, status:'Passed' }
     ];
-
-    let announcements = [
-      { id:1, date:'2025-10-20', title:'New Phishing Lab', txt:'Hands-on simulation added to Security Module 3.' },
-      { id:2, date:'2025-10-12', title:'Retro Template',   txt:'New Scrum retrospective template in Resources.' }
+    const upcoming = [
+      { date:'Oct 28', title:'Scrum Quiz', tag:'Quiz' },
+      { date:'Nov 02', title:'Tools Workshop', tag:'Workshop' }
     ];
-
-    let resources = [
-      { name:'Scrum Cheat Sheet.pdf', size:'210 KB' },
-      { name:'Security Password Guide.pdf', size:'320 KB' },
-      { name:'Team Tools Tips.md', size:'8 KB' },
-    ];
-
-    let discussions = [
-      { by:'Alex',  when:'Oct 21', title:'Any tips for Sprint Planning?', replies:4 },
-      { by:'Riley', when:'Oct 18', title:'Best MFA app?', replies:7 },
-    ];
-
-    let calendarData = [
-      { date:'Oct 24', title:'Security Lab', type:'Due' },
-      { date:'Oct 28', title:'Scrum Quiz',   type:'Quiz' },
-      { date:'Nov 02', title:'Tools Workshop', type:'Workshop' },
-    ];
-
-    let notes = [];
-    let notificationsOn = true;
-    let highContrast = false;
-    let textScale = 1;
 
     /* ---------- Helpers ---------- */
-    const $  = s => document.querySelector(s);
-    const $$ = s => Array.from(document.querySelectorAll(s));
-    const pct = v => Math.max(0, Math.min(100, v|0));
-    function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1600); }
-    function courseById(id){ return courses.find(c=>c.id===id); }
-    function download(filename, text){
-      const blob = new Blob([text], {type:'text/plain'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
-      URL.revokeObjectURL(url);
+    const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+    const pct=v=>Math.max(0,Math.min(100,v|0));
+    function ci(id){return courses.find(c=>c.id===id);}
+
+    /* ---------- Render ---------- */
+    function ringTo(percent){
+      const C=2*Math.PI*52, off=C*(1-percent/100);
+      const r=$('#ring'), t=$('#ringtxt');
+      r.setAttribute('stroke-dasharray',C);
+      r.setAttribute('stroke-dashoffset',off);
+      t.textContent=percent+'%';
     }
 
-    /* ---------- UI Builders ---------- */
-    function courseCard(c){
-      return `<article class="card">
-        <div class="thumb">${c.thumb}</div>
-        <div class="p">
-          <div style="display:flex; align-items:center; justify-content:space-between;">
-            <div style="font-weight:800">${c.title}</div>
-            <div class="toolbar">
-              ${c.assigned ? '<span class="pill">Assigned</span>' : ''}
-              ${c.bookmarked ? '<span class="pill" title="Bookmarked">★</span>' : ''}
-              <span class="tag">${c.level}</span>
-              ${c.quick ? '<span class="tag">Quick</span>' : ''}
-            </div>
-          </div>
-          <div class="meta">${c.lessons} lessons • ${c.duration} min</div>
-          <div class="progress" style="margin-top:8px"><div class="fill" style="width:${pct(c.progress)}%"></div></div>
-          <div class="toolbar" style="margin-top:10px;">
-            <a class="btn grad sm" href="#" data-resume="${c.id}">${c.progress>0?'Resume':'Start'}</a>
-            <a class="btn sm" href="#" data-details="${c.id}">Course Details</a>
-            <a class="btn sm" href="#" data-grades="${c.id}">View Grades</a>
-            <a class="btn sm" href="#" data-toggle-bookmark="${c.id}">${c.bookmarked?'Unbookmark':'Bookmark'}</a>
-            ${c.assigned
-              ? `<a class="btn sm danger" href="#" data-unassign="${c.id}">Unassign</a>`
-              : `<a class="btn sm" href="#" data-assign="${c.id}">Assign to Me</a>`
-            }
-            <a class="btn sm" href="#" data-pin="${c.id}">Pin</a>
-          </div>
-        </div>
-      </article>`;
-    }
-
-    /* ---------- Renderers ---------- */
-    function estimatedTime(){
-      const remaining = courses.reduce((acc,c)=> acc + Math.max(0, c.duration * (1 - (c.progress||0)/100)), 0);
-      return Math.round(remaining);
-    }
-
-    function renderKPIs(){
+    function renderDashboard(){
       const overall = Math.round(courses.reduce((a,c)=>a+(c.progress||0),0)/courses.length);
-      $('#kpi-progress').textContent = overall + '%';
-      $('#kpi-progress-fill').style.width = overall + '%';
+      ringTo(overall);
+      $('#kpi-courses').textContent = courses.length;
+      $('#kpi-certs').textContent = courses.filter(c=>c.progress===100).length;
       $('#kpi-streak').textContent = '3 days';
-      const issued = courses.filter(c=>c.progress===100).length;
-      const pending = courses.length - issued;
-      $('#kpi-certs').textContent = `${issued} · ${pending}`;
-      $('#est-time').textContent = `Est: ${estimatedTime()} min`;
+
+      // continue (show 2 cards)
+      const cont = courses.slice().sort((a,b)=>b.progress-a.progress).slice(0,2);
+      $('#continue').innerHTML = cont.map(card).join('');
+
+      // upcoming
+      $('#upcoming').innerHTML = upcoming.map(u =>
+        `<div class="toolbar" style="justify-content:space-between">
+          <div>${u.date} — ${u.title}</div><span class="pill">${u.tag}</span>
+        </div>`).join('');
     }
 
-    function renderContinue(){
-      const cont = courses.slice().sort((a,b)=>b.progress-a.progress).slice(0,3);
-      $('#continue-grid').innerHTML = cont.map(courseCard).join('');
-    }
-
-    function renderAssigned(){
-      const items = courses.filter(c=>c.assigned);
-      $('#assigned-count').textContent = items.length;
-      $('#assigned-list').innerHTML = items.map(c =>
-        `<div class="row"><div>${c.title}</div><div class="toolbar">
-          <a class="btn sm" href="#" data-details="${c.id}">Open</a>
-          <a class="btn sm danger" href="#" data-unassign="${c.id}">Unassign</a>
-        </div></div>`
-      ).join('') || '<div class="meta">No active assignments.</div>';
-      $('#assigned-full').innerHTML = items.map(courseCard).join('') || '<div class="meta">No active assignments.</div>';
-    }
-
-    function renderAnnouncements(){
-      const miniCal = [
-        { date:'Oct 24', title:'Security Lab', tag:'Due'},
-        { date:'Oct 28', title:'Scrum Quiz', tag:'Quiz'}
-      ];
-      $('#calendar-mini').innerHTML = miniCal.map(e=>`<div class="row"><div>${e.date} — ${e.title}</div><span class="pill">${e.tag}</span></div>`).join('');
-
-      $('#announc-prev').innerHTML = announcements.slice(0,3).map(a =>
-        `<div class="row">
-          <div><strong>${a.title}</strong> — <span class="meta">${a.txt}</span></div>
-          <div class="toolbar">
-            <span class="pill">${a.date}</span>
-            <a class="btn sm" href="#" data-open-ann="${a.id}">View</a>
+    function card(c){
+      return `<article class="card"><div class="p">
+        <div class="thumb">${c.thumb}</div>
+        <div class="toolbar" style="justify-content:space-between;margin-top:8px">
+          <div>
+            <div style="font-weight:800">${c.title}</div>
+            <div class="meta">${c.lessons} lessons • ${c.duration} min</div>
           </div>
-        </div>`
-      ).join('') || '<div class="meta">No announcements.</div>';
-      $('#ann-list').innerHTML = announcements.map(a =>
-        `<div class="row"><div><strong>${a.title}</strong> — <span class="meta">${a.txt}</span></div>
-          <div class="toolbar"><span class="pill">${a.date}</span></div></div>`
-      ).join('') || '<div class="meta">No announcements.</div>';
+          <button class="btn grad sm" data-resume="${c.id}">${c.progress>0?'Resume':'Start'}</button>
+        </div>
+        <div class="progress" style="margin-top:8px"><div class="fill" style="width:${pct(c.progress)}%"></div></div>
+        <div class="toolbar" style="margin-top:8px">
+          <button class="btn sm" data-details="${c.id}">Details</button>
+          <button class="btn sm" data-grades="${c.id}">Grades</button>
+        </div>
+      </div></article>`;
     }
 
-    function renderMyCourses(filter=''){
-      const sort = $('#mc-sort').value;
-      let list = courses.filter(c => c.title.toLowerCase().includes(filter.toLowerCase()));
+    function renderCoursesView(){
+      const q = ($('#q').value||'').toLowerCase();
+      const sort = $('#sort').value;
+      let list = courses.filter(c => c.title.toLowerCase().includes(q));
       if(sort==='prog') list.sort((a,b)=>b.progress-a.progress);
       if(sort==='dur') list.sort((a,b)=>a.duration-b.duration);
-      $('#my-courses-grid').innerHTML = list.map(courseCard).join('') || '<div class="meta">No courses found.</div>';
-    }
-
-    function passFilters(c){
-      if($('#f-assign')?.checked && !c.assigned) return false;
-      if($('#f-bm')?.checked && !c.bookmarked) return false;
-      if($('#f-beg')?.checked && c.level!=='Beginner') return false;
-      if($('#f-quick')?.checked && !c.quick) return false;
-      return true;
-    }
-
-    function renderCatalog(filter=''){
-      const track = $('#cat-track').value;
-      const sort  = $('#cat-sort').value;
-      const source = courses.slice();
-      let list = source.filter(c => (!track || c.track===track) && (filter==='' || c.title.toLowerCase().includes(filter.toLowerCase())) && passFilters(c));
-      if(sort==='new') list.reverse();
-      if(sort==='dur') list.sort((a,b)=>a.duration-b.duration);
-      if(sort==='lessons') list.sort((a,b)=>a.lessons-b.lessons);
-      $('#catalog-grid').innerHTML = list.map(courseCard).join('') || '<div class="meta">No results.</div>';
-      // track dropdown
-      if($('#cat-track').options.length<=1){
-        $('#cat-track').innerHTML = '<option value="">All Tracks</option>' + tracks.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
-      }
+      $('#courses-grid').innerHTML = list.map(card).join('') || '<p class="meta">No courses.</p>';
     }
 
     function renderGrades(){
-      const byCourse = {};
-      assessments.forEach(a => { (byCourse[a.course] ||= []).push(a); });
-      $('#grades-list').innerHTML = courses.map(c=>{
-        const arr = byCourse[c.id]||[];
-        const latest = arr[0] ? `${arr[0].score ?? '—'} (${arr[0].status})` : '—';
-        return `<div class="row"><div><strong>${c.title}</strong> <span class="meta">latest: ${latest}</span></div>
-                <a class="btn sm" href="#" data-grades="${c.id}">Open</a></div>`;
+      const rows = assessments.map(a=>{
+        const c = ci(a.course);
+        return `<tr><td>${c?.title||a.course}</td><td>${a.name}</td><td>${a.score ?? '—'}</td><td>${a.status}</td></tr>`;
       }).join('');
+      $('#grades-tbody').innerHTML = rows || `<tr><td colspan="4" class="meta">No grades yet.</td></tr>`;
     }
 
     function renderCerts(){
       $('#certs-list').innerHTML = courses.map(c =>
-        `<div class="row"><div>${c.title}</div>
-          <div class="toolbar">
-            ${c.progress===100
-              ? `<a class="btn sm" href="#" data-download-cert="${c.id}">Download</a>`
-              : `<span class="pill">Pending</span>`
-            }
-          </div></div>`
-      ).join('');
+        `<div class="toolbar" style="justify-content:space-between">
+          <div>${c.title}</div>
+          ${c.progress===100 ? `<button class="btn sm" data-cert="${c.id}">Download</button>` : `<span class="pill">Pending</span>`}
+        </div>`).join('');
     }
 
-    function renderTranscript(){
-      $('#trans-tbody').innerHTML = courses.map(c=>{
-        const status = c.progress===0 ? 'Not Started' : (c.progress===100 ? 'Completed' : 'In Progress');
-        const done = Math.round(c.lessons*(c.progress/100));
-        return `<tr><td>${c.title}</td><td>${done}/${c.lessons}</td><td>${status}</td><td>${c.progress}%</td></tr>`;
-      }).join('');
-    }
-
-    function renderDiscussions(){
-      $('#discuss-list').innerHTML = discussions.map(d =>
-        `<div class="row"><div><strong>${d.title}</strong> — <span class="meta">by ${d.by} • ${d.when}</span></div>
-         <div class="toolbar">
-          <a href="#" class="btn sm" data-reply="${d.title}">Reply (${d.replies})</a>
-          <a href="#" class="btn sm" data-like="${d.title}">👍</a>
-         </div></div>`
-      ).join('') || '<div class="meta">No discussions yet.</div>';
-    }
-
-    function renderResources(){
-      $('#res-list').innerHTML = resources.map(r =>
-        `<div class="row"><div>${r.name} <span class="meta">(${r.size})</span></div><a class="btn sm" href="#" data-download="${r.name}">Download</a></div>`
-      ).join('');
-    }
-
-    function renderCalendar(){
-      $('#calendar-full').innerHTML = calendarData.map(ev =>
-        `<div class="row"><div>${ev.date} — ${ev.title}</div><span class="pill">${ev.type}</span></div>`
-      ).join('');
-    }
-
-    function renderNotes(){
-      $('#notes-list').innerHTML = notes.map((n,i)=>
-        `<div class="row"><div>${n.txt} <span class="meta">(${n.when})</span></div>
-           <div class="toolbar"><a class="btn sm" href="#" data-del-note="${i}">Delete</a></div></div>`
-      ).join('') || '<div class="meta">No notes yet.</div>';
-    }
-
-    /* ---------- Course Details Sheet ---------- */
-    function openCourseSheet(id){
-      const c = courseById(id); if(!c) return;
-      $('#sheet-course').dataset.course = c.id;
-      $('#sheet-course-title').textContent = c.title;
-      $('#sheet-course-thumb').textContent = c.thumb;
-      $('#sheet-course-desc').textContent  = `${c.title} — overview, objectives, and lesson outline.`;
-      $('#sheet-course-primary').textContent = c.id==='demo' ? (c.progress>0?'Resume Demo':'Start Demo') : (c.progress>0?'Resume':'Start');
-      $('#sheet-course-primary').setAttribute('data-resume', c.id);
-      const outline = Array.isArray(c.outline) ? c.outline : (c.outline||[]).map((t,i)=>({title:String(t), time:5}));
-      $('#sheet-course-outline-list').innerHTML = outline.map((row,i)=>`<div class="row"><div>Lesson ${i+1}: ${row.title || row}</div><span class="pill">${(row.time||5)}m</span></div>`).join('');
-      $('#sheet-course-bookmark').textContent = c.bookmarked ? '★ Bookmarked' : '☆ Bookmark';
-      $('#sheet-course').classList.add('open');
-    }
-    function closeCourseSheet(){ $('#sheet-course').classList.remove('open'); }
-
-    /* ---------- Gradebook ---------- */
-    function openGradebook(courseId=null){
-      const rows = assessments
-        .filter(a => !courseId || a.course===courseId)
-        .map(a=>{
-          const c = courseById(a.course);
-          return `<tr><td>${c?.title||a.course}</td><td>${a.name}</td><td>${a.score ?? '—'}</td><td>${a.status}</td></tr>`;
-        }).join('');
-      $('#gradebook-tbody').innerHTML = rows || `<tr><td colspan="4" class="meta">No grades recorded yet.</td></tr>`;
-      $('#sheet-gradebook').classList.add('open');
-    }
-    function closeGradebook(){ $('#sheet-gradebook').classList.remove('open'); }
-
-    /* ---------- Demo Player ---------- */
-    let dp = {index:0, answers:[]};
-    function openDemoPlayer(){
-      dp.index = Math.min(demoCourse.outline.length-1, Math.max(0, dp.index||0));
-      $('#demo-player').classList.add('open');
-      renderDemoLesson();
-    }
-    function closeDemoPlayer(){ $('#demo-player').classList.remove('open'); }
-
-    function renderDemoLesson(){
-      const step = demoCourse.outline[dp.index];
-      $('#dp-title').textContent = demoCourse.title;
-      $('#dp-lesson-pill').textContent = step.quiz ? 'Quiz' : `Lesson ${dp.index+1}`;
-      $('#dp-time').textContent = `~${step.time || (step.quiz?8:5)} min`;
-
-      // outline list
-      $('#dp-outline').innerHTML = demoCourse.outline.map((s,i)=>
-        `<div class="row" style="${i===dp.index?'outline:2px solid rgba(0,124,240,.25);':''}">
-          <div>${s.quiz? 'Quiz' : 'Lesson '+(i+1)+': '+s.title}</div>
-          <button class="btn sm" data-dp-jump="${i}">${i===dp.index?'Current':'Open'}</button>
-        </div>`
-      ).join('');
-
-      if(step.quiz){
-        // Quiz renderer
-        const form = step.quiz.map((q,i)=>`
-          <div class="card" style="margin-bottom:10px">
-            <div class="p"><strong>Q${i+1}:</strong> ${q.q}
-              <div class="rows" style="margin-top:8px">
-                ${q.a.map((opt,oi)=>`
-                  <label class="row" style="grid-template-columns:auto 1fr">
-                    <input type="radio" name="q${i}" value="${oi}" ${dp.answers[i]===oi?'checked':''}/> <span>${opt}</span>
-                  </label>`).join('')}
-              </div>
-            </div>
-          </div>`).join('') + `<button class="btn grad" id="dp-submit">Submit Quiz</button>`;
-        $('#dp-body').innerHTML = form;
-        $('#dp-prev').disabled = false;
-        $('#dp-next').disabled = true;
-      } else {
-        $('#dp-body').innerHTML = `<div class="card"><div class="p">${step.html || '<p>Lesson content</p>'}</div></div>`;
-        $('#dp-prev').disabled = dp.index===0;
-        $('#dp-next').disabled = false;
-      }
-    }
-
-    function submitDemoQuiz(){
-      const step = demoCourse.outline[dp.index];
-      if(!step.quiz) return;
-      const answers = step.quiz.map((q,i)=>{
-        const sel = document.querySelector(`input[name="q${i}"]:checked`);
-        return sel ? Number(sel.value) : -1;
-      });
-      dp.answers = answers;
-      const score = answers.reduce((acc,ans,i)=> acc + (ans===step.quiz[i].correct?1:0), 0);
-      const total = step.quiz.length;
-      toast(`Quiz submitted: ${score}/${total}`);
-      // record assessment
-      assessments = assessments.filter(a=>!(a.course==='demo' && a.name==='Demo Quiz'));
-      assessments.unshift({course:'demo', name:'Demo Quiz', score:Math.round((score/total)*100), status: score/total >= 0.6 ? 'Passed' : 'Retake'});
-      // mark complete if passed
-      if(score/total >= 0.6){
-        setProgress('demo', 100);
-        // auto-award certificate
-        awardCertificate('demo');
-      }
-      // show review
-      let review = `<h3>Results: ${score}/${total}</h3>`;
-      step.quiz.forEach((q,i)=>{
-        const ok = dp.answers[i]===q.correct;
-        review += `<div class="row"><div>Q${i+1}: ${ok? '✅ Correct' : '❌ Incorrect'}</div><span class="pill">${ok? 'OK':'Review'}</span></div>`;
-      });
-      review += `<div class="toolbar" style="margin-top:10px"><button class="btn" id="dp-prev-post">Back</button><button class="btn grad" id="dp-exit">Exit</button></div>`;
-      $('#dp-body').innerHTML = `<div class="card"><div class="p">${review}</div></div>`;
-      $('#dp-prev').disabled = true;
-      $('#dp-next').disabled = true;
-      document.getElementById('dp-prev-post').onclick = ()=>{ renderDemoLesson(); };
-      document.getElementById('dp-exit').onclick = ()=>{ closeDemoPlayer(); };
-    }
-
-    function setProgress(id, value){
-      const c = courseById(id); if(!c) return;
-      c.progress = pct(value);
-      renderAll();
-    }
-
-    function awardCertificate(id){
-      const c = courseById(id); if(!c) return;
-      const cert = `Intreen Certificate\nCourse: ${c.title}\nIssued: ${new Date().toLocaleString()}\nStatus: Completed`;
-      download(`${c.title}-certificate.txt`, cert);
-      toast('Certificate issued');
-    }
-
-    /* ---------- Settings & Accessibility ---------- */
-    function applyTextScale(){
-      document.documentElement.style.fontSize = (100 * textScale) + '%';
-    }
-
-    /* ---------- Bindings ---------- */
-    function bind(){
-      // sidebar nav
-      $$('.navitem').forEach(a=> a.addEventListener('click', ()=> showView(a.dataset.view)));
-      // quick actions
-      $('#qa-resume').addEventListener('click', ()=> {
-        const inProg = courses.find(c=>c.progress>0 && c.progress<100) || courseById('demo');
-        inProg ? openCourse(inProg.id) : toast('Nothing to resume');
-      });
-      $('#qa-today').addEventListener('click', ()=> showView('calendar'));
-      $('#qa-due').addEventListener('click', ()=> showView('assigned'));
-      $('#qa-notes').addEventListener('click', ()=> showView('notes'));
-      $('#qa-export').addEventListener('click', exportData);
-      $('#qa-import').addEventListener('change', importData);
-
-      // topbar
-      $('#global-search').addEventListener('click', ()=>{
-        const q = $('#global-q').value.trim();
-        showView('catalog'); $('#cat-q').value = q; renderCatalog(q);
-      });
-      $('#new-enroll').addEventListener('click', ()=>{
-        const id = 'onb-'+Date.now().toString(36).slice(-4);
-        const newC = { id, title:'Onboarding Essentials', track:'onboarding', lessons:4, duration:30, progress:0, assigned:true, bookmarked:false, level:'Beginner', quick:true, thumb:'Onboarding', outline:['Welcome','Policies','Tools','Quiz'] };
-        courses.unshift(newC); renderAll(); toast('Enrolled: Onboarding Essentials');
-      });
-      $('#open-settings').addEventListener('click', ()=> $('#sheet-settings').classList.add('open'));
-      $('#open-help').addEventListener('click', ()=> $('#sheet-help').classList.add('open'));
-
-      // my courses
-      $('#mc-q')?.addEventListener('input', e=>renderMyCourses(e.target.value));
-      $('#mc-sort').addEventListener('change', ()=>renderMyCourses($('#mc-q').value));
-      $('#mc-clear')?.addEventListener('click', ()=>{ $('#mc-q').value=''; $('#mc-sort').value='rec'; renderMyCourses(''); });
-
-      // catalog
-      $('#cat-q')?.addEventListener('input', e=>renderCatalog(e.target.value));
-      $('#cat-clear')?.addEventListener('click', ()=>{ $('#cat-q').value=''; $('#cat-track').value=''; $('#cat-sort').value='rec'; ['f-assign','f-bm','f-beg','f-quick'].forEach(id=>{const el=$('#'+id); if(el) el.checked=false;}); renderCatalog(''); });
-      $('#cat-track')?.addEventListener('change', ()=>renderCatalog($('#cat-q').value));
-      $('#cat-sort')?.addEventListener('change',  ()=>renderCatalog($('#cat-q').value));
-      ;['f-assign','f-bm','f-beg','f-quick'].forEach(id=> $('#'+id)?.addEventListener('change', ()=>renderCatalog($('#cat-q').value)));
-
-      // assigned
-      $('#assigned-remind').addEventListener('click', ()=> toast('Reminder set (demo)'));
-      $('#assigned-clear').addEventListener('click', ()=>{
-        courses.forEach(c=>{ if(c.progress===100) c.assigned=false; });
-        renderAll(); toast('Cleared completed assignments');
-      });
-
-      // grades & gradebook
-      $('#open-gradebook').addEventListener('click', ()=>openGradebook());
-
-      // notes
-      $('#note-new').addEventListener('click', ()=>{
-        $('#note-text').value = ''; $('#note-text').focus();
-      });
-      $('#note-save').addEventListener('click', ()=>{
-        const txt = $('#note-text').value.trim(); if(!txt) return;
-        notes.unshift({txt, when:new Date().toLocaleString()});
-        $('#note-text').value=''; renderNotes(); toast('Note saved');
-      });
-
-      // resources
-      $('#res-upload').addEventListener('click', ()=> toast('Upload not implemented in demo'));
-
-      // calendar
-      $('#add-event').addEventListener('click', ()=>{
-        const title = prompt('Event title'); if(!title) return;
-        calendarData.push({date:'TBD', title, type:'Note'}); renderCalendar(); toast('Event added');
-      });
-      $('#print-view').addEventListener('click', ()=> window.print());
-
-      // profile
-      $('#toggle-notify').addEventListener('click', ()=>{
-        notificationsOn = !notificationsOn; $('#toggle-notify').textContent = notificationsOn ? 'On' : 'Off'; toast('Notifications '+(notificationsOn?'on':'off'));
-      });
-      $('#set-goal').addEventListener('click', ()=>{
-        const g = prompt('Daily minutes goal? (e.g. 20)'); if(!g) return; toast('Goal set: '+g+' min/day');
-      });
-
-      // settings
-      $('#sheet-settings-close').addEventListener('click', ()=> $('#sheet-settings').classList.remove('open'));
-      $('#sheet-help-close').addEventListener('click', ()=> $('#sheet-help').classList.remove('open'));
-      $('#s-contrast').addEventListener('click', toggleContrast);
-      $('#s-text-plus').addEventListener('click', ()=>{ textScale=Math.min(1.3,textScale+0.05); applyTextScale(); });
-      $('#s-text-minus').addEventListener('click', ()=>{ textScale=Math.max(0.85,textScale-0.05); applyTextScale(); });
-      $('#s-notify').addEventListener('click', ()=>{ notificationsOn=!notificationsOn; $('#s-notify').textContent = notificationsOn?'On':'Off'; });
-      $('#s-export').addEventListener('click', exportData);
-      $('#s-import').addEventListener('change', importData);
-
-      // accessibility quick
-      $('#toggle-contrast').addEventListener('click', toggleContrast);
-      $('#bigger-text').addEventListener('click', ()=>{ textScale=Math.min(1.3,textScale+0.05); applyTextScale(); });
-      $('#smaller-text').addEventListener('click', ()=>{ textScale=Math.max(0.85,textScale-0.05); applyTextScale(); });
-
-      // floating tools
-      $('#fab-feedback').addEventListener('click', ()=> toast('Thanks for your feedback!'));
-      $('#fab-report').addEventListener('click', ()=> toast('Issue reported (demo)'));
-
-      // global delegation for course actions + delete notes, etc.
-      document.body.addEventListener('click', e=>{
-        const el = e.target.closest('a,button'); if(!el) return;
-        const ds = el.dataset; if(el.tagName==='A') e.preventDefault();
-
-        if(ds.details) openCourseSheet(ds.details);
-        if(ds.resume)  { openCourse(ds.resume); }
-        if(ds.grades)  openGradebook(ds.grades);
-        if(ds['toggleBookmark']) toggleBookmark(ds['toggleBookmark']);
-        if(ds.assign)  { assignToMe(ds.assign); }
-        if(ds.unassign){ unassign(ds.unassign); }
-        if(ds.pin)     { pinCourse(ds.pin); }
-        if(ds.download){ toast('Downloading: '+ds.download); }
-        if(ds.downloadCert){ awardCertificate(ds.downloadCert); }
-        if(ds.reply){ toast('Reply to thread: '+ds.reply); }
-        if(ds.like){ toast('Liked: '+ds.like); }
-        if(ds.openAnn){ showView('announcements'); }
-
-        if(ds.delNote !== undefined){ const i = Number(ds.delNote); notes.splice(i,1); renderNotes(); toast('Note deleted'); }
-      });
-
-      // course sheet actions
-      $('#sheet-course-close').addEventListener('click', closeCourseSheet);
-      $('#sheet-course-syllabus').addEventListener('click', ()=>toast('Syllabus download'));
-      $('#sheet-course-outline').addEventListener('click',  ()=>toast('Outline opened'));
-      $('#sheet-course-bookmark').addEventListener('click', ()=>{
-        const id = $('#sheet-course').dataset.course; toggleBookmark(id);
-        openCourseSheet(id); // refresh controls
-      });
-      $('#sheet-course-complete').addEventListener('click', ()=>{
-        const id = $('#sheet-course').dataset.course; setProgress(id, 100);
-        toast('Marked complete'); openCourseSheet(id);
-      });
-      $('#sheet-course-drop').addEventListener('click', ()=>{
-        const id = $('#sheet-course').dataset.course; if(confirm('Drop this course?')) dropCourse(id);
-      });
-
-      // gradebook sheet
-      $('#sheet-gradebook-close').addEventListener('click', closeGradebook);
-
-      // demo player
-      $('#dp-close').addEventListener('click', closeDemoPlayer);
-      $('#dp-prev').addEventListener('click', ()=>{ dp.index = Math.max(0, dp.index-1); renderDemoLesson(); });
-      $('#dp-next').addEventListener('click', ()=>{ dp.index = Math.min(demoCourse.outline.length-1, dp.index+1); renderDemoLesson(); });
-      document.addEventListener('click', (e)=>{
-        if(e.target?.id==='dp-submit') submitDemoQuiz();
-        if(e.target?.id==='dp-notes'){ showView('notes'); toast('Write notes while you learn!'); }
-        const jump = e.target?.dataset?.dpJump;
-        if(jump !== undefined){ dp.index = Number(jump); renderDemoLesson(); }
-      });
-    }
-
-    function toggleBookmark(id){
-      const c = courseById(id); if(!c) return; c.bookmarked = !c.bookmarked;
-      renderAll(); toast(`${c.bookmarked?'Bookmarked':'Removed bookmark'}: ${c.title}`);
-    }
-    function assignToMe(id){ const c = courseById(id); if(!c) return; c.assigned = true; renderAll(); toast(`Assigned: ${c.title}`); }
-    function unassign(id){ const c = courseById(id); if(!c) return; c.assigned = false; renderAll(); toast(`Unassigned: ${c.title}`); }
-    function pinCourse(id){ toast('Pinned course (demo)'); }
-    function dropCourse(id){
-      const idx = courses.findIndex(c=>c.id===id); if(idx<0) return;
-      const title = courses[idx].title; courses.splice(idx,1);
-      assessments = assessments.filter(a=>a.course!==id);
-      renderAll(); closeCourseSheet(); toast(`Dropped: ${title}`);
-    }
+    /* ---------- Course Sheet ---------- */
     function openCourse(id){
-      const c = courseById(id);
-      if(!c){ toast('Course not found'); return; }
-      if(id==='demo'){ openDemoPlayer(); return; }
-      // Non-demo courses: simulate play + increment progress 10%
-      setProgress(id, Math.min((c.progress||0)+10, 100));
-      toast(`Launching: ${c.title}`);
+      const c = ci(id); if(!c) return;
+      $('#s-title').textContent = c.title;
+      $('#s-thumb').textContent = c.thumb;
+      $('#s-desc').textContent = `${c.lessons} lessons • ${c.duration} min`;
+      $('#s-primary').textContent = c.progress>0 ? 'Resume' : 'Start';
+      $('#s-primary').dataset.resume = c.id;
+      $('#sheet-course').classList.add('open');
+      $('#s-outline-list').innerHTML = (c.outline||[]).map((t,i)=>
+        `<div class="toolbar" style="justify-content:space-between">
+          <div>Lesson ${i+1}: ${t}</div><span class="pill">${i+1}</span>
+        </div>`).join('');
     }
+    function closeCourse(){ $('#sheet-course').classList.remove('open'); }
 
-    /* ---------- Export/Import ---------- */
-    function exportData(){
-      const data = {courses, assessments, announcements, resources, discussions, calendarData, notes, notificationsOn};
-      download('intreen-lms-export.json', JSON.stringify(data, null, 2));
-    }
-    function importData(evt){
-      const file = evt.target.files?.[0]; if(!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        try{
-          const obj = JSON.parse(reader.result);
-          courses = obj.courses || courses;
-          assessments = obj.assessments || assessments;
-          announcements = obj.announcements || announcements;
-          resources = obj.resources || resources;
-          discussions = obj.discussions || discussions;
-          calendarData = obj.calendarData || calendarData;
-          notes = obj.notes || notes;
-          notificationsOn = !!obj.notificationsOn;
-          renderAll(); toast('Import complete');
-        }catch(e){ toast('Invalid JSON'); }
-      };
-      reader.readAsText(file);
+    /* ---------- Demo play ---------- */
+    function play(id){
+      const c = ci(id);
+      if(!c) return;
+      if(id!=='demo'){
+        c.progress = Math.min(100,(c.progress||0)+10);
+        drawAll(); return;
+      }
+      // very small inline quiz flow via alerts (keeps UI simple)
+      alert('Demo Course: step through quick info…');
+      const a1 = prompt('Quiz Q1: MFA stands for? (a/b/c)\na) Multi-Factor Authentication\nb) Mail Forwarding Agent\nc) Micro Frontend Architecture');
+      const a2 = prompt('Quiz Q2: Assigned items are found where? (a/b/c)\na) Resources\nb) Dashboard\nc) Profile');
+      const correct = (a1||'').toLowerCase()==='a' && (a2||'').toLowerCase()==='b';
+      if(correct){
+        c.progress = 100;
+        assessments.unshift({course:'demo', name:'Demo Quiz', score:100, status:'Passed'});
+        // text certificate download
+        const blob = new Blob([`Intreen Certificate\nCourse: ${c.title}\nIssued: ${new Date().toLocaleString()}\nStatus: Completed`],{type:'text/plain'});
+        const url = URL.createObjectURL(blob); const a = document.createElement('a');
+        a.href=url; a.download=`${c.title}-certificate.txt`; a.click(); URL.revokeObjectURL(url);
+        alert('Congrats! Certificate downloaded.');
+      }else{
+        assessments.unshift({course:'demo', name:'Demo Quiz', score:50, status:'Retake'});
+        alert('Not quite—marked as Retake.');
+      }
+      drawAll();
     }
 
     /* ---------- Views ---------- */
-    function showView(name){
-      $$('.navitem').forEach(n => n.classList.toggle('active', n.dataset.view===name));
-      $$('#view-root > section').forEach(s => { s.style.display = (s.dataset.view===name ? '' : 'none'); });
-      document.scrollingElement?.scrollTo({top:0, behavior:'smooth'});
-      // open a helper sheet on first time?
+    function show(name){
+      $$('#views > section').forEach(s=> s.style.display = (s.dataset.view===name ? '' : 'none'));
+      $$('.nav a').forEach(a=> a.classList.toggle('active', a.dataset.view===name));
+      if(name==='courses') renderCoursesView();
     }
 
-    /* ---------- Contrast & text size ---------- */
-    function toggleContrast(){
-      highContrast = !highContrast;
-      document.body.classList.toggle('high-contrast', highContrast);
-      toast('High contrast '+(highContrast?'enabled':'disabled'));
+    /* ---------- Events ---------- */
+    function bind(){
+      // sidebar
+      $$('.nav a').forEach(a=> a.addEventListener('click', ()=> show(a.dataset.view)));
+      $('[data-nav="courses"]')?.addEventListener('click', ()=> show('courses'));
+
+      // search
+      $('#search').addEventListener('click', ()=>{ show('courses'); renderCoursesView(); });
+      $('#q').addEventListener('keydown', e=>{ if(e.key==='Enter'){ show('courses'); renderCoursesView(); }});
+      $('#sort').addEventListener('change', renderCoursesView);
+      $('#clear').addEventListener('click', ()=>{ $('#q').value=''; $('#sort').value='rec'; renderCoursesView(); });
+
+      // delegation
+      document.body.addEventListener('click', e=>{
+        const el = e.target.closest('button'); if(!el) return;
+        if(el.dataset.details){ openCourse(el.dataset.details); }
+        if(el.dataset.resume){ play(el.dataset.resume); }
+        if(el.dataset.grades){ show('grades'); }
+        if(el.dataset.cert){ // download cert if completed
+          const c = ci(el.dataset.cert); if(!c || c.progress<100) return;
+          const blob = new Blob([`Intreen Certificate\nCourse: ${c.title}\nIssued: ${new Date().toLocaleString()}\nStatus: Completed`],{type:'text/plain'});
+          const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download=`${c.title}-certificate.txt`; a.click(); URL.revokeObjectURL(url);
+        }
+      });
+
+      // sheet controls
+      $('#s-close').addEventListener('click', closeCourse);
+      $('#s-outline').addEventListener('click', ()=> alert('Outline shown above.'));
+      $('#s-syllabus').addEventListener('click', ()=> alert('Syllabus download (demo).'));
     }
 
-    /* ---------- Init & Render-All ---------- */
-    function renderAll(){
-      renderKPIs();
-      renderContinue();
-      renderAssigned();
-      renderAnnouncements();
-      renderMyCourses($('#mc-q')?.value||'');
-      renderCatalog($('#cat-q')?.value||'');
+    function drawAll(){
+      renderDashboard();
+      renderCoursesView();
       renderGrades();
       renderCerts();
-      renderTranscript();
-      renderDiscussions();
-      renderResources();
-      renderCalendar();
-      renderNotes();
     }
 
-    function run(){ applyTextScale(); renderAll(); bind(); showView('dashboard'); }
+    function run(){ bind(); drawAll(); show('dashboard'); }
     run();
   </script>
 </body>
