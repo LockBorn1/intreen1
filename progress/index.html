@@ -2,130 +2,122 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Intreen — Site Progress</title>
+<title>Intreen — Learn • Work • Grow</title>
 <link rel="stylesheet" href="/assets/css/styles.css"/>
 <link rel="stylesheet" href="/assets/css/gradient-theme.css"/>
 <script src="/assets/js/gate.js" defer></script>
+
 <style>
-  :root{ --panel: rgba(17,24,39,.65); --borderD: rgba(255,255,255,.12); --mutedD:#c7d2fe }
-  body{margin:0;background:transparent;color:#e5e7eb;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
-  main.container{max-width:1100px}
-  .glass{padding:22px;border-radius:18px;backdrop-filter:blur(10px);background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25)}
-  .card{background:#ffffffee;border:1px solid rgba(0,0,0,.08);border-radius:12px;overflow:hidden}
-  .p{padding:14px}
-  .meta{color:#334155}
-  .grid{display:grid;gap:12px}
-  .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
-  @media (max-width:900px){.grid-3{grid-template-columns:1fr}}
-  .bar{height:8px;background:#e5e7eb;border-radius:6px;overflow:hidden}
-  .bar>i{display:block;height:8px;background:linear-gradient(90deg,#007cf0,#6a00f4)}
-  .ring{width:140px;height:140px;display:grid;place-items:center}
-  .ring svg{width:140px;height:140px}
-  .row{display:flex;justify-content:space-between;gap:10px;align-items:center}
-  .pill{border-radius:999px;background:#eef2ff;color:#3730a3;font-size:.75rem;padding:2px 8px}
-  .mutedW{color:#f8fafc}
+  /* Force ALL visible text to black on this page */
+  .progress-page, .progress-page * { color:#000 !important; }
+
+  /* Cards / surfaces (kept light so black text stays readable) */
+  .glass {
+    padding:22px; border-radius:18px; backdrop-filter:blur(10px);
+    background:rgba(255,255,255,.92)!important; border:1px solid rgba(0,0,0,.12)!important;
+  }
+  .card { background:#ffffff; border:1px solid rgba(0,0,0,.12); border-radius:12px; }
+  .p{padding:12px}
+
+  /* Ring progress with black label */
+  .ring {
+    width:140px; height:140px; border-radius:50%;
+    display:grid; place-items:center;
+    background:conic-gradient(var(--bg-gradient-start, #007cf0) 0 90deg, var(--bg-gradient-end, #6a00f4) 90deg 90deg, #e5e7eb 90deg);
+  }
+  .ring > span {
+    background:#fff; width:96px; height:96px; border-radius:50%;
+    display:grid; place-items:center; font-weight:800; font-size:1.1rem;
+  }
+
+  /* Buttons become white with black text */
+  .btn, .button {
+    display:inline-block; padding:10px 14px; border-radius:12px; text-decoration:none;
+    background:#fff; border:1px solid rgba(0,0,0,.14); color:#000!important;
+  }
+
+  /* Lists / timeline */
+  .list{margin:0; padding-left:20px}
+  .timeline{display:grid; gap:10px}
+  .tl-item{background:#ffffff; border:1px solid rgba(0,0,0,.12); border-radius:12px; padding:12px 14px}
 </style>
 </head>
-<body class="gradient-bg">
+<body class="progress-page">
   <div id="site-navbar"></div>
 
-  <header class="site" style="background:transparent;box-shadow:none;border-bottom:none">
-    <div class="container" style="padding:10px 0"><a href="/" class="brand logo"></a></div>
+  <header class="site" style="background:transparent;box-shadow:none;border-bottom:none;">
+    <div class="container" style="padding:10px 0;">
+      <a href="/" class="brand logo"></a>
+    </div>
   </header>
 
-  <main class="container page" style="padding:28px 16px">
+  <main class="container page" style="padding:28px 16px;">
+    <!-- Header / Status -->
     <section class="glass">
-      <div class="row" style="gap:16px;flex-wrap:wrap">
+      <h1 style="margin:0 0 8px;">Site Progress</h1>
+      <p style="margin:0 0 6px;">Launch status: <strong>~25%</strong>. We’ll update as milestones ship.</p>
+      <div class="meta" aria-live="polite" style="margin:6px 0 12px;">Updated 10/24/2025, 10:40:34 AM</div>
+
+      <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:10px;">
+        <div class="ring"><span>25%</span></div>
         <div>
-          <h1 style="margin:0 0 6px" class="mutedW">Site Progress</h1>
-          <p class="mutedW">Launch status: <strong id="pctText">~25%</strong>. We’ll update as milestones ship.</p>
-          <div class="row" style="gap:8px;margin-top:6px">
-            <span class="pill">Status</span><span class="mutedW" id="lastUpdated">Updated just now</span>
+          <h3 style="margin:0 0 6px;">Milestones</h3>
+          <ul class="list" style="line-height:1.6;">
+            <li>Gradient theme & Navbar — <strong>Done</strong></li>
+            <li>Splash auth (session) — <strong>Done</strong></li>
+            <li>Progress page design — <strong>In progress</strong></li>
+            <li>LMS integration — <strong>Next</strong></li>
+          </ul>
+
+          <div class="cta-row" style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+            <a href="/assets/docs/Intreen_Project_Progress.pdf" class="button" download>Download Feature List (PDF)</a>
           </div>
-        </div>
-        <div class="ring" style="margin-left:auto">
-          <svg viewBox="0 0 120 120" role="img" aria-label="Overall progress">
-            <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="12"/>
-            <circle id="ring" cx="60" cy="60" r="52" fill="none" stroke-linecap="round"
-                    stroke="url(#g)" stroke-width="12" stroke-dasharray="327" stroke-dashoffset="327"
-                    transform="rotate(-90 60 60)"/>
-            <defs>
-              <linearGradient id="g" x1="0" x2="1">
-                <stop offset="0" stop-color="#007cf0"/><stop offset="1" stop-color="#6a00f4"/>
-              </linearGradient>
-            </defs>
-            <text id="ringtxt" x="60" y="64" text-anchor="middle" font-size="22" font-weight="700" fill="#fff">25%</text>
-          </svg>
-        </div>
-      </div>
-
-      <div class="grid" style="margin-top:14px;grid-template-columns:1.2fr .8fr">
-        <div class="card"><div class="p">
-          <h3>Milestones</h3>
-          <div class="grid" style="margin-top:8px">
-            <div>
-              <div class="row"><strong>Gradient theme & Navbar</strong><span class="pill">Done</span></div>
-              <div class="bar" style="margin-top:6px"><i style="width:100%"></i></div>
-            </div>
-            <div>
-              <div class="row"><strong>Splash auth (session)</strong><span class="pill">Done</span></div>
-              <div class="bar" style="margin-top:6px"><i style="width:100%"></i></div>
-            </div>
-            <div>
-              <div class="row"><strong>Progress page design</strong><span class="pill">In progress</span></div>
-              <div class="bar" style="margin-top:6px"><i style="width:60%"></i></div>
-            </div>
-            <div>
-              <div class="row"><strong>LMS integration</strong><span class="pill">Next</span></div>
-              <div class="bar" style="margin-top:6px"><i style="width:25%"></i></div>
-            </div>
-          </div>
-          <div class="row" style="margin-top:10px"><a class="button" href="/assets/docs/Intreen_Project_Progress.pdf" download style="text-decoration:none;color:#fff;background:linear-gradient(90deg,#007cf0,#6a00f4);padding:10px 14px;border-radius:12px">Download Feature List (PDF)</a></div>
-        </div></div>
-
-        <div class="grid">
-          <div class="card"><div class="p">
-            <h3>Next up</h3>
-            <ul class="meta" style="margin:8px 0 0 18px">
-              <li>LMS Dashboard polish (progress ring, course cards)</li>
-              <li>Course details & quiz flow (demo)</li>
-              <li>Status page accessibility review</li>
-            </ul>
-          </div></div>
-
-          <div class="card"><div class="p">
-            <h3>Risks / Notes</h3>
-            <ul class="meta" style="margin:8px 0 0 18px">
-              <li>Third-party auth timing</li>
-              <li>Content import pacing</li>
-            </ul>
-          </div></div>
         </div>
       </div>
     </section>
 
-    <section style="margin-top:18px">
-      <h2 class="mutedW" style="margin-bottom:10px">Timeline</h2>
-      <div class="grid grid-3">
-        <div class="card"><div class="p">✅ Theme + Navbar polish</div></div>
-        <div class="card"><div class="p">✅ Splash auth (session + 15-min timeout)</div></div>
-        <div class="card"><div class="p">🚧 Progress page design & layout</div></div>
-        <div class="card"><div class="p">🔜 Content & LMS integration</div></div>
+    <!-- Next up -->
+    <section style="margin-top:16px;">
+      <div class="card p">
+        <h2 style="margin:0 0 8px;">Next up</h2>
+        <ul class="list">
+          <li>LMS Dashboard polish (progress ring, course cards)</li>
+          <li>Course details & quiz flow (demo)</li>
+          <li>Status page accessibility review</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Risks / Notes -->
+    <section style="margin-top:16px;">
+      <div class="card p">
+        <h2 style="margin:0 0 8px;">Risks / Notes</h2>
+        <ul class="list">
+          <li>Third-party auth timing</li>
+          <li>Content import pacing</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Timeline -->
+    <section style="margin-top:16px;">
+      <h2 style="margin:0 0 10px;">Timeline</h2>
+      <div class="timeline">
+        <div class="tl-item">✅ Theme + Navbar polish</div>
+        <div class="tl-item">✅ Splash auth (session + 15-min timeout)</div>
+        <div class="tl-item">🚧 Progress page design & layout</div>
       </div>
     </section>
   </main>
 
   <script type="module">
     import { bootLayout } from '/assets/js/layout.js';
-    bootLayout('about');
-  </script>
-  <script>
-    // animate ring to 25–30% for a little life
-    const percent = 25;
-    const C=2*Math.PI*52, r=document.getElementById('ring'), t=document.getElementById('ringtxt');
-    let cur=0; const target=percent; const step=()=>{cur=Math.min(target,cur+1); r.setAttribute('stroke-dasharray',C); r.setAttribute('stroke-dashoffset',C*(1-cur/100)); t.textContent=cur+'%'; if(cur<target) requestAnimationFrame(step);}; step();
-    document.getElementById('pctText').textContent = '~'+percent+'%';
-    document.getElementById('lastUpdated').textContent = 'Updated '+new Date().toLocaleString();
+    import { mountCartUI, addToCart } from '/assets/js/cart.js';
+    bootLayout('home'); mountCartUI();
+    document.body.addEventListener('click', (e)=>{
+      const btn = e.target.closest('[data-buy]'); if(!btn) return;
+      addToCart({id:btn.dataset.id, title:btn.dataset.title, price:parseFloat(btn.dataset.price)});
+    });
   </script>
 </body>
 </html>
