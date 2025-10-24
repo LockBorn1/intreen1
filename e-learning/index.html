@@ -5,448 +5,520 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Intreen LMS — E-Learning</title>
 
-<!-- Your existing styles and gradient -->
+<!-- Same assets as About page -->
 <link rel="stylesheet" href="/assets/css/styles.css"/>
 <link rel="stylesheet" href="/assets/css/gradient-theme.css"/>
 <script src="/assets/js/gate.js" defer></script>
 
 <style>
-  /* ===== Layout + Theme (keeps your gradient background) ===== */
-  :root{
-    --ink:#0f172a;           /* dark text over light cards (gradient BG) */
-    --muted:#64748b;
-    --panel:#ffffffee;       /* glassy white cards */
-    --line:rgba(0,0,0,.08);
-    --chip:#f1f5f9;
-    --accent1:#007cf0; --accent2:#6a00f4;
-  }
-  html,body{min-height:100%}
-  body.gradient-bg{ /* fallback if your gradient file expects a class */
-    background: radial-gradient(1200px 800px at 10% -10%, rgba(0,124,240,.20), transparent 60%),
-                radial-gradient(1200px 800px at 100% 0%, rgba(106,0,244,.20), transparent 50%),
-                #f8fafc;
-  }
-  body{color:var(--ink)}
-  .container.page{max-width:1200px; margin:0 auto; padding:24px 16px; isolation:isolate}
+  /* ===== Minimal additions on top of your existing styles.css ===== */
 
-  /* Cards / Panels */
-  .card{background:var(--panel); border:1px solid var(--line); border-radius:16px; overflow:hidden}
+  /* Layout */
+  .shell{display:grid; grid-template-columns: 260px 1fr; gap:16px; align-items:start}
+  @media (max-width:1100px){ .shell{grid-template-columns:1fr} }
+
+  /* Sidebar */
+  .sidebar{position:sticky; top:80px}
+  .navlist{display:grid; gap:8px}
+  .navitem{display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px; background:#ffffffee; border:1px solid rgba(0,0,0,.08); color:#111; text-decoration:none}
+  .navitem.active{outline:2px solid rgba(0,124,240,.25)}
+  .pill{border-radius:999px; padding:2px 8px; font-size:.8rem; background:#eef2ff; color:#3730a3; display:inline-block}
+
+  /* Cards (keep same spirit as About) */
+  .card{background:#ffffffee; border:1px solid rgba(0,0,0,.08); border-radius:16px; overflow:hidden}
   .p{padding:16px}
-  .muted{color:var(--muted)}
-  .kpi{font-weight:800; font-size:1.25rem}
+  .meta{color:#64748b}
 
   /* Grids */
   .grid{display:grid; gap:14px}
   .grid-3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-  .cols-2{grid-template-columns:1.2fr 1fr}
-  @media (max-width:1100px){ .cols-2{grid-template-columns:1fr} }
+  .rows{display:grid; gap:10px}
 
-  /* Buttons / Chips */
-  .btn{display:inline-block; padding:10px 14px; border-radius:12px; text-decoration:none; color:#111; background:var(--chip); border:1px solid var(--line)}
+  /* Buttons */
+  .btn{display:inline-block; padding:10px 14px; border-radius:12px; background:#f1f5f9; color:#111; border:1px solid rgba(0,0,0,.08); text-decoration:none}
   .btn.sm{padding:8px 12px}
-  .btn-grad{display:inline-block; padding:10px 14px; border-radius:12px; color:#fff; text-decoration:none; border:none;
-    background:linear-gradient(90deg,var(--accent1),var(--accent2));}
-  .chip{display:inline-block; padding:6px 10px; border-radius:999px; background:var(--chip); color:var(--ink); border:1px solid var(--line); font-size:.9rem}
+  .btn.grad{background:linear-gradient(90deg,#007cf0,#6a00f4); color:#fff; border:none}
+  .btn.ghost{background:transparent; border:1px dashed rgba(0,0,0,.18)}
 
-  /* Progress */
+  /* KPI / progress */
+  .kpi{font-weight:800; font-size:1.25rem}
   .progress{height:10px; background:#eef2f7; border-radius:999px; overflow:hidden}
-  .fill{height:100%; background:linear-gradient(90deg,var(--accent1),var(--accent2))}
+  .fill{height:100%; background:linear-gradient(90deg,#007cf0,#6a00f4)}
 
-  /* Tabs */
-  .tabs{display:flex; gap:8px; flex-wrap:wrap}
-  .tab{padding:8px 12px; border-radius:12px; background:#fff; border:1px solid var(--line); color:var(--ink)}
-  .tab.active{background:linear-gradient(90deg,var(--accent1),var(--accent2)); color:#fff; border:none}
-
-  /* Course Cards */
+  /* Course cards */
   .thumb{border-top-left-radius:12px; border-top-right-radius:12px; width:100%; aspect-ratio:16/9; display:grid; place-items:center; color:#fff; font-weight:800;
-    background:linear-gradient(135deg,var(--accent1),var(--accent2))}
-  .row{display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; padding:10px 12px; border-radius:12px;
-    border:1px solid var(--line); background:#fff}
-  .mini-list .row{grid-template-columns:auto 1fr auto}
-  .avatar{width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,var(--accent2),var(--accent1)); display:inline-block}
+    background:linear-gradient(135deg,#007cf0,#6a00f4)}
 
-  /* Drawer (inline, no overlay) */
-  .drawer{display:none}
-  .drawer.open{display:block; animation:fadeIn .18s ease}
-  @keyframes fadeIn{from{opacity:0; transform:translateY(-4px)} to{opacity:1; transform:none}}
+  /* Table */
+  table{width:100%; border-collapse:separate; border-spacing:0; border:1px solid rgba(0,0,0,.08); border-radius:12px; overflow:hidden}
+  thead th{background:#f8fafc; text-align:left; padding:10px 12px; font-weight:600; border-bottom:1px solid rgba(0,0,0,.08)}
+  tbody td{padding:10px 12px; border-bottom:1px solid rgba(0,0,0,.06)}
+  tbody tr:last-child td{border-bottom:none}
 
-  /* Hero search mirrors your About navbar vibe */
-  .searchbar{display:flex; gap:8px; flex-wrap:wrap}
-  .searchbar input[type="search"]{padding:10px 12px; border-radius:12px; border:1px solid rgba(0,0,0,.15); min-width:260px}
+  /* Drawer / Sheet (no z-index drama) */
+  .sheet{position:fixed; inset:auto 0 0 0; max-height:80vh; background:#ffffffee; border-top:1px solid rgba(0,0,0,.08); border-radius:16px 16px 0 0; box-shadow:0 -12px 40px rgba(0,0,0,.12); display:none}
+  .sheet.open{display:block; animation:slideUp .18s ease}
+  @keyframes slideUp{from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:none}}
+  .sheet .hd{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid rgba(0,0,0,.08)}
+  .sheet .bd{padding:16px; overflow:auto; max-height:calc(80vh - 56px)}
+  .sheet h3{margin:0}
 
-  /* Section titles */
+  /* Tags / helpers */
+  .chip{display:inline-block; padding:6px 10px; border-radius:999px; background:#f1f5f9; color:#111; border:1px solid rgba(0,0,0,.08); font-size:.9rem}
+  .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#6a00f4,#007cf0); display:inline-block}
+  .toolbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+
+  /* Keep generous whitespace */
   h1,h2,h3{margin:0 0 8px}
   section{margin-top:14px}
 </style>
 </head>
-<body class="gradient-bg">
-  <!-- Exact same navigation pattern as your About page -->
+
+<body>
+  <!-- EXACT same navbar + gradient behavior as About -->
   <div id="site-navbar"></div>
 
-  <main class="container page">
-    <!-- HERO -->
-    <section class="card">
-      <div class="p">
-        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-          <img src="/assets/img/main-logo.webp" alt="Intreen" style="max-width:160px;height:auto;">
-          <span class="chip">LMS</span>
-          <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
-            <span class="avatar" title="You"></span>
-            <span style="font-weight:600;">Gage</span>
-          </div>
-        </div>
-        <p class="muted" style="margin-top:6px">Courses, tracks, progress, assessments, credentials, and more — all inside Intreen.</p>
+  <main class="container mt-8">
+    <h1>Intreen LMS</h1>
+    <p class="meta">Learn, track progress, view grades, and manage assigned courses — all in one place.</p>
 
-        <!-- Catalog search (kept simple; About-like) -->
-        <div class="searchbar" style="margin-top:10px;">
-          <input id="q" type="search" placeholder="Search courses, tracks, or instructors…" aria-label="Search courses">
-          <button class="btn-grad sm" id="q-btn" type="button">Search</button>
-        </div>
-
-        <!-- Tabs -->
-        <div class="tabs" style="margin-top:10px;">
-          <a class="tab active" data-tab="my">My Courses</a>
-          <a class="tab" data-tab="tracks">Tracks</a>
-          <a class="tab" data-tab="catalog">Catalog</a>
-          <a class="tab" data-tab="ann">Announcements</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- KPIs -->
-    <section class="grid grid-3">
-      <article class="card"><div class="p">
-        <h3>Overall Progress</h3>
-        <div class="kpi" id="kpi-progress">—</div>
-        <div class="progress" style="margin-top:8px"><div class="fill" id="kpi-progress-fill" style="width:0%"></div></div>
-        <p class="muted">Across all courses and tracks.</p>
-      </div></article>
-
-      <article class="card"><div class="p">
-        <h3>Learning Streak</h3>
-        <div class="kpi" id="kpi-streak">—</div>
-        <p class="muted">Continuous days with activity.</p>
-      </div></article>
-
-      <article class="card"><div class="p">
-        <h3>Certificates</h3>
-        <div class="kpi" id="kpi-certs">—</div>
-        <p class="muted">Issued · Pending</p>
-      </div></article>
-    </section>
-
-    <!-- MAIN COLUMNS: center content + right utility rail -->
-    <section class="grid cols-2">
-      <!-- LEFT: Content stack -->
-      <div class="grid">
-        <!-- Continue Learning -->
-        <div class="card" id="continue"><div class="p">
-          <div style="display:flex; align-items:center; justify-content:space-between;">
-            <h3>Continue Learning</h3><a class="btn sm" href="#all-my-courses">View All</a>
-          </div>
-          <div class="grid grid-3" id="continue-cards"></div>
-        </div></div>
-
-        <!-- Tab Panels -->
-        <div class="card tab-panel" data-panel="my"><div class="p">
-          <h3>My Courses</h3>
-          <div class="grid grid-3" style="margin-top:8px" id="my-courses"></div>
-        </div></div>
-
-        <div class="card tab-panel" data-panel="tracks" style="display:none;"><div class="p">
-          <h3>Tracks</h3>
-          <div class="grid grid-3" style="margin-top:8px" id="tracks-grid"></div>
-        </div></div>
-
-        <div class="card tab-panel" data-panel="catalog" style="display:none;"><div class="p">
-          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-            <select id="f-track" class="btn sm"><option value="">All Tracks</option></select>
-            <select id="f-sort" class="btn sm">
-              <option value="rec">Sort: Recommended</option>
-              <option value="new">Newest</option>
-              <option value="dur">Duration</option>
-              <option value="prog">Progress</option>
-            </select>
-          </div>
-          <div class="grid grid-3" style="margin-top:10px" id="catalog-grid"></div>
-        </div></div>
-
-        <div class="card tab-panel" data-panel="ann" style="display:none;"><div class="p" id="announcements">
-          <h3>Announcements</h3>
-          <div id="ann-rows" style="margin-top:8px"></div>
-        </div></div>
-
-        <!-- Inline Course Drawer -->
-        <div class="card drawer" id="course-drawer">
-          <div class="p" style="display:flex; align-items:center; justify-content:space-between;">
-            <div style="font-weight:800" id="drawer-title">Course Details</div>
-            <button class="btn sm" id="drawer-close" type="button">Close</button>
-          </div>
-          <div class="p">
-            <div class="thumb" id="drawer-thumb">Preview</div>
-            <p class="muted" id="drawer-desc" style="margin-top:8px">Overview, objectives, and outline.</p>
-            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
-              <a class="btn-grad sm" href="#" id="drawer-primary">Start</a>
-              <a class="btn sm" href="#" id="drawer-outline">Outline</a>
-              <a class="btn sm" href="#" id="drawer-syllabus">Download Syllabus</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Certificates / Transcript -->
-        <div class="grid">
-          <div class="card" id="certs"><div class="p">
-            <div style="display:flex; align-items:center; justify-content:space-between;">
-              <h3>Certificates</h3><span class="muted" id="cert-summary">—</span>
-            </div>
-            <div class="grid" style="margin-top:8px" id="cert-rows"></div>
-          </div></div>
-
-          <div class="card" id="transcript"><div class="p">
-            <h3>Transcript</h3>
-            <div class="grid" style="margin-top:8px" id="trans-rows"></div>
-          </div></div>
-        </div>
-      </div>
-
-      <!-- RIGHT: Utility rail (decluttered) -->
-      <aside class="grid">
-        <!-- Calendar -->
-        <div class="card" id="calendar"><div class="p">
-          <h3>Calendar</h3>
-          <div class="muted" id="cal-month">This Month</div>
-          <div class="grid" style="grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px;">
-            <!-- Simple dots calendar -->
-            <div class="chip">1</div><div class="chip">2</div><div class="chip">3</div><div class="chip">4</div><div class="chip">5</div><div class="chip">6</div><div class="chip">7</div>
-            <div class="chip">8</div><div class="chip">9</div><div class="chip">10</div><div class="chip">11</div><div class="chip">12</div><div class="chip">13</div><div class="chip">14</div>
-            <div class="chip">15</div><div class="chip">16</div><div class="chip">17</div><div class="chip">18</div><div class="chip">19</div><div class="chip">20</div><div class="chip">21</div>
-            <div class="chip">22</div><div class="chip">23</div><div class="chip">24</div><div class="chip">25</div><div class="chip">26</div><div class="chip">27</div><div class="chip">28</div>
-          </div>
-        </div></div>
-
-        <!-- Leaderboard -->
-        <div class="card"><div class="p">
-          <h3>Leaderboard</h3>
-          <div class="grid" id="lb-rows" style="margin-top:8px"></div>
-        </div></div>
-
-        <!-- Bookmarks -->
-        <div class="card mini-list"><div class="p">
-          <div style="display:flex; align-items:center; justify-content:space-between;">
-            <h3>Bookmarks</h3><button class="btn sm" id="add-bookmark" type="button">+ Add</button>
-          </div>
-          <div class="grid" style="margin-top:8px" id="bookmarks"></div>
-        </div></div>
-
-        <!-- Support -->
-        <div class="card" id="support"><div class="p">
-          <h3>Support</h3>
-          <div class="grid" style="margin-top:8px;">
-            <div class="row"><div>📚 Getting Started Guide</div><a class="btn sm" href="#">Open</a></div>
-            <div class="row"><div>❓ FAQ</div><a class="btn sm" href="#faq">Open</a></div>
-            <div class="row"><div>💬 Contact Training Team</div><a class="btn-grad sm" href="#">Message</a></div>
-          </div>
-        </div></div>
+    <section class="shell">
+      <!-- ========= Sidebar ========= -->
+      <aside class="sidebar">
+        <nav class="navlist">
+          <a class="navitem active" data-view="dashboard">🏠 Dashboard</a>
+          <a class="navitem" data-view="assigned">📌 Assigned</a>
+          <a class="navitem" data-view="my-courses">🎓 My Courses</a>
+          <a class="navitem" data-view="catalog">📚 Catalog</a>
+          <a class="navitem" data-view="grades">🧮 Grades</a>
+          <a class="navitem" data-view="certs">🏅 Certificates</a>
+          <a class="navitem" data-view="transcript">📜 Transcript</a>
+          <a class="navitem" data-view="announcements">📢 Announcements</a>
+          <a class="navitem" data-view="calendar">🗓️ Calendar</a>
+        </nav>
       </aside>
+
+      <!-- ========= Main content area ========= -->
+      <div class="grid" id="view-root">
+        <!-- ===== Dashboard ===== -->
+        <section class="grid" data-view="dashboard">
+          <!-- KPIs -->
+          <div class="grid grid-3">
+            <article class="card"><div class="p">
+              <h3>Overall Progress</h3>
+              <div class="kpi" id="kpi-progress">—</div>
+              <div class="progress" style="margin-top:8px"><div class="fill" id="kpi-progress-fill" style="width:0%"></div></div>
+              <p class="meta">Combined progress across all courses.</p>
+            </div></article>
+            <article class="card"><div class="p">
+              <h3>Learning Streak</h3>
+              <div class="kpi" id="kpi-streak">—</div>
+              <p class="meta">Consecutive days with activity.</p>
+            </div></article>
+            <article class="card"><div class="p">
+              <h3>Certificates</h3>
+              <div class="kpi" id="kpi-certs">—</div>
+              <p class="meta">Issued · Pending</p>
+            </div></article>
+          </div>
+
+          <!-- Continue + Assigned -->
+          <div class="grid" style="grid-template-columns: 1.6fr 1fr;">
+            <article class="card" id="continue-card"><div class="p">
+              <div class="toolbar">
+                <h3 style="margin-right:auto">Continue Learning</h3>
+                <a class="btn sm" data-nav="my-courses">View All</a>
+              </div>
+              <div class="grid grid-3" id="continue-grid" style="margin-top:8px"></div>
+            </div></article>
+
+            <article class="card" id="assigned-card"><div class="p">
+              <div class="toolbar">
+                <h3 style="margin-right:auto">Assigned To You</h3>
+                <span class="pill" id="assigned-count">0</span>
+              </div>
+              <div class="rows" id="assigned-list" style="margin-top:8px"></div>
+            </div></article>
+          </div>
+
+          <!-- Announcements + Calendar snapshot -->
+          <div class="grid" style="grid-template-columns: 1.4fr 1fr;">
+            <article class="card"><div class="p">
+              <div class="toolbar">
+                <h3 style="margin-right:auto">Announcements</h3>
+                <a class="btn sm" data-nav="announcements">Open</a>
+              </div>
+              <div class="rows" id="announc-prev" style="margin-top:8px"></div>
+            </div></article>
+
+            <article class="card"><div class="p">
+              <div class="toolbar">
+                <h3 style="margin-right:auto">Calendar</h3>
+                <a class="btn sm" data-nav="calendar">Open</a>
+              </div>
+              <div class="rows" id="calendar-mini" style="margin-top:8px">
+                <div class="row"><div>Oct 24 — Security Lab</div><span class="pill">Due</span></div>
+                <div class="row"><div>Oct 28 — Scrum Quiz</div><span class="pill">Quiz</span></div>
+              </div>
+            </div></article>
+          </div>
+        </section>
+
+        <!-- ===== Assigned ===== -->
+        <section class="grid" data-view="assigned" style="display:none;">
+          <article class="card"><div class="p">
+            <div class="toolbar">
+              <h3 style="margin-right:auto">Assigned Courses</h3>
+              <span class="meta">These require your attention</span>
+            </div>
+            <div class="rows" id="assigned-full" style="margin-top:8px"></div>
+          </div></article>
+        </section>
+
+        <!-- ===== My Courses ===== -->
+        <section class="grid" data-view="my-courses" style="display:none;">
+          <article class="card"><div class="p">
+            <div class="toolbar">
+              <h3 style="margin-right:auto">My Courses</h3>
+              <div class="toolbar">
+                <input id="mc-q" type="search" placeholder="Search my courses…" class="btn sm" style="min-width:220px"/>
+                <button class="btn sm" id="mc-clear">Clear</button>
+              </div>
+            </div>
+            <div class="grid grid-3" id="my-courses-grid" style="margin-top:8px"></div>
+          </div></article>
+        </section>
+
+        <!-- ===== Catalog ===== -->
+        <section class="grid" data-view="catalog" style="display:none;">
+          <article class="card"><div class="p">
+            <div class="toolbar">
+              <h3 style="margin-right:auto">Catalog</h3>
+              <div class="toolbar">
+                <input id="cat-q" type="search" placeholder="Search catalog…" class="btn sm" style="min-width:220px"/>
+                <select id="cat-track" class="btn sm"><option value="">All Tracks</option></select>
+                <select id="cat-sort" class="btn sm">
+                  <option value="rec">Recommended</option>
+                  <option value="new">Newest</option>
+                  <option value="dur">Duration</option>
+                  <option value="lessons">Lessons</option>
+                </select>
+                <button class="btn sm" id="cat-clear">Clear</button>
+              </div>
+            </div>
+            <div class="grid grid-3" id="catalog-grid" style="margin-top:8px"></div>
+          </div></article>
+        </section>
+
+        <!-- ===== Grades ===== -->
+        <section class="grid" data-view="grades" style="display:none;">
+          <article class="card"><div class="p">
+            <div class="toolbar">
+              <h3 style="margin-right:auto">Grades</h3>
+              <button class="btn sm" id="open-gradebook">Open Gradebook</button>
+            </div>
+            <div class="rows" id="grades-list" style="margin-top:8px"></div>
+          </div></article>
+        </section>
+
+        <!-- ===== Certificates ===== -->
+        <section class="grid" data-view="certs" style="display:none;">
+          <article class="card"><div class="p">
+            <h3>Certificates</h3>
+            <div class="rows" id="certs-list" style="margin-top:8px"></div>
+          </div></article>
+        </section>
+
+        <!-- ===== Transcript ===== -->
+        <section class="grid" data-view="transcript" style="display:none;">
+          <article class="card"><div class="p">
+            <h3>Transcript</h3>
+            <table style="margin-top:8px">
+              <thead><tr><th>Course</th><th>Lessons</th><th>Status</th><th>Progress</th></tr></thead>
+              <tbody id="trans-tbody"></tbody>
+            </table>
+          </div></article>
+        </section>
+
+        <!-- ===== Announcements ===== -->
+        <section class="grid" data-view="announcements" style="display:none;">
+          <article class="card"><div class="p">
+            <h3>Announcements</h3>
+            <div class="rows" id="ann-list" style="margin-top:8px"></div>
+          </div></article>
+        </section>
+
+        <!-- ===== Calendar ===== -->
+        <section class="grid" data-view="calendar" style="display:none;">
+          <article class="card"><div class="p">
+            <h3>Training Calendar</h3>
+            <div class="rows" id="calendar-full" style="margin-top:8px">
+              <div class="row"><div>Oct 24 — Security Lab</div><span class="pill">Due</span></div>
+              <div class="row"><div>Oct 28 — Scrum Quiz</div><span class="pill">Quiz</span></div>
+              <div class="row"><div>Nov 02 — Tools Workshop</div><span class="pill">Workshop</span></div>
+            </div>
+          </div></article>
+        </section>
+      </div>
     </section>
   </main>
 
-  <!-- Keep your site layout/navbar exactly like About -->
+  <!-- ===== Course Details Sheet ===== -->
+  <section class="sheet" id="sheet-course">
+    <div class="hd">
+      <h3 id="sheet-course-title">Course Details</h3>
+      <div class="toolbar">
+        <button class="btn sm" id="sheet-course-close" type="button">Close</button>
+      </div>
+    </div>
+    <div class="bd">
+      <div class="thumb" id="sheet-course-thumb">Preview</div>
+      <p class="meta" id="sheet-course-desc" style="margin-top:8px">Overview, objectives, and outline.</p>
+      <div class="toolbar" style="margin-top:10px;">
+        <a class="btn grad" href="#" id="sheet-course-primary">Start</a>
+        <a class="btn" href="#" id="sheet-course-outline">Outline</a>
+        <a class="btn" href="#" id="sheet-course-syllabus">Download Syllabus</a>
+      </div>
+      <h3 style="margin-top:14px">Outline</h3>
+      <div class="rows" id="sheet-course-outline-list" style="margin-top:8px"></div>
+    </div>
+  </section>
+
+  <!-- ===== Gradebook Sheet ===== -->
+  <section class="sheet" id="sheet-gradebook">
+    <div class="hd">
+      <h3>Gradebook</h3>
+      <button class="btn sm" id="sheet-gradebook-close" type="button">Close</button>
+    </div>
+    <div class="bd">
+      <table>
+        <thead><tr><th>Course</th><th>Assessment</th><th>Score</th><th>Status</th></tr></thead>
+        <tbody id="gradebook-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== Keep About-page navbar/gradient behavior ===== -->
   <script type="module">
     import { bootLayout } from '/assets/js/layout.js';
-    bootLayout('about'); /* uses the same navbar styling as About page */
+    bootLayout('about'); /* EXACT same top navbar + gradient as your About page */
   </script>
 
-  <!-- Page logic -->
+  <!-- ===== Page logic ===== -->
   <script>
-    /* ===== Sample Data ===== */
+    /* ---------- Data ---------- */
     const tracks = [
-      { id:'onboard',  name:'Onboarding',        courses:3, progress:100 },
-      { id:'scrum',    name:'Scrum Basics',      courses:6, progress:30 },
-      { id:'security', name:'Security Awareness',courses:8, progress:15 },
-      { id:'tools',    name:'Team Tools 101',    courses:5, progress:0  },
-    ];
-    const courses = [
-      { id:'scrum',    title:'Scrum Fundamentals',   track:'scrum',    lessons:6, duration:45, progress:30, thumb:'Scrum' },
-      { id:'security', title:'Security Awareness',   track:'security', lessons:8, duration:60, progress:15, thumb:'Security' },
-      { id:'tools',    title:'Team Tools 101',       track:'tools',    lessons:5, duration:35, progress:0,  thumb:'Tools' },
-    ];
-    const continueLearning = ['scrum','security','tools'];
-    const announcements = [
-      { date:'2025-10-20', title:'New Phishing Lab', txt:'Hands-on phishing simulation added to Security Module 3.' },
-      { date:'2025-10-12', title:'Retro Template',   txt:'Scrum retrospective template added to Resources.' }
-    ];
-    const leaderboard = [
-      { name:'Alex', pts:1240 }, { name:'Riley', pts:1010 }, { name:'Jordan', pts:940 }, { name:'Gage', pts:880 }
-    ];
-    const certificates = [
-      { title:'Scrum Fundamentals',   status:'Pending' },
-      { title:'Security Awareness',   status:'Pending' },
-      { title:'Team Tools 101',       status:'Pending' },
+      { id:'onboarding', name:'Onboarding', courses:3 },
+      { id:'scrum',      name:'Scrum Basics', courses:6 },
+      { id:'security',   name:'Security Awareness', courses:8 },
+      { id:'tools',      name:'Team Tools 101', courses:5 },
     ];
 
-    /* ===== Helpers ===== */
-    const $ = s => document.querySelector(s);
+    const courses = [
+      { id:'scrum',    title:'Scrum Fundamentals',   track:'scrum',    lessons:6, duration:45, progress:30, assigned:true,  thumb:'Scrum',
+        outline:['Agile & Scrum','Roles','Ceremonies','Artifacts','Sprint Flow','Quiz'] },
+      { id:'security', title:'Security Awareness',   track:'security', lessons:8, duration:60, progress:15, assigned:true,  thumb:'Security',
+        outline:['Threats','Phishing','Passwords','MFA','Devices','Data','Incidents','Final Quiz'] },
+      { id:'tools',    title:'Team Tools 101',       track:'tools',    lessons:5, duration:35, progress:0,  assigned:false, thumb:'Tools',
+        outline:['Overview','Chat','Docs','Tasks','Automation'] },
+    ];
+
+    const assessments = [
+      { course:'scrum',    name:'Sprint Quiz',        score:88, status:'Passed' },
+      { course:'security', name:'Phishing Simulation',score:72, status:'Passed' },
+      { course:'security', name:'Final Quiz',         score:—  , status:'Pending' },
+    ];
+
+    const announcements = [
+      { date:'2025-10-20', title:'New Phishing Lab', txt:'Hands-on simulation added to Security Module 3.' },
+      { date:'2025-10-12', title:'Retro Template',   txt:'New Scrum retrospective template in Resources.' }
+    ];
+
+    /* ---------- Helpers ---------- */
+    const $  = s => document.querySelector(s);
     const $$ = s => Array.from(document.querySelectorAll(s));
     const pct = v => Math.max(0, Math.min(100, v|0));
-
-    /* ===== Renderers ===== */
-    function renderKPIs(){
-      const overall = Math.round(tracks.reduce((a,t)=>a+t.progress,0)/tracks.length);
-      $('#kpi-progress').textContent = overall + '%';
-      $('#kpi-progress-fill').style.width = overall + '%';
-      $('#kpi-streak').textContent = '3 days';
-      $('#kpi-certs').textContent  = `0 · ${certificates.length}`;
-      $('#cert-summary').textContent = `0 issued · ${certificates.length} pending`;
-    }
 
     function courseCard(c){
       return `<article class="card">
         <div class="thumb">${c.thumb}</div>
         <div class="p">
-          <div style="font-weight:800">${c.title}</div>
-          <div class="muted">${c.lessons} lessons • ${c.duration} min</div>
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <div style="font-weight:800">${c.title}</div>
+            ${c.assigned ? '<span class="pill">Assigned</span>' : ''}
+          </div>
+          <div class="meta">${c.lessons} lessons • ${c.duration} min</div>
           <div class="progress" style="margin-top:8px"><div class="fill" style="width:${pct(c.progress)}%"></div></div>
-          <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
-            <a class="btn-grad sm" href="#" data-resume="${c.id}">${c.progress>0?'Resume':'Start'}</a>
-            <a class="btn sm" href="#" data-outline="${c.id}">Outline</a>
-            <a class="btn sm" href="#" data-details="${c.id}">Details</a>
+          <div class="toolbar" style="margin-top:10px;">
+            <a class="btn grad sm" href="#" data-resume="${c.id}">${c.progress>0?'Resume':'Start'}</a>
+            <a class="btn sm" href="#" data-details="${c.id}">Course Details</a>
+            <a class="btn sm" href="#" data-grades="${c.id}">View Grades</a>
           </div>
         </div>
       </article>`;
     }
 
+    /* ---------- Renderers ---------- */
+    function renderKPIs(){
+      const overall = Math.round(courses.reduce((a,c)=>a+(c.progress||0),0)/courses.length);
+      $('#kpi-progress').textContent = overall + '%';
+      $('#kpi-progress-fill').style.width = overall + '%';
+      $('#kpi-streak').textContent = '3 days';
+      const issued = 0, pending = 3;
+      $('#kpi-certs').textContent = `${issued} · ${pending}`;
+    }
+
     function renderContinue(){
-      $('#continue-cards').innerHTML = continueLearning.map(id => courseCard(courses.find(c=>c.id===id))).join('');
+      const cont = courses.slice().sort((a,b)=>b.progress-a.progress).slice(0,3);
+      $('#continue-grid').innerHTML = cont.map(courseCard).join('');
     }
-    function renderMyCourses(){
-      $('#my-courses').innerHTML = courses.map(courseCard).join('');
+
+    function renderAssigned(){
+      const items = courses.filter(c=>c.assigned);
+      $('#assigned-count').textContent = items.length;
+      $('#assigned-list').innerHTML = items.map(c =>
+        `<div class="row"><div>${c.title}</div><a class="btn sm" href="#" data-details="${c.id}">Open</a></div>`
+      ).join('') || '<div class="meta">No active assignments.</div>';
+      $('#assigned-full').innerHTML = items.map(courseCard).join('') || '<div class="meta">No active assignments.</div>';
     }
-    function renderTracks(){
-      $('#tracks-grid').innerHTML = tracks.map(t=>`
-        <article class="card">
-          <div class="p">
-            <div style="display:flex; align-items:center; justify-content:space-between;">
-              <div style="font-weight:800">${t.name}</div><span class="chip">${t.courses} courses</span>
-            </div>
-            <div class="progress" style="margin-top:8px"><div class="fill" style="width:${pct(t.progress)}%"></div></div>
-            <p class="muted" style="margin-top:6px">${pct(t.progress)}% complete</p>
-            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-              <a class="btn-grad sm" href="#" data-open-track="${t.id}">Open</a>
-              <a class="btn sm" href="#" data-recommend="${t.id}">Recommend</a>
-            </div>
-          </div>
-        </article>
-      `).join('');
-      // track filter
-      const sel = $('#f-track');
-      sel.innerHTML = '<option value="">All Tracks</option>' + tracks.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
-    }
-    function renderCatalog(filter=''){
-      const track = $('#f-track').value;
-      const sort  = $('#f-sort').value;
-      let list = courses.filter(c => (!track || c.track===track) && (filter==='' || c.title.toLowerCase().includes(filter.toLowerCase())));
-      if(sort==='new') list = list.slice().reverse();
-      if(sort==='dur') list = list.slice().sort((a,b)=>a.duration-b.duration);
-      if(sort==='prog') list = list.slice().sort((a,b)=>b.progress-a.progress);
-      $('#catalog-grid').innerHTML = list.map(courseCard).join('');
-    }
+
     function renderAnnouncements(){
-      $('#ann-rows').innerHTML = announcements.map(a=>`
-        <article class="card"><div class="p">
-          <div style="display:flex; align-items:center; justify-content:space-between;">
-            <strong>${a.title}</strong><span class="chip">${a.date}</span>
-          </div>
-          <p class="muted" style="margin-top:6px">${a.txt}</p>
-        </div></article>
-      `).join('');
+      $('#announc-prev').innerHTML = announcements.map(a =>
+        `<div class="row"><div><strong>${a.title}</strong> — <span class="meta">${a.txt}</span></div><span class="pill">${a.date}</span></div>`
+      ).join('');
+      $('#ann-list').innerHTML = $('#announc-prev').innerHTML;
     }
-    function renderLeaderboard(){
-      $('#lb-rows').innerHTML = leaderboard.map(p=>`
-        <div class="row"><div><span class="avatar"></span> <strong>${p.name}</strong></div><div>${p.pts} pts</div></div>
-      `).join('');
+
+    function renderMyCourses(filter=''){
+      const list = courses.filter(c => c.title.toLowerCase().includes(filter.toLowerCase()));
+      $('#my-courses-grid').innerHTML = list.map(courseCard).join('');
     }
-    function renderBookmarks(){
-      $('#bookmarks').innerHTML = `
-        <div class="row"><span class="avatar"></span><div>Scrum Fundamentals — Lesson 3</div><a class="btn sm" href="#" data-jump="scrum:3">Open</a></div>
-        <div class="row"><span class="avatar"></span><div>Security Awareness — Phishing</div><a class="btn sm" href="#" data-jump="security:2">Open</a></div>
-      `;
+
+    function renderCatalog(filter=''){
+      const track = $('#cat-track').value;
+      const sort  = $('#cat-sort').value;
+      const source = courses.slice();
+      let list = source.filter(c => (!track || c.track===track) && (filter==='' || c.title.toLowerCase().includes(filter.toLowerCase())));
+      if(sort==='new') list.reverse();
+      if(sort==='dur') list.sort((a,b)=>a.duration-b.duration);
+      if(sort==='lessons') list.sort((a,b)=>a.lessons-b.lessons);
+      $('#catalog-grid').innerHTML = list.map(courseCard).join('');
+      // track dropdown
+      $('#cat-track').innerHTML = '<option value="">All Tracks</option>' + tracks.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
     }
-    function renderCerts(){
-      $('#cert-rows').innerHTML = certificates.map(c=>`
-        <div class="row"><div>${c.title}</div><span class="chip">${c.status}</span></div>
-      `).join('');
-    }
-    function renderTranscript(){
-      $('#trans-rows').innerHTML = courses.map(c=>{
-        const state = c.progress===0 ? 'NS' : (c.progress===100 ? 'Done' : 'IP');
-        const lessonsDone = Math.round(c.lessons*(c.progress/100));
-        return `<div class="row"><div>${c.title} · ${lessonsDone}/${c.lessons} lessons · ${c.progress===100?'Completed':(c.progress>0?'In Progress':'Not Started')}</div><span class="chip">${state}</span></div>`;
+
+    function renderGrades(){
+      const byCourse = {};
+      assessments.forEach(a => { (byCourse[a.course] ||= []).push(a); });
+      $('#grades-list').innerHTML = courses.map(c=>{
+        const arr = byCourse[c.id]||[];
+        const latest = arr[0] ? `${arr[0].score ?? '—'} (${arr[0].status})` : '—';
+        return `<div class="row"><div><strong>${c.title}</strong> <span class="meta">latest: ${latest}</span></div>
+                <a class="btn sm" href="#" data-grades="${c.id}">Open</a></div>`;
       }).join('');
     }
 
-    /* ===== Drawer ===== */
-    function openDrawer(courseId){
-      const c = courses.find(x=>x.id===courseId); if(!c) return;
-      $('#drawer-title').textContent = c.title + ' — Details';
-      $('#drawer-thumb').textContent = c.thumb;
-      $('#drawer-desc').textContent = `${c.title} overview, objectives, and lesson outline.`;
-      $('#drawer-primary').textContent = c.progress>0 ? 'Resume' : 'Start';
-      $('#drawer-primary').setAttribute('data-resume', c.id);
-      $('#course-drawer').classList.add('open');
-      $('#course-drawer').scrollIntoView({behavior:'smooth', block:'start'});
+    function renderCerts(){
+      $('#certs-list').innerHTML = courses.map(c =>
+        `<div class="row"><div>${c.title}</div><span class="pill">Pending</span></div>`
+      ).join('');
     }
-    function closeDrawer(){ $('#course-drawer').classList.remove('open'); }
 
-    /* ===== Bindings ===== */
+    function renderTranscript(){
+      $('#trans-tbody').innerHTML = courses.map(c=>{
+        const status = c.progress===0 ? 'Not Started' : (c.progress===100 ? 'Completed' : 'In Progress');
+        const done = Math.round(c.lessons*(c.progress/100));
+        return `<tr><td>${c.title}</td><td>${done}/${c.lessons}</td><td>${status}</td><td>${c.progress}%</td></tr>`;
+      }).join('');
+    }
+
+    /* ---------- Sheets (Course Details / Gradebook) ---------- */
+    function openCourseSheet(id){
+      const c = courses.find(x=>x.id===id); if(!c) return;
+      $('#sheet-course-title').textContent = c.title;
+      $('#sheet-course-thumb').textContent = c.thumb;
+      $('#sheet-course-desc').textContent  = `${c.title} overview, objectives, and lesson outline.`;
+      $('#sheet-course-primary').textContent = c.progress>0?'Resume':'Start';
+      $('#sheet-course-primary').setAttribute('data-resume', c.id);
+      $('#sheet-course-outline-list').innerHTML = c.outline.map((t,i)=>`<div class="row"><div>Lesson ${i+1}: ${t}</div><span class="pill">${i+1}</span></div>`).join('');
+      $('#sheet-course').classList.add('open');
+    }
+    function closeCourseSheet(){ $('#sheet-course').classList.remove('open'); }
+
+    function openGradebook(courseId=null){
+      const rows = assessments
+        .filter(a => !courseId || a.course===courseId)
+        .map(a=>{
+          const c = courses.find(x=>x.id===a.course);
+          return `<tr><td>${c?.title||a.course}</td><td>${a.name}</td><td>${a.score ?? '—'}</td><td>${a.status}</td></tr>`;
+        }).join('');
+      $('#gradebook-tbody').innerHTML = rows || `<tr><td colspan="4" class="meta">No grades recorded yet.</td></tr>`;
+      $('#sheet-gradebook').classList.add('open');
+    }
+    function closeGradebook(){ $('#sheet-gradebook').classList.remove('open'); }
+
+    /* ---------- View switching ---------- */
+    function showView(name){
+      $$('.navitem').forEach(n => n.classList.toggle('active', n.dataset.view===name));
+      $$('#view-root > section').forEach(s => {
+        s.style.display = (s.dataset.view===name ? '' : 'none');
+      });
+      // optional: bring top into view
+      document.scrollingElement?.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    /* ---------- Bindings ---------- */
     function bind(){
-      // Tabs
-      $$('.tabs .tab').forEach(t=>{
-        t.addEventListener('click', ()=>{
-          $$('.tabs .tab').forEach(x=>x.classList.remove('active'));
-          t.classList.add('active');
-          const which = t.getAttribute('data-tab');
-          $$('.tab-panel').forEach(p=>p.style.display = (p.getAttribute('data-panel')===which ? '' : 'none'));
-        });
+      // sidebar nav
+      $$('.navitem').forEach(a=>{
+        a.addEventListener('click', ()=> showView(a.dataset.view));
+      });
+      // dashboard quick links
+      $('[data-nav="my-courses"]')?.addEventListener('click', ()=>showView('my-courses'));
+      $('#assigned-card')?.addEventListener('click', e=>{
+        if(e.target.closest('.btn')) return;
+        showView('assigned');
       });
 
-      // Search
-      $('#q-btn').addEventListener('click', ()=>renderCatalog($('#q').value));
-      $('#q').addEventListener('keydown', e=>{ if(e.key==='Enter'){ renderCatalog($('#q').value); } });
+      // searches
+      $('#mc-q')?.addEventListener('input', e=>renderMyCourses(e.target.value));
+      $('#mc-clear')?.addEventListener('click', ()=>{ $('#mc-q').value=''; renderMyCourses(''); });
+      $('#cat-q')?.addEventListener('input', e=>renderCatalog(e.target.value));
+      $('#cat-clear')?.addEventListener('click', ()=>{ $('#cat-q').value=''; $('#cat-track').value=''; $('#cat-sort').value='rec'; renderCatalog(''); });
+      $('#cat-track')?.addEventListener('change', ()=>renderCatalog($('#cat-q').value));
+      $('#cat-sort')?.addEventListener('change',  ()=>renderCatalog($('#cat-q').value));
 
-      // Catalog filters
-      $('#f-track').addEventListener('change', ()=>renderCatalog($('#q').value));
-      $('#f-sort').addEventListener('change',  ()=>renderCatalog($('#q').value));
-
-      // Drawer buttons
-      $('#drawer-close').addEventListener('click', closeDrawer);
-      $('#drawer-outline').addEventListener('click', e=>{ e.preventDefault(); alert('Outline would open here.'); });
-      $('#drawer-syllabus').addEventListener('click', ()=>alert('Syllabus download placeholder.') );
-
-      // Course actions (delegation)
+      // global delegation for course buttons
       document.body.addEventListener('click', e=>{
-        const a = e.target.closest('a,button'); if(!a) return;
-        if(a.dataset.details){ e.preventDefault(); openDrawer(a.dataset.details); }
-        if(a.dataset.resume){  e.preventDefault(); alert('Launching player for ' + a.dataset.resume); }
+        const el = e.target.closest('a,button'); if(!el) return;
+        if(el.dataset.details){ e.preventDefault(); openCourseSheet(el.dataset.details); }
+        if(el.dataset.resume){  e.preventDefault(); alert('Launch player: '+el.dataset.resume); }
+        if(el.dataset.grades){  e.preventDefault(); openGradebook(el.dataset.grades); }
       });
 
-      // Bookmarks add (demo)
-      $('#add-bookmark').addEventListener('click', ()=>alert('Bookmark added'));
+      // sheets
+      $('#sheet-course-close').addEventListener('click', closeCourseSheet);
+      $('#sheet-course-syllabus').addEventListener('click', ()=>alert('Download syllabus placeholder.'));
+      $('#sheet-course-outline').addEventListener('click',  ()=>alert('Outline placeholder.'));
+      $('#sheet-gradebook-close').addEventListener('click', closeGradebook);
+
+      // “Open Gradebook” on grades view
+      $('#open-gradebook').addEventListener('click', ()=>openGradebook());
     }
 
-    /* ===== Init ===== */
+    /* ---------- Init ---------- */
     function run(){
       renderKPIs();
       renderContinue();
-      renderMyCourses();
-      renderTracks();
-      renderCatalog('');
+      renderAssigned();
       renderAnnouncements();
-      renderLeaderboard();
-      renderBookmarks();
+      renderMyCourses('');
+      renderCatalog('');
+      renderGrades();
       renderCerts();
       renderTranscript();
       bind();
+      showView('dashboard'); // default
     }
     run();
   </script>
