@@ -1,0 +1,131 @@
+{
+  "updated_at": "2025-09-22T12:10:00Z",
+  "overall": "operational",
+  "components": [
+    {
+      "name": "Website",
+      "status": "operational",
+      "uptime": "99.99%",
+      "uptime_value": 0.9998999999999999
+    },
+    {
+      "name": "API",
+      "status": "degraded_performance",
+      "uptime": "99.92%",
+      "uptime_value": 0.9992
+    },
+    {
+      "name": "Auth",
+      "status": "operational",
+      "uptime": "99.95%",
+      "uptime_value": 0.9995
+    },
+    {
+      "name": "Payments",
+      "status": "operational",
+      "uptime": "99.97%",
+      "uptime_value": 0.9997
+    },
+    {
+      "name": "Events API",
+      "status": "partial_outage",
+      "uptime": "99.40%",
+      "uptime_value": 0.9940000000000001
+    },
+    {
+      "name": "Notifications",
+      "status": "operational",
+      "uptime": "99.95%",
+      "uptime_value": 0.9995
+    },
+    {
+      "name": "Search",
+      "status": "operational",
+      "uptime": "99.97%",
+      "uptime_value": 0.9997
+    },
+    {
+      "name": "CDN",
+      "status": "operational",
+      "uptime": "99.99%",
+      "uptime_value": 0.9999
+    },
+    {
+      "name": "Database",
+      "status": "operational",
+      "uptime": "99.96%",
+      "uptime_value": 0.9996
+    },
+    {
+      "name": "Billing",
+      "status": "operational",
+      "uptime": "99.93%",
+      "uptime_value": 0.9993
+    }
+  ],
+  "incidents": [
+    {
+      "id": "inc-2025-09-20-a",
+      "name": "Elevated API errors",
+      "status": "monitoring",
+      "started_at": "2025-09-20T14:12:00Z",
+      "updated_at": "2025-09-20T18:05:00Z",
+      "impact": "minor",
+      "updates": [
+        {
+          "at": "2025-09-20T14:12:00Z",
+          "text": "We\u2019re investigating elevated 5xx rates for the API."
+        },
+        {
+          "at": "2025-09-20T15:02:00Z",
+          "text": "Identified a misconfigured cache layer; deploying a fix."
+        },
+        {
+          "at": "2025-09-20T16:45:00Z",
+          "text": "Mitigation deployed, errors declining."
+        },
+        {
+          "at": "2025-09-20T18:05:00Z",
+          "text": "Monitoring. We will provide a full postmortem."
+        }
+      ]
+    }
+  ],
+  "scheduled_maintenances": [
+    {
+      "id": "maint-2025-09-25",
+      "name": "Database maintenance",
+      "status": "scheduled",
+      "window_start": "2025-09-25T02:00:00Z",
+      "window_end": "2025-09-25T03:30:00Z",
+      "impact": "minor",
+      "updates": [
+        {
+          "at": "2025-09-20T12:00:00Z",
+          "text": "Planned DB maintenance to apply security patches."
+        },
+        {
+          "at": "2025-09-24T12:00:00Z",
+          "text": "Reminder: maintenance window begins Sept 25, 02:00 UTC."
+        }
+      ]
+    }
+  ],
+  "history": [
+    {
+      "date": "2025-09-21",
+      "uptime": "99.97%",
+      "overall": "operational"
+    },
+    {
+      "date": "2025-09-20",
+      "uptime": "99.83%",
+      "overall": "degraded_performance"
+    },
+    {
+      "date": "2025-09-19",
+      "uptime": "100.00%",
+      "overall": "operational"
+    }
+  ]
+}

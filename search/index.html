@@ -1,0 +1,33 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Search • Intreen</title>
+<link rel="stylesheet" href="/assets/css/styles.css"/>
+  <link rel="stylesheet" href="/assets/css/gradient-theme.css"/>  <script src="/assets/js/gate.js" defer></script>
+</head>
+<body>
+  <div id="site-navbar"></div>
+  <main class="container mt-8">
+    <h1>Search</h1>
+    <p class="meta">Results for: <span id="q"></span></p>
+    <div id="results" class="mt-4"></div>
+  </main><script type="module">
+    import { bootLayout } from '/assets/js/layout.js'; bootLayout();
+    const q = new URLSearchParams(location.search).get('q')||'';
+    document.getElementById('q').textContent = q;
+    if(!q){ document.getElementById('results').innerHTML='<p>Type something in the search bar above.</p>'; }
+    else fetch('/assets/search_index.json').then(r=>r.json()).then(idx=>{
+      const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+      const scored = idx.map(x=>{
+        const hay=(x.title+' '+x.content).toLowerCase(); let score=0; for(const t of terms){ if(hay.includes(t)) score++; } 
+        return {...x,score};
+      }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,100);
+      document.getElementById('results').innerHTML = scored.length ? scored.map(x=>`
+        <article class="card" style="margin-bottom:12px"><div style="padding:12px">
+          <a class="link" href="${x.url}"><strong>${x.title}</strong></a>
+          <p class="meta" style="margin-top:6px">${x.url}</p>
+        </div></article>`).join('') : '<p>No results.</p>';
+    });
+  </script>
+
+
+</body></html>

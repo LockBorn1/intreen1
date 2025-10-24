@@ -1,0 +1,22 @@
+
+:root{--brand-primary:#6a00f4;--brand-secondary:#007cf0;--link:#1e3a8a;--bg-gradient-start:#007cf0;--bg-gradient-end:#6a00f4}
+html,body{height:100%}
+body{background:linear-gradient(135deg,var(--bg-gradient-start),var(--bg-gradient-end));background-attachment:fixed;color:#111}
+header.site{background:linear-gradient(90deg,var(--bg-gradient-start),var(--bg-gradient-end));color:#fff}
+header.site a,header.site nav a{color:#fff}
+header.site nav a:hover{background:rgba(255,255,255,.15)}
+nav a.active{background:rgba(0,0,0,.25)!important}
+.button,.btn,button.primary,a.button.primary{background:linear-gradient(90deg,var(--bg-gradient-start),var(--bg-gradient-end))!important;color:#fff!important;border:none!important;border-radius:14px}
+.button.pill,.btn.pill{border-radius:9999px!important}
+.btn-sm,.button.btn-sm{font-size:.9rem!important;padding:6px 12px!important;border-radius:10px!important}
+/* Splash */
+#splash-overlay{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,var(--bg-gradient-start),var(--bg-gradient-end));display:flex;align-items:center;justify-content:center}
+.splash-card{width:min(520px,92vw);background:rgba(255,255,255,.94);border:1px solid rgba(0,0,0,.08);border-radius:16px;padding:22px;text-align:center;box-shadow:0 30px 70px rgba(0,0,0,.25)}
+.splash-logo{width:164px;height:64px;object-fit:contain;margin:6px auto 8px;display:block}
+.soon{display:inline-block;margin-top:10px;font-weight:700;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%{opacity:.65;transform:translateY(0)}50%{opacity:1;transform:translateY(-2px)}100%{opacity:.65;transform:translateY(0)}}
+.splash-form{display:grid;gap:10px;margin-top:16px}
+.splash-form input{padding:10px 12px;border-radius:12px;border:1px solid rgba(0,0,0,.15)}
+.splash-form button{padding:10px 14px;border-radius:12px;border:none;cursor:pointer;background:linear-gradient(90deg,var(--bg-gradient-start),var(--bg-gradient-end));color:#fff;font-weight:700}
+.splash-error{color:#b91c1c;font-size:.9rem;min-height:1.2em}
+.splash-hide{animation:splashfade .4s ease forwards}@keyframes splashfade{to{opacity:0;visibility:hidden}}

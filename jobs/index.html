@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Careers • Intreen</title>
+<meta name="description" content="Join Intreen. View open roles across engineering, IT, and more."/>
+<link rel="stylesheet" href="/assets/css/styles.css"/>
+<link rel="stylesheet" href="/assets/css/gradient-theme.css"/>
+<script src="/assets/js/gate.js" defer></script>
+
+<script type="application/ld+json" id="jobs-jsonld">
+{ "@context":"https://schema.org", "@type":"ItemList", "itemListElement":[] }
+</script>
+
+<style>
+  :root{ --g1:#007cf0; --g2:#6a00f4; --ink:#111; --line:rgba(0,0,0,.08); --card:#ffffffee; --chip:#f1f5f9; }
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px;}
+  .p{padding:12px}
+  .btn{display:inline-block; padding:10px 14px; border-radius:12px; text-decoration:none}
+  .btn.primary{color:#fff; background:linear-gradient(90deg,var(--g1),var(--g2))}
+  .btn.outline{background:#fff; border:1px solid var(--line); color:var(--ink)}
+  .btn.sm{padding:8px 12px}
+  .grid{display:grid; gap:12px}
+  .rows{display:grid; gap:8px}
+  .row{display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; padding:10px 12px; background:#fff; border:1px solid var(--line); border-radius:10px}
+  .controls{display:grid; grid-template-columns:1.2fr 1fr 1fr 1fr auto; gap:8px; align-items:center}
+  .controls input, .controls select{padding:10px 12px; border-radius:12px; border:1px solid rgba(0,0,0,.15)}
+  .chip{display:inline-block; padding:6px 10px; border-radius:9999px; background:var(--chip)}
+  .meta{opacity:.78}
+  .drawer{display:none}
+  .drawer.open{display:block; animation:fade .16s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+  @media (max-width:1100px){ .controls{grid-template-columns:1fr 1fr 1fr} }
+</style>
+</head>
+
+<body class="page">
+  <div id="site-navbar"></div>
+
+  <main class="container mt-8">
+    <section class="card p" style="background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25)">
+      <h1 style="color:#fff;margin:0">Careers at Intreen</h1>
+      <p style="color:#e6efff">We’re building tools that help people learn, work, and grow. Come work with us.</p>
+
+      <div class="controls">
+        <input id="job-q" type="search" placeholder="Search titles, teams, keywords"/>
+        <select id="job-team">
+          <option value="">All teams</option><option>Engineering</option><option>IT</option><option>Design</option><option>Product</option><option>Support</option><option>Operations</option>
+        </select>
+        <select id="job-location">
+          <option value="">All locations</option><option>Remote</option><option>Remote (US)</option><option>New York, NY</option><option>Miami, FL</option>
+        </select>
+        <select id="job-type">
+          <option value="">All types</option><option>Full-time</option><option>Contract</option><option>Internship</option>
+        </select>
+        <select id="job-sort">
+          <option value="recent">Sort: Most Recent</option><option value="alpha">Sort: A–Z</option><option value="salary">Sort: Salary</option>
+        </select>
+      </div>
+
+      <div class="rows" style="margin-top:10px">
+        <div class="row">
+          <div><strong>Total openings</strong></div><div><span class="chip" id="job-count">0</span></div>
+        </div>
+        <div class="row">
+          <div><strong>Saved jobs</strong></div><div><a class="btn outline sm" id="view-saved" href="#">View saved</a></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Listings -->
+    <section class="card p mt-4">
+      <h3 style="margin:0 0 8px">Open Roles</h3>
+      <div id="jobs-list" class="rows"></div>
+      <div id="jobs-empty" class="meta" style="display:none">No roles match right now.</div>
+    </section>
+
+    <!-- Drawer (quick apply) -->
+    <section id="job-drawer" class="card p drawer mt-4">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+        <div>
+          <div id="drawer-title" style="font-weight:800">Job Title</div>
+          <div id="drawer-meta" class="meta">Team • Location • Type</div>
+        </div>
+        <button class="btn outline sm" id="drawer-close" type="button">Close</button>
+      </div>
+      <div style="margin-top:8px">
+        <p id="drawer-desc" class="meta">Role responsibilities, impact, and requirements.</p>
+        <div class="rows">
+          <div class="row"><div>Salary range</div><div id="drawer-salary" class="chip">$—</div></div>
+          <div class="row"><div>Tags</div><div id="drawer-tags"></div></div>
+        </div>
+      </div>
+      <form id="apply-form" class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px">
+        <input name="name" required placeholder="Your name">
+        <input name="email" type="email" required placeholder="Email">
+        <input name="resume" type="url" placeholder="Resume link (https://)">
+        <textarea name="note" placeholder="Short note to hiring team" style="grid-column:1/-1;min-height:80px"></textarea>
+        <div style="grid-column:1/-1;display:flex;gap:8px;align-items:center">
+          <button class="btn primary" type="submit">Quick Apply</button>
+          <button class="btn outline" type="button" id="save-job">Save Job</button>
+          <a class="btn outline" id="copy-ref" href="#">Copy Referral Link</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+<script type="module">
+  import { bootLayout } from '/assets/js/layout.js';
+  bootLayout('jobs');
+
+  // Inline fallback jobs (used if /assets/jobs.json is missing)
+  const FALLBACK_JOBS = {
+    open_roles: [
+      { id:"se-1", title:"Software Engineer, Full-Stack", team:"Engineering", location:"Remote (US)", type:"Full-time", salary:"$120k–$160k", posted:"Oct 10, 2025", tags:["React","Node","Postgres"], desc:"Build new features across our commerce, events, and LMS products. You'll work across the stack and ship weekly." },
+      { id:"it-1", title:"IT Support Technician", team:"IT", location:"Remote", type:"Full-time", salary:"$55k–$75k", posted:"Oct 05, 2025", tags:["SLA","SCCM","MDM"], desc:"Own Tier 1/2 queues, automate workflows, and keep teammates unblocked. Rotating on-call with playbooks." },
+      { id:"pm-1", title:"Product Manager — LMS", team:"Product", location:"New York, NY", type:"Full-time", salary:"$130k–$170k", posted:"Sep 28, 2025", tags:["LMS","A/B","Roadmaps"], desc:"Drive the Intreen LMS roadmap, from discovery to launch. Partner with Design and Eng to ship outcomes." },
+      { id:"ds-1", title:"Data Scientist", team:"Engineering", location:"Remote", type:"Full-time", salary:"$135k–$180k", posted:"Oct 01, 2025", tags:["Python","ML","Experimentation"], desc:"Model key funnels, design experiments, and inform product strategy with robust analyses." },
+      { id:"ux-1", title:"Product Designer", team:"Design", location:"Remote", type:"Full-time", salary:"$110k–$150k", posted:"Oct 15, 2025", tags:["Figma","Prototyping","Systems"], desc:"Design intuitive UIs across commerce, events, and learning. Compose components and ship polished flows." },
+      { id:"sup-1", title:"Customer Support Specialist", team:"Support", location:"Miami, FL", type:"Full-time", salary:"$50k–$65k", posted:"Sep 20, 2025", tags:["Helpdesk","Zendesk","Voice"], desc:"Support merchants and creators via chat/email/phone. Turn issues into delightful experiences." }
+    ]
+  };
+
+  const list=document.getElementById('jobs-list');
+  const empty=document.getElementById('jobs-empty');
+  const count=document.getElementById('job-count');
+  const q=document.getElementById('job-q');
+  const team=document.getElementById('job-team');
+  const loc=document.getElementById('job-location');
+  const type=document.getElementById('job-type');
+  const sort=document.getElementById('job-sort');
+  const drawer=document.getElementById('job-drawer');
+  const dTitle=document.getElementById('drawer-title');
+  const dMeta=document.getElementById('drawer-meta');
+  const dDesc=document.getElementById('drawer-desc');
+  const dSalary=document.getElementById('drawer-salary');
+  const dTags=document.getElementById('drawer-tags');
+  const dClose=document.getElementById('drawer-close');
+  const applyForm=document.getElementById('apply-form');
+  const saveBtn=document.getElementById('save-job');
+  const copyRef=document.getElementById('copy-ref');
+  const viewSaved=document.getElementById('view-saved');
+
+  let DATA={open_roles:[]}, SAVED=new Set(), currentJob=null;
+
+  async function fetchJobs(){
+    try{ const r=await fetch('/assets/jobs.json'); if(r.ok) return await r.json(); }catch(e){}
+    return FALLBACK_JOBS;
+  }
+
+  function jobRow(j){
+    const tagHtml=(j.tags||[]).map(t=>`<span class="chip">${t}</span>`).join(' ');
+    return `<a class="row" href="#${j.id}" data-id="${j.id}">
+      <div><strong>${j.title}</strong> <span class="meta">• ${j.team} • ${j.location} • ${j.type}</span><div class="meta" style="margin-top:4px">${tagHtml}</div></div>
+      <div style="text-align:right">
+        <div class="chip">${j.salary||''}</div>
+        <div class="meta">Posted ${j.posted||''}</div>
+      </div>
+    </a>`;
+  }
+
+  function setJSONLD(items){
+    const ld={ "@context":"https://schema.org","@type":"ItemList",
+      "itemListElement": items.map((j,i)=>({
+        "@type":"ListItem","position":i+1,
+        "item":{ "@type":"JobPosting", "title": j.title, "datePosted": j.posted||"", "employmentType": j.type||"", "jobLocation": { "@type":"Place", "address": j.location||"" } }
+      }))};
+    const tag=document.getElementById('jobs-jsonld'); if(tag) tag.textContent=JSON.stringify(ld);
+  }
+
+  function filtered(){
+    const term=(q.value||'').toLowerCase();
+    return DATA.open_roles.filter(j=>{
+      const hay=[j.title,j.team,(j.tags||[]).join(' '),j.location,j.type].join(' ').toLowerCase();
+      const okTerm=!term||hay.includes(term);
+      const okTeam=!team.value||(j.team===team.value);
+      const okLoc=!loc.value||(j.location===loc.value|| (loc.value==='Remote'&&j.location.toLowerCase().includes('remote')));
+      const okType=!type.value||(j.type===type.value);
+      return okTerm && okTeam && okLoc && okType;
+    });
+  }
+
+  function sortItems(items){
+    const v=sort.value;
+    if(v==='alpha') return items.slice().sort((a,b)=>a.title.localeCompare(b.title));
+    if(v==='salary'){
+      const n=v=> (v||'').replace(/[^0-9\-]/g,'').split('-').map(x=>parseInt(x,10)||0)[0]||0;
+      return items.slice().sort((a,b)=> n(b.salary)-n(a.salary));
+    }
+    // recent default: assume array already roughly newest first; we’ll keep it.
+    return items;
+  }
+
+  function render(){
+    let items=sortItems(filtered());
+    count.textContent = items.length;
+    list.innerHTML = items.map(jobRow).join('');
+    empty.style.display = items.length? 'none':'block';
+    setJSONLD(items);
+  }
+
+  function openDrawer(job){
+    currentJob=job;
+    dTitle.textContent=job.title;
+    dMeta.textContent=`${job.team} • ${job.location} • ${job.type}`;
+    dDesc.textContent=job.desc||'Role responsibilities, impact, and requirements.';
+    dSalary.textContent=job.salary||'—';
+    dTags.innerHTML=(job.tags||[]).map(t=>`<span class="chip">${t}</span>`).join(' ');
+    drawer.classList.add('open');
+    drawer.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  function closeDrawer(){ drawer.classList.remove('open'); currentJob=null; }
+
+  function saveJob(job){
+    const key='intreen_saved_jobs';
+    const cur=new Set(JSON.parse(localStorage.getItem(key)||'[]'));
+    cur.add(job.id); localStorage.setItem(key, JSON.stringify([...cur]));
+    SAVED=cur; alert('Saved!');
+  }
+
+  function showSaved(){
+    const key='intreen_saved_jobs';
+    const ids=new Set(JSON.parse(localStorage.getItem(key)||'[]'));
+    const items=DATA.open_roles.filter(j=>ids.has(j.id));
+    list.innerHTML=items.map(jobRow).join('')||'<div class="meta">No saved jobs yet.</div>';
+    setJSONLD(items);
+  }
+
+  function copyReferral(job){
+    const url=new URL(location.href);
+    url.hash = job.id;
+    url.searchParams.set('ref','friend');
+    navigator.clipboard.writeText(url.toString()).then(()=> alert('Referral link copied!'));
+  }
+
+  // Wire up
+  (async function init(){
+    DATA = await fetchJobs();
+    render();
+
+    [q,team,loc,type,sort].forEach(el=> el && el.addEventListener('input', render));
+    list.addEventListener('click', (e)=>{
+      const a=e.target.closest('a[data-id]'); if(!a) return;
+      const id=a.getAttribute('data-id');
+      const job=DATA.open_roles.find(j=>j.id===id); if(job) openDrawer(job);
+      e.preventDefault();
+    });
+    dClose.addEventListener('click', closeDrawer);
+    applyForm.addEventListener('submit', (e)=>{ e.preventDefault(); alert('Application submitted!'); closeDrawer(); });
+
+    saveBtn.addEventListener('click', ()=>{ if(currentJob) saveJob(currentJob); });
+    copyRef.addEventListener('click', (e)=>{ e.preventDefault(); if(currentJob) copyReferral(currentJob); });
+    viewSaved.addEventListener('click', (e)=>{ e.preventDefault(); showSaved(); });
+
+    // Deep link via hash
+    if(location.hash){
+      const id=location.hash.slice(1);
+      const job=DATA.open_roles.find(j=>j.id===id);
+      if(job) openDrawer(job);
+    }
+  })();
+</script>
+</body>
+</html>
