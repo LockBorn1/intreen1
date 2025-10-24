@@ -4,160 +4,411 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Careers • Intreen</title>
-<meta name="description" content="Join Intreen. View open roles across engineering, IT, and more."/>
+<meta name="description" content="Join Intreen. View open roles and publish jobs with an employer subscription."/>
 <link rel="stylesheet" href="/assets/css/styles.css"/>
 <link rel="stylesheet" href="/assets/css/gradient-theme.css"/>
 <script src="/assets/js/gate.js" defer></script>
 
+<!-- SEO / Rich Results -->
 <script type="application/ld+json" id="jobs-jsonld">
 { "@context":"https://schema.org", "@type":"ItemList", "itemListElement":[] }
 </script>
 
 <style>
-  :root{ --g1:#007cf0; --g2:#6a00f4; --ink:#111; --line:rgba(0,0,0,.08); --card:#ffffffee; --chip:#f1f5f9; }
-  .card{background:var(--card); border:1px solid var(--line); border-radius:12px;}
+  :root{
+    --g1:#007cf0; --g2:#6a00f4;
+    --ink:#111; --muted:#475569; --line:rgba(0,0,0,.10);
+    --card:#fffffff2; --chip:#f1f5f9;
+  }
+  body{color:var(--ink)}
+  main.container{max-width:1100px}
+
+  /* Surfaces */
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px}
   .p{padding:12px}
-  .btn{display:inline-block; padding:10px 14px; border-radius:12px; text-decoration:none}
-  .btn.primary{color:#fff; background:linear-gradient(90deg,var(--g1),var(--g2))}
-  .btn.outline{background:#fff; border:1px solid var(--line); color:var(--ink)}
-  .btn.sm{padding:8px 12px}
-  .grid{display:grid; gap:12px}
-  .rows{display:grid; gap:8px}
-  .row{display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; padding:10px 12px; background:#fff; border:1px solid var(--line); border-radius:10px}
-  .controls{display:grid; grid-template-columns:1.2fr 1fr 1fr 1fr auto; gap:8px; align-items:center}
-  .controls input, .controls select{padding:10px 12px; border-radius:12px; border:1px solid rgba(0,0,0,.15)}
-  .chip{display:inline-block; padding:6px 10px; border-radius:9999px; background:var(--chip)}
-  .meta{opacity:.78}
-  .drawer{display:none}
-  .drawer.open{display:block; animation:fade .16s ease}
-  @keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
-  @media (max-width:1100px){ .controls{grid-template-columns:1fr 1fr 1fr} }
+  .meta{color:var(--muted)}
+  .button{display:inline-block;padding:10px 14px;border-radius:12px;text-decoration:none;cursor:pointer}
+  .button.primary{color:#fff;background:linear-gradient(90deg,var(--g1),var(--g2));border:none}
+  .button.ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .button.sm{padding:8px 10px}
+  .pill{border-radius:9999px;padding:2px 8px;font-size:.78rem;background:#eef2ff;color:#3730a3;display:inline-block}
+  .chip{display:inline-block;padding:6px 10px;border-radius:9999px;background:var(--chip)}
+
+  /* Hero + Tabs */
+  .hero{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:18px}
+  .hero h1{color:#fff;margin:0}
+  .hero p{color:#e6efff;margin:6px 0 12px}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap}
+  .tab{padding:8px 12px;border-radius:10px;background:#ffffffdd;border:1px solid var(--line);cursor:pointer;user-select:none}
+  .tab.active{background:linear-gradient(90deg,var(--g1),var(--g2));color:#fff;border:none}
+
+  /* Filters tray (collapsible) */
+  .filters{display:none;margin-top:10px}
+  .filters.open{display:block;animation:fade .15s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+  .filters .row{display:flex;gap:8px;flex-wrap:wrap}
+  .filters input,.filters select{padding:9px 12px;border-radius:10px;border:1px solid rgba(0,0,0,.15);background:#fff}
+
+  /* Toolbar (view/density/pagination) */
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+  .seg{display:flex;gap:6px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px}
+  .seg button{border:none;background:transparent;padding:6px 10px;border-radius:8px;cursor:pointer}
+  .seg button.active{background:#eef2ff;color:#3730a3}
+
+  /* Grid/List */
+  .grid{display:grid;gap:10px}
+  .cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+  @media (max-width:980px){ .cards{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:640px){ .cards{grid-template-columns:1fr} }
+  .rows{display:grid;gap:8px}
+
+  .job{border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden;display:flex;flex-direction:column}
+  .job .hd{padding:12px}
+  .job .title{font-weight:800;margin:0 0 4px}
+  .job .meta{font-size:.92rem}
+  .job .ft{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px 12px;border-top:1px solid var(--line)}
+  .job .tags{display:flex;gap:6px;flex-wrap:wrap}
+
+  .list .job{display:grid;grid-template-columns:1fr auto;align-items:center}
+  .list .job .ft{border-top:none;padding:0 12px}
+
+  /* Sheet (drawers) */
+  .sheet{position:fixed;inset:auto 0 0 0;max-height:80vh;background:var(--card);border-top:1px solid var(--line);
+    border-radius:16px 16px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.12);display:none;z-index:60}
+  .sheet.open{display:block;animation:slideUp .18s ease}
+  .sheet .hd{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line)}
+  .sheet .bd{padding:16px;overflow:auto;max-height:calc(80vh - 54px)}
+  @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  /* Employer plan cards */
+  .plans{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  .plan{border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px}
+  .plan h4{margin:0 0 4px}
+
+  /* Toast */
+  .toast{position:fixed;right:16px;bottom:16px;background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:.95;z-index:99;display:none}
 </style>
 </head>
 
-<body class="page">
+<body class="gradient-bg">
   <div id="site-navbar"></div>
 
   <main class="container mt-8">
-    <section class="card p" style="background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25)">
-      <h1 style="color:#fff;margin:0">Careers at Intreen</h1>
-      <p style="color:#e6efff">We’re building tools that help people learn, work, and grow. Come work with us.</p>
+    <!-- HERO -->
+    <section class="card p hero">
+      <h1>Careers at Intreen</h1>
+      <p>We’re building tools that help people learn, work, and grow. Come work with us — or post your roles for our community to discover.</p>
 
-      <div class="controls">
-        <input id="job-q" type="search" placeholder="Search titles, teams, keywords"/>
-        <select id="job-team">
-          <option value="">All teams</option><option>Engineering</option><option>IT</option><option>Design</option><option>Product</option><option>Support</option><option>Operations</option>
-        </select>
-        <select id="job-location">
-          <option value="">All locations</option><option>Remote</option><option>Remote (US)</option><option>New York, NY</option><option>Miami, FL</option>
-        </select>
-        <select id="job-type">
-          <option value="">All types</option><option>Full-time</option><option>Contract</option><option>Internship</option>
-        </select>
-        <select id="job-sort">
-          <option value="recent">Sort: Most Recent</option><option value="alpha">Sort: A–Z</option><option value="salary">Sort: Salary</option>
-        </select>
+      <div class="toolbar">
+        <div class="tabs" role="tablist" aria-label="Job views">
+          <div class="tab active" data-tab="open" role="tab" aria-selected="true">Open Roles</div>
+          <div class="tab" data-tab="saved" role="tab" aria-selected="false">Saved</div>
+          <div class="tab" data-tab="employers" role="tab" aria-selected="false">Employers</div>
+        </div>
+        <div class="right">
+          <button id="toggle-filters" class="button ghost sm" type="button">Filters</button>
+          <button id="open-post" class="button primary sm" type="button">Post a Job</button>
+        </div>
       </div>
 
-      <div class="rows" style="margin-top:10px">
+      <!-- Filters -->
+      <div id="filters" class="filters">
         <div class="row">
-          <div><strong>Total openings</strong></div><div><span class="chip" id="job-count">0</span></div>
-        </div>
-        <div class="row">
-          <div><strong>Saved jobs</strong></div><div><a class="btn outline sm" id="view-saved" href="#">View saved</a></div>
+          <input id="q" type="search" placeholder="Search titles, teams, keywords"/>
+          <select id="f-team">
+            <option value="">All teams</option><option>Engineering</option><option>IT</option><option>Design</option>
+            <option>Product</option><option>Support</option><option>Operations</option>
+          </select>
+          <select id="f-location">
+            <option value="">All locations</option><option>Remote</option><option>Remote (US)</option><option>New York, NY</option><option>Miami, FL</option>
+          </select>
+          <select id="f-type">
+            <option value="">All types</option><option>Full-time</option><option>Contract</option><option>Internship</option>
+          </select>
+          <select id="f-sort">
+            <option value="recent">Sort: Most Recent</option>
+            <option value="alpha">Sort: A–Z</option>
+            <option value="salary">Sort: Salary</option>
+          </select>
+          <button id="f-clear" class="button ghost sm" type="button">Clear</button>
         </div>
       </div>
     </section>
 
-    <!-- Listings -->
-    <section class="card p mt-4">
-      <h3 style="margin:0 0 8px">Open Roles</h3>
-      <div id="jobs-list" class="rows"></div>
-      <div id="jobs-empty" class="meta" style="display:none">No roles match right now.</div>
+    <!-- TOOLBAR (view/density/pagination + counters) -->
+    <section class="card p" style="margin-top:12px">
+      <div class="toolbar">
+        <div class="left" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <div class="seg" role="group" aria-label="View">
+            <button id="view-grid" class="active" type="button">Grid</button>
+            <button id="view-list" type="button">List</button>
+          </div>
+          <div class="seg" role="group" aria-label="Density">
+            <button id="density-comfort" class="active" type="button">Comfort</button>
+            <button id="density-compact" type="button">Compact</button>
+          </div>
+          <div class="rows" style="gap:6px">
+            <div><strong>Total openings</strong> <span class="pill" id="count-total">0</span></div>
+          </div>
+        </div>
+        <div class="right">
+          <div class="seg" role="group" aria-label="Pagination">
+            <button id="prev" type="button">Prev</button>
+            <span id="page" class="pill">1 / 1</span>
+            <button id="next" type="button">Next</button>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- Drawer (quick apply) -->
-    <section id="job-drawer" class="card p drawer mt-4">
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
-        <div>
-          <div id="drawer-title" style="font-weight:800">Job Title</div>
-          <div id="drawer-meta" class="meta">Team • Location • Type</div>
+    <!-- VIEW: Open Roles -->
+    <section id="view-open" class="card p" role="tabpanel" aria-labelledby="Open Roles" style="margin-top:12px">
+      <div id="jobs" class="grid cards"></div>
+      <div id="empty" class="meta" style="display:none">No roles match right now.</div>
+    </section>
+
+    <!-- VIEW: Saved -->
+    <section id="view-saved" class="card p" role="tabpanel" aria-labelledby="Saved" style="display:none;margin-top:12px">
+      <div id="saved-jobs" class="grid cards"></div>
+      <div id="saved-empty" class="meta" style="display:none">No saved jobs yet.</div>
+    </section>
+
+    <!-- VIEW: Employers -->
+    <section id="view-employers" class="card p" role="tabpanel" aria-labelledby="Employers" style="display:none;margin-top:12px">
+      <div class="rows">
+        <div class="plan">
+          <h3 style="margin:0 0 6px">Hire with Intreen</h3>
+          <p class="meta" style="margin:0 0 8px">Open an employer account and publish jobs to our community. Simple subscription pricing.</p>
+          <div class="plans">
+            <div class="plan">
+              <h4>Starter</h4>
+              <div class="meta">1 active listing • Email support</div>
+              <div class="pill" style="margin-top:6px">$29/mo</div>
+              <button class="button primary sm" data-plan="starter" style="margin-top:8px">Choose Starter</button>
+            </div>
+            <div class="plan">
+              <h4>Growth</h4>
+              <div class="meta">5 active listings • Featured placement</div>
+              <div class="pill" style="margin-top:6px">$79/mo</div>
+              <button class="button primary sm" data-plan="growth" style="margin-top:8px">Choose Growth</button>
+            </div>
+            <div class="plan">
+              <h4>Pro</h4>
+              <div class="meta">Unlimited listings • Featured + API</div>
+              <div class="pill" style="margin-top:6px">$149/mo</div>
+              <button class="button primary sm" data-plan="pro" style="margin-top:8px">Choose Pro</button>
+            </div>
+          </div>
         </div>
-        <button class="btn outline sm" id="drawer-close" type="button">Close</button>
+        <div class="plan">
+          <h4 style="margin:0 0 6px">Already a customer?</h4>
+          <p class="meta" style="margin:0">Use “Post a Job” to add a role. Your listing will appear under Open Roles after approval (demo uses local storage).</p>
+          <button class="button ghost sm" id="open-post-2" style="margin-top:8px">Post a Job</button>
+        </div>
       </div>
-      <div style="margin-top:8px">
-        <p id="drawer-desc" class="meta">Role responsibilities, impact, and requirements.</p>
-        <div class="rows">
-          <div class="row"><div>Salary range</div><div id="drawer-salary" class="chip">$—</div></div>
-          <div class="row"><div>Tags</div><div id="drawer-tags"></div></div>
-        </div>
-      </div>
-      <form id="apply-form" class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px">
-        <input name="name" required placeholder="Your name">
-        <input name="email" type="email" required placeholder="Email">
-        <input name="resume" type="url" placeholder="Resume link (https://)">
-        <textarea name="note" placeholder="Short note to hiring team" style="grid-column:1/-1;min-height:80px"></textarea>
-        <div style="grid-column:1/-1;display:flex;gap:8px;align-items:center">
-          <button class="btn primary" type="submit">Quick Apply</button>
-          <button class="btn outline" type="button" id="save-job">Save Job</button>
-          <a class="btn outline" id="copy-ref" href="#">Copy Referral Link</a>
-        </div>
-      </form>
     </section>
   </main>
+
+  <!-- SHEET: Job Details -->
+  <section id="sheet-job" class="sheet" aria-modal="true">
+    <div class="hd">
+      <div>
+        <div id="job-title" style="font-weight:800">Job Title</div>
+        <div id="job-meta" class="meta">Team • Location • Type</div>
+      </div>
+      <button id="close-job" class="button ghost sm" type="button">Close</button>
+    </div>
+    <div class="bd">
+      <p id="job-desc" class="meta">Role responsibilities, impact, and requirements.</p>
+      <div class="rows" style="margin:10px 0">
+        <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+          <div class="card p"><strong>Salary</strong><div id="job-salary" class="pill" style="margin-top:6px">$—</div></div>
+          <div class="card p"><strong>Tags</strong><div id="job-tags" style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap"></div></div>
+        </div>
+      </div>
+      <form id="apply" class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px">
+        <input name="name" required placeholder="Your name"/>
+        <input name="email" type="email" required placeholder="Email"/>
+        <input name="resume" type="url" placeholder="Resume link (https://)"/>
+        <textarea name="note" placeholder="Short note to hiring team" style="grid-column:1/-1;min-height:80px"></textarea>
+        <div style="grid-column:1/-1;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="button primary" type="submit">Quick Apply</button>
+          <button class="button ghost" type="button" id="save-job">Save Job</button>
+          <button class="button ghost" type="button" id="copy-ref">Copy Referral Link</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- SHEET: Post a Job (Employer) -->
+  <section id="sheet-post" class="sheet" aria-modal="true">
+    <div class="hd">
+      <div style="font-weight:800">Post a Job</div>
+      <button id="close-post" class="button ghost sm" type="button">Close</button>
+    </div>
+    <div class="bd">
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px">
+        <div class="card p">
+          <strong>Subscription</strong>
+          <p class="meta" style="margin:6px 0 8px">Choose plan (demo):</p>
+          <div class="rows">
+            <label class="row" style="grid-template-columns:auto 1fr">
+              <input type="radio" name="plan" value="starter" checked style="margin-right:8px"/>
+              <div>Starter • <span class="meta">$29/mo</span></div>
+            </label>
+            <label class="row" style="grid-template-columns:auto 1fr">
+              <input type="radio" name="plan" value="growth" style="margin-right:8px"/>
+              <div>Growth • <span class="meta">$79/mo</span></div>
+            </label>
+            <label class="row" style="grid-template-columns:auto 1fr">
+              <input type="radio" name="plan" value="pro" style="margin-right:8px"/>
+              <div>Pro • <span class="meta">$149/mo</span></div>
+            </label>
+          </div>
+        </div>
+        <form id="post-form" class="card p" style="display:grid;gap:8px">
+          <strong>New Listing</strong>
+          <input name="title" required placeholder="Job title"/>
+          <input name="team" placeholder="Team (e.g., Engineering)"/>
+          <input name="location" placeholder="Location (e.g., Remote (US))"/>
+          <select name="type">
+            <option value="">Type</option><option>Full-time</option><option>Contract</option><option>Internship</option>
+          </select>
+          <input name="salary" placeholder="Salary range (e.g., $100k–$140k)"/>
+          <input name="tags" placeholder="Tags (comma separated)"/>
+          <textarea name="desc" placeholder="Short description" style="min-height:100px"></textarea>
+          <button class="button primary" type="submit">Publish (demo)</button>
+          <p class="meta">In demo mode, listings save to your browser and appear under Open Roles immediately.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <div id="toast" class="toast"></div>
 
 <script type="module">
   import { bootLayout } from '/assets/js/layout.js';
   bootLayout('jobs');
 
-  // Inline fallback jobs (used if /assets/jobs.json is missing)
-  const FALLBACK_JOBS = {
+  /* -------------------- Data (fallback) -------------------- */
+  const FALLBACK = {
     open_roles: [
-      { id:"se-1", title:"Software Engineer, Full-Stack", team:"Engineering", location:"Remote (US)", type:"Full-time", salary:"$120k–$160k", posted:"Oct 10, 2025", tags:["React","Node","Postgres"], desc:"Build new features across our commerce, events, and LMS products. You'll work across the stack and ship weekly." },
+      { id:"se-1", title:"Software Engineer, Full-Stack", team:"Engineering", location:"Remote (US)", type:"Full-time", salary:"$120k–$160k", posted:"Oct 10, 2025", tags:["React","Node","Postgres"], desc:"Build features across commerce, events, and LMS. Work across the stack and ship weekly." },
       { id:"it-1", title:"IT Support Technician", team:"IT", location:"Remote", type:"Full-time", salary:"$55k–$75k", posted:"Oct 05, 2025", tags:["SLA","SCCM","MDM"], desc:"Own Tier 1/2 queues, automate workflows, and keep teammates unblocked. Rotating on-call with playbooks." },
-      { id:"pm-1", title:"Product Manager — LMS", team:"Product", location:"New York, NY", type:"Full-time", salary:"$130k–$170k", posted:"Sep 28, 2025", tags:["LMS","A/B","Roadmaps"], desc:"Drive the Intreen LMS roadmap, from discovery to launch. Partner with Design and Eng to ship outcomes." },
+      { id:"pm-1", title:"Product Manager — LMS", team:"Product", location:"New York, NY", type:"Full-time", salary:"$130k–$170k", posted:"Sep 28, 2025", tags:["LMS","A/B","Roadmaps"], desc:"Drive the Intreen LMS roadmap from discovery to launch. Partner with Design and Eng to ship outcomes." },
       { id:"ds-1", title:"Data Scientist", team:"Engineering", location:"Remote", type:"Full-time", salary:"$135k–$180k", posted:"Oct 01, 2025", tags:["Python","ML","Experimentation"], desc:"Model key funnels, design experiments, and inform product strategy with robust analyses." },
       { id:"ux-1", title:"Product Designer", team:"Design", location:"Remote", type:"Full-time", salary:"$110k–$150k", posted:"Oct 15, 2025", tags:["Figma","Prototyping","Systems"], desc:"Design intuitive UIs across commerce, events, and learning. Compose components and ship polished flows." },
       { id:"sup-1", title:"Customer Support Specialist", team:"Support", location:"Miami, FL", type:"Full-time", salary:"$50k–$65k", posted:"Sep 20, 2025", tags:["Helpdesk","Zendesk","Voice"], desc:"Support merchants and creators via chat/email/phone. Turn issues into delightful experiences." }
     ]
   };
 
-  const list=document.getElementById('jobs-list');
-  const empty=document.getElementById('jobs-empty');
-  const count=document.getElementById('job-count');
-  const q=document.getElementById('job-q');
-  const team=document.getElementById('job-team');
-  const loc=document.getElementById('job-location');
-  const type=document.getElementById('job-type');
-  const sort=document.getElementById('job-sort');
-  const drawer=document.getElementById('job-drawer');
-  const dTitle=document.getElementById('drawer-title');
-  const dMeta=document.getElementById('drawer-meta');
-  const dDesc=document.getElementById('drawer-desc');
-  const dSalary=document.getElementById('drawer-salary');
-  const dTags=document.getElementById('drawer-tags');
-  const dClose=document.getElementById('drawer-close');
-  const applyForm=document.getElementById('apply-form');
-  const saveBtn=document.getElementById('save-job');
-  const copyRef=document.getElementById('copy-ref');
-  const viewSaved=document.getElementById('view-saved');
+  const STORAGE_KEY_JOBS = 'intreen_jobs_custom';
+  const STORAGE_KEY_SAVED = 'intreen_jobs_saved';
 
-  let DATA={open_roles:[]}, SAVED=new Set(), currentJob=null;
+  /* -------------------- DOM -------------------- */
+  const tabs=[...document.querySelectorAll('.tab')];
+  const views={
+    open: document.getElementById('view-open'),
+    saved: document.getElementById('view-saved'),
+    employers: document.getElementById('view-employers')
+  };
+  const toggleFilters=document.getElementById('toggle-filters');
+  const filters=document.getElementById('filters');
+
+  const q=document.getElementById('q');
+  const fTeam=document.getElementById('f-team');
+  const fLoc=document.getElementById('f-location');
+  const fType=document.getElementById('f-type');
+  const fSort=document.getElementById('f-sort');
+  const fClear=document.getElementById('f-clear');
+
+  const jobs=document.getElementById('jobs');
+  const empty=document.getElementById('empty');
+  const countTotal=document.getElementById('count-total');
+
+  const savedWrap=document.getElementById('saved-jobs');
+  const savedEmpty=document.getElementById('saved-empty');
+
+  const viewGrid=document.getElementById('view-grid');
+  const viewList=document.getElementById('view-list');
+  const densityComfort=document.getElementById('density-comfort');
+  const densityCompact=document.getElementById('density-compact');
+
+  const prevBtn=document.getElementById('prev');
+  const nextBtn=document.getElementById('next');
+  const pageEl=document.getElementById('page');
+
+  const sheetJob=document.getElementById('sheet-job');
+  const closeJob=document.getElementById('close-job');
+  const jobTitle=document.getElementById('job-title');
+  const jobMeta=document.getElementById('job-meta');
+  const jobDesc=document.getElementById('job-desc');
+  const jobSalary=document.getElementById('job-salary');
+  const jobTags=document.getElementById('job-tags');
+  const formApply=document.getElementById('apply');
+  const btnSaveJob=document.getElementById('save-job');
+  const btnCopyRef=document.getElementById('copy-ref');
+
+  const sheetPost=document.getElementById('sheet-post');
+  const openPost=document.getElementById('open-post');
+  const openPost2=document.getElementById('open-post-2');
+  const closePost=document.getElementById('close-post');
+  const postForm=document.getElementById('post-form');
+
+  const toast=document.getElementById('toast');
+
+  /* -------------------- State -------------------- */
+  let DATA={open_roles:[]};
+  let CUSTOM=[];       // user-posted listings (local)
+  let SAVED=new Set();
+  let currentTab='open';
+  let viewMode='grid';
+  let density='comfort';
+  let page=1, perPage=9;
+  let currentJob=null;
+
+  /* -------------------- Helpers -------------------- */
+  const asArray = v => Array.isArray(v)?v:(v? [v] : []);
+  const show = (el,bool=true)=> el.style.display = bool? '' : 'none';
+  const toastMsg = msg => { toast.textContent=msg; show(toast,true); setTimeout(()=>show(toast,false),2000); };
+
+  function loadLocal(){
+    try{ CUSTOM = JSON.parse(localStorage.getItem(STORAGE_KEY_JOBS)||'[]'); }catch{ CUSTOM=[]; }
+    try{ SAVED = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY_SAVED)||'[]')); }catch{ SAVED=new Set(); }
+  }
+  function saveLocal(){
+    localStorage.setItem(STORAGE_KEY_JOBS, JSON.stringify(CUSTOM));
+    localStorage.setItem(STORAGE_KEY_SAVED, JSON.stringify([...SAVED]));
+  }
 
   async function fetchJobs(){
     try{ const r=await fetch('/assets/jobs.json'); if(r.ok) return await r.json(); }catch(e){}
-    return FALLBACK_JOBS;
+    return FALLBACK;
   }
 
-  function jobRow(j){
-    const tagHtml=(j.tags||[]).map(t=>`<span class="chip">${t}</span>`).join(' ');
-    return `<a class="row" href="#${j.id}" data-id="${j.id}">
-      <div><strong>${j.title}</strong> <span class="meta">• ${j.team} • ${j.location} • ${j.type}</span><div class="meta" style="margin-top:4px">${tagHtml}</div></div>
-      <div style="text-align:right">
-        <div class="chip">${j.salary||''}</div>
-        <div class="meta">Posted ${j.posted||''}</div>
+  function allRoles(){
+    // Merge fallback/API roles with locally posted roles
+    return [...(DATA.open_roles||[]), ...CUSTOM];
+  }
+
+  function card(j){
+    const tags = (j.tags||[]).map(t=>`<span class="pill">${t}</span>`).join(' ');
+    const saved = SAVED.has(j.id) ? 'Saved' : 'Save';
+    return `<article class="job" data-id="${j.id}">
+      <div class="hd">
+        <h3 class="title">${j.title}</h3>
+        <div class="meta">${j.team||''} • ${j.location||''} • ${j.type||''}</div>
+        ${tags?`<div class="tags" style="margin-top:6px">${tags}</div>`:''}
       </div>
-    </a>`;
+      <div class="ft">
+        <div class="meta">Posted ${j.posted||'Recently'}</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          ${j.salary?`<span class="chip">${j.salary}</span>`:''}
+          <button class="button primary sm" data-open="${j.id}">View</button>
+          <button class="button ghost sm" data-save="${j.id}">${saved}</button>
+        </div>
+      </div>
+    </article>`;
   }
 
   function setJSONLD(items){
@@ -169,97 +420,181 @@
     const tag=document.getElementById('jobs-jsonld'); if(tag) tag.textContent=JSON.stringify(ld);
   }
 
-  function filtered(){
+  function filtered(base){
     const term=(q.value||'').toLowerCase();
-    return DATA.open_roles.filter(j=>{
-      const hay=[j.title,j.team,(j.tags||[]).join(' '),j.location,j.type].join(' ').toLowerCase();
-      const okTerm=!term||hay.includes(term);
-      const okTeam=!team.value||(j.team===team.value);
-      const okLoc=!loc.value||(j.location===loc.value|| (loc.value==='Remote'&&j.location.toLowerCase().includes('remote')));
-      const okType=!type.value||(j.type===type.value);
+    const t=fTeam.value||'', l=fLoc.value||'', ty=fType.value||'';
+    return base.filter(j=>{
+      const hay=[j.title,j.team,(j.tags||[]).join(' '),j.location,j.type,(j.desc||'')].join(' ').toLowerCase();
+      const okTerm = !term || hay.includes(term);
+      const okTeam = !t || j.team===t;
+      const okLoc  = !l || j.location===l || (l==='Remote' && (j.location||'').toLowerCase().includes('remote'));
+      const okType = !ty || j.type===ty;
       return okTerm && okTeam && okLoc && okType;
     });
   }
-
   function sortItems(items){
-    const v=sort.value;
-    if(v==='alpha') return items.slice().sort((a,b)=>a.title.localeCompare(b.title));
+    const v=fSort.value;
+    if(v==='alpha') return items.slice().sort((a,b)=> (a.title||'').localeCompare(b.title||''));
     if(v==='salary'){
-      const n=v=> (v||'').replace(/[^0-9\-]/g,'').split('-').map(x=>parseInt(x,10)||0)[0]||0;
-      return items.slice().sort((a,b)=> n(b.salary)-n(a.salary));
+      const base = s => { const n=(s||'').match(/\d+/g); return n? parseInt(n[0],10) : 0; };
+      return items.slice().sort((a,b)=> base(b.salary)-base(a.salary));
     }
-    // recent default: assume array already roughly newest first; we’ll keep it.
-    return items;
+    return items; // recent default (source roughly newest-first)
   }
 
-  function render(){
-    let items=sortItems(filtered());
-    count.textContent = items.length;
-    list.innerHTML = items.map(jobRow).join('');
-    empty.style.display = items.length? 'none':'block';
+  function setViewMode(container){
+    if(viewMode==='list'){ container.classList.remove('cards'); container.classList.add('list'); }
+    else { container.classList.remove('list'); container.classList.add('cards'); }
+  }
+
+  function paginate(items){
+    const total=Math.max(1, Math.ceil(items.length/perPage));
+    if(page>total) page=total;
+    const start=(page-1)*perPage, end=start+perPage;
+    pageEl.textContent = `${page} / ${total}`;
+    prevBtn.disabled = page<=1; nextBtn.disabled = page>=total;
+    return items.slice(start,end);
+  }
+
+  /* -------------------- Renderers -------------------- */
+  function renderOpen(){
+    let items = sortItems(filtered(allRoles()));
+    countTotal.textContent = items.length;
+    const pageItems = paginate(items);
+    jobs.innerHTML = pageItems.map(card).join('') || '';
+    show(empty, items.length===0);
     setJSONLD(items);
+    setViewMode(jobs);
   }
 
-  function openDrawer(job){
-    currentJob=job;
-    dTitle.textContent=job.title;
-    dMeta.textContent=`${job.team} • ${job.location} • ${job.type}`;
-    dDesc.textContent=job.desc||'Role responsibilities, impact, and requirements.';
-    dSalary.textContent=job.salary||'—';
-    dTags.innerHTML=(job.tags||[]).map(t=>`<span class="chip">${t}</span>`).join(' ');
-    drawer.classList.add('open');
-    drawer.scrollIntoView({behavior:'smooth',block:'start'});
+  function renderSaved(){
+    const items = allRoles().filter(j=> SAVED.has(j.id));
+    savedWrap.innerHTML = items.map(card).join('') || '';
+    show(savedEmpty, items.length===0);
+    setViewMode(savedWrap);
   }
 
-  function closeDrawer(){ drawer.classList.remove('open'); currentJob=null; }
+  /* -------------------- Sheets -------------------- */
+  function openJob(j){
+    currentJob=j;
+    jobTitle.textContent=j.title;
+    jobMeta.textContent=`${j.team||''} • ${j.location||''} • ${j.type||''}`;
+    jobDesc.textContent=j.desc||'Role responsibilities, impact, and requirements.';
+    jobSalary.textContent=j.salary||'—';
+    jobTags.innerHTML=(j.tags||[]).map(t=>`<span class="pill">${t}</span>`).join(' ');
+    sheetJob.classList.add('open');
+  }
+  function closeJobSheet(){ sheetJob.classList.remove('open'); currentJob=null; }
 
-  function saveJob(job){
-    const key='intreen_saved_jobs';
-    const cur=new Set(JSON.parse(localStorage.getItem(key)||'[]'));
-    cur.add(job.id); localStorage.setItem(key, JSON.stringify([...cur]));
-    SAVED=cur; alert('Saved!');
+  function openPostSheet(){ sheetPost.classList.add('open'); }
+  function closePostSheet(){ sheetPost.classList.remove('open'); }
+
+  /* -------------------- Actions -------------------- */
+  function saveJob(id){
+    SAVED.add(id); saveLocal();
+    renderOpen(); renderSaved();
+    toastMsg('Saved to your jobs.');
+  }
+  function unsaveJob(id){
+    SAVED.delete(id); saveLocal();
+    renderOpen(); renderSaved();
+    toastMsg('Removed from saved.');
   }
 
-  function showSaved(){
-    const key='intreen_saved_jobs';
-    const ids=new Set(JSON.parse(localStorage.getItem(key)||'[]'));
-    const items=DATA.open_roles.filter(j=>ids.has(j.id));
-    list.innerHTML=items.map(jobRow).join('')||'<div class="meta">No saved jobs yet.</div>';
-    setJSONLD(items);
-  }
+  /* -------------------- Events -------------------- */
+  function bind(){
+    // Tabs
+    tabs.forEach(t=> t.addEventListener('click', ()=>{
+      currentTab=t.dataset.tab;
+      Object.values(views).forEach(v=> show(v,false));
+      show(views[currentTab], true);
+      tabs.forEach(x=> x.classList.toggle('active', x===t));
+      if(currentTab==='open') renderOpen();
+      if(currentTab==='saved') renderSaved();
+    }));
 
-  function copyReferral(job){
-    const url=new URL(location.href);
-    url.hash = job.id;
-    url.searchParams.set('ref','friend');
-    navigator.clipboard.writeText(url.toString()).then(()=> alert('Referral link copied!'));
-  }
+    // Filters
+    toggleFilters.addEventListener('click', ()=> filters.classList.toggle('open'));
+    [q,fTeam,fLoc,fType,fSort].forEach(el=> el.addEventListener('input', ()=>{ page=1; renderOpen(); }));
+    fClear.addEventListener('click', ()=>{ q.value=''; fTeam.value=''; fLoc.value=''; fType.value=''; fSort.value='recent'; page=1; renderOpen(); });
 
-  // Wire up
-  (async function init(){
-    DATA = await fetchJobs();
-    render();
+    // View & density
+    viewGrid.addEventListener('click', ()=>{ viewMode='grid'; viewGrid.classList.add('active'); viewList.classList.remove('active'); renderOpen(); renderSaved(); });
+    viewList.addEventListener('click', ()=>{ viewMode='list'; viewList.classList.add('active'); viewGrid.classList.remove('active'); renderOpen(); renderSaved(); });
+    densityComfort.addEventListener('click', ()=>{ density='comfort'; densityComfort.classList.add('active'); densityCompact.classList.remove('active'); perPage=9; page=1; renderOpen(); });
+    densityCompact.addEventListener('click', ()=>{ density='compact'; densityCompact.classList.add('active'); densityComfort.classList.remove('active'); perPage=12; page=1; renderOpen(); });
 
-    [q,team,loc,type,sort].forEach(el=> el && el.addEventListener('input', render));
-    list.addEventListener('click', (e)=>{
-      const a=e.target.closest('a[data-id]'); if(!a) return;
-      const id=a.getAttribute('data-id');
-      const job=DATA.open_roles.find(j=>j.id===id); if(job) openDrawer(job);
-      e.preventDefault();
+    // Pagination
+    prevBtn.addEventListener('click', ()=>{ if(page>1){ page--; renderOpen(); }});
+    nextBtn.addEventListener('click', ()=>{ page++; renderOpen(); });
+
+    // Open/View/Save (event delegation)
+    document.addEventListener('click', (e)=>{
+      const openBtn = e.target.closest('[data-open]');
+      const saveBtn = e.target.closest('[data-save]');
+      if(openBtn){
+        const id=openBtn.getAttribute('data-open');
+        const job=allRoles().find(j=>j.id===id);
+        if(job) openJob(job);
+      }
+      if(saveBtn){
+        const id=saveBtn.getAttribute('data-save');
+        SAVED.has(id) ? unsaveJob(id) : saveJob(id);
+      }
     });
-    dClose.addEventListener('click', closeDrawer);
-    applyForm.addEventListener('submit', (e)=>{ e.preventDefault(); alert('Application submitted!'); closeDrawer(); });
 
-    saveBtn.addEventListener('click', ()=>{ if(currentJob) saveJob(currentJob); });
-    copyRef.addEventListener('click', (e)=>{ e.preventDefault(); if(currentJob) copyReferral(currentJob); });
-    viewSaved.addEventListener('click', (e)=>{ e.preventDefault(); showSaved(); });
+    // Job sheet
+    closeJob.addEventListener('click', closeJobSheet);
+    formApply.addEventListener('submit', (ev)=>{ ev.preventDefault(); toastMsg('Application submitted!'); closeJobSheet(); });
+    btnSaveJob.addEventListener('click', ()=>{ if(currentJob){ SAVED.add(currentJob.id); saveLocal(); renderOpen(); renderSaved(); toastMsg('Saved.'); }});
+    btnCopyRef.addEventListener('click', ()=>{
+      if(!currentJob) return;
+      const url=new URL(location.href);
+      url.hash = currentJob.id;
+      url.searchParams.set('ref','friend');
+      navigator.clipboard.writeText(url.toString()).then(()=> toastMsg('Referral link copied!'));
+    });
+
+    // Post a job sheet
+    openPost.addEventListener('click', openPostSheet);
+    openPost2?.addEventListener('click', openPostSheet);
+    closePost.addEventListener('click', closePostSheet);
+    postForm.addEventListener('submit', (ev)=>{
+      ev.preventDefault();
+      const fd=new FormData(postForm);
+      const payload=Object.fromEntries(fd.entries());
+      const tags = (payload.tags||'').split(',').map(s=>s.trim()).filter(Boolean);
+      const id = 'cust-' + Math.random().toString(36).slice(2,8);
+      const now = new Date().toLocaleDateString(undefined,{month:'short',day:'2-digit',year:'numeric'});
+      const job = {
+        id, title:payload.title, team:payload.team||'—', location:payload.location||'Remote',
+        type:payload.type||'Full-time', salary:payload.salary||'', posted:now,
+        tags, desc:payload.desc||'—'
+      };
+      CUSTOM.unshift(job); saveLocal();
+      toastMsg('Job published (demo).');
+      closePostSheet();
+      // Jump to Open Roles and redraw
+      currentTab='open';
+      tabs.forEach(x=> x.classList.toggle('active', x.dataset.tab==='open'));
+      Object.values(views).forEach(v=> show(v,false)); show(views.open,true);
+      page=1; renderOpen();
+    });
 
     // Deep link via hash
     if(location.hash){
       const id=location.hash.slice(1);
-      const job=DATA.open_roles.find(j=>j.id===id);
-      if(job) openDrawer(job);
+      const job=allRoles().find(j=>j.id===id);
+      if(job) openJob(job);
     }
+  }
+
+  /* -------------------- Init -------------------- */
+  (async function init(){
+    loadLocal();
+    DATA = await fetchJobs();
+    renderOpen(); // initial
+    bind();
   })();
 </script>
 </body>
