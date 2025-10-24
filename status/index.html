@@ -13,7 +13,7 @@
     --borderD: rgba(0,0,0,.08);
     --mutedD: #475569;
   }
-  /* Use your gradient theme; remove solid dark bg and switch to dark text */
+  /* Use your gradient theme; light text colors on cards for contrast */
   body{
     margin:0;
     color:#0f172a;
@@ -21,14 +21,8 @@
   }
 
   .status-wrap{min-height:100vh;display:flex;flex-direction:column}
-  .status-head{
-    padding:20px;display:flex;align-items:center;justify-content:space-between;
-    background:rgba(255,255,255,0.6);
-    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-    border-bottom:1px solid var(--borderD)
-  }
-  .status-head h1{margin:0;font-size:1.25rem;color:#0f172a}
-  .status-head a{color:#0f172a;text-decoration:none}
+
+  /* removed the top status bar entirely, so no .status-head needed */
 
   .status-body{flex:1;display:grid;gap:16px;padding:20px}
   .grid-3{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
@@ -53,9 +47,6 @@
 
   .list{display:grid;gap:10px}
   .list .row{display:flex;justify-content:space-between;gap:12px}
-
-  /* SVG hover column tint on light background */
-  #uptime-graph-wrap { background: transparent; }
 </style>
 <script src="/assets/js/gate.js" defer></script>
 </head>
@@ -63,11 +54,7 @@
   <div id="site-navbar"></div>
 
   <div class="status-wrap">
-    <div class="status-head">
-      <!-- Back arrow removed as requested; keeping header area for spacing/consistency -->
-      <h1 style="font-size:1rem; font-weight:600; opacity:.9;">Status</h1>
-      <span class="meta">Updated automatically</span>
-    </div>
+    <!-- Top grey bar removed -->
 
     <div class="status-body">
       <section class="card banner"><div class="p" id="banner">
@@ -194,7 +181,7 @@
     </div></article>`;
   }).join('');
 
-  // Uptime History (last 30 days) — (your code below expects #history; left intact)
+  // Uptime History (last 30 days) — (your code below expects #history; left intact if present)
   const hwrap = document.getElementById('history');
   const rows = ['Website','API','Checkout','Email','LMS','Search'];
   if(hwrap){
