@@ -1,95 +1,122 @@
-<!doctype html><html lang="en"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Intreen • Status</title>
 <link rel="stylesheet" href="/assets/css/styles.css"/>
-  <link rel="stylesheet" href="/assets/css/gradient-theme.css"/>
+<link rel="stylesheet" href="/assets/css/gradient-theme.css"/>
 <style>
-  :root{ --panel: rgba(17,24,39,.7); --borderD: rgba(255,255,255,.08); --mutedD:#a3aed0 }
-  body{margin:0;background:#0b1020;color:#e5e7eb;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+  /* ---- Light glass style over your gradient for better readability ---- */
+  :root{
+    --panel: rgba(255,255,255,0.9);
+    --borderD: rgba(0,0,0,.08);
+    --mutedD: #475569;
+  }
+  /* Use your gradient theme; remove solid dark bg and switch to dark text */
+  body{
+    margin:0;
+    color:#0f172a;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  }
+
   .status-wrap{min-height:100vh;display:flex;flex-direction:column}
-  .status-head{padding:20px;display:flex;align-items:center;justify-content:space-between;
-    background:linear-gradient(180deg, rgba(2,6,23,.9), rgba(2,6,23,.4));backdrop-filter: blur(6px);
-    border-bottom:1px solid var(--borderD)}
-  .status-head h1{margin:0;font-size:1.25rem}
-  .status-head a{color:#93c5fd;text-decoration:none}
+  .status-head{
+    padding:20px;display:flex;align-items:center;justify-content:space-between;
+    background:rgba(255,255,255,0.6);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--borderD)
+  }
+  .status-head h1{margin:0;font-size:1.25rem;color:#0f172a}
+  .status-head a{color:#0f172a;text-decoration:none}
+
   .status-body{flex:1;display:grid;gap:16px;padding:20px}
   .grid-3{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-  .card{background:var(--panel);border:1px solid var(--borderD);border-radius:16px;overflow:hidden}
+  .card{background:var(--panel);border:1px solid var(--borderD);border-radius:16px;overflow:hidden; box-shadow:0 6px 18px rgba(2,6,23,.06)}
   .card .p{padding:14px}
-  .kpi{font-size:1.8rem;font-weight:700}
+  .kpi{font-size:1.8rem;font-weight:700;color:#0f172a}
   .meta{color:var(--mutedD)}
-  .ok{color:#86efac}.warn{color:#fde68a}.bad{color:#fca5a5}
-  .badge{display:inline-block;border:1px solid var(--borderD);padding:4px 8px;border-radius:999px;font-size:.75rem;color:#cbd5e1}
-  .bar{height:8px;background:rgba(255,255,255,.08);border-radius:6px;overflow:hidden}
-  .bar>i{display:block;height:8px;background:#86efac;transition:width .8s ease}
-  .section h2{padding:0 14px;margin:8px 0}
+  .ok{color:#16a34a}.warn{color:#ca8a04}.bad{color:#dc2626}
+
+  .badge{display:inline-block;border:1px solid var(--borderD);padding:4px 8px;border-radius:999px;font-size:.75rem;color:#0f172a;background:rgba(255,255,255,.8)}
+  .bar{height:8px;background:rgba(15,23,42,.06);border-radius:6px;overflow:hidden}
+  .bar>i{display:block;height:8px;background:#16a34a;transition:width .8s ease}
+
+  .section h2{padding:0 14px;margin:8px 0;color:#0f172a}
   .banner{border-left:4px solid #22c55e}
   .banner.warn{border-left-color:#eab308}
   .banner.bad{border-left-color:#ef4444}
+
   .legend{display:flex;gap:12px;align-items:center}
   .legend i{display:inline-block;width:16px;height:8px;border-radius:2px}
   .legend .ok{background:#22c55e}.legend .warn{background:#eab308}.legend .bad{background:#ef4444}
+
   .list{display:grid;gap:10px}
   .list .row{display:flex;justify-content:space-between;gap:12px}
+
+  /* SVG hover column tint on light background */
+  #uptime-graph-wrap { background: transparent; }
 </style>
-  <script src="/assets/js/gate.js" defer></script>
+<script src="/assets/js/gate.js" defer></script>
 </head>
-<body>
+<body class="gradient-bg">
   <div id="site-navbar"></div>
 
-<div class="status-wrap">
-  <div class="status-head">
-    <a href="/index.html" class="btn sm">← </a>
-  </div>
-  <div class="status-body">
-    <section class="card banner"><div class="p" id="banner">
-      <strong id="banner-title">All systems operational</strong>
-      <div class="meta" id="banner-sub">No active incidents. Performance healthy.</div>
-    </div></section>
+  <div class="status-wrap">
+    <div class="status-head">
+      <!-- Back arrow removed as requested; keeping header area for spacing/consistency -->
+      <h1 style="font-size:1rem; font-weight:600; opacity:.9;">Status</h1>
+      <span class="meta">Updated automatically</span>
+    </div>
 
-    <section class="grid-3">
-      <article class="card"><div class="p"><h3>Uptime (7d)</h3><div class="kpi ok" id="uptime-7">99.97%</div><p class="meta">All systems nominal</p></div></article>
-      <article class="card"><div class="p"><h3>Incidents (30d)</h3><div class="kpi warn" id="inc-30">2</div><p class="meta">Minor impact</p></div></article>
-      <article class="card"><div class="p"><h3>MTTR</h3><div class="kpi" id="mttr">24m</div><p class="meta">Median time to resolve</p></div></article>
-    </section>
+    <div class="status-body">
+      <section class="card banner"><div class="p" id="banner">
+        <strong id="banner-title">All systems operational</strong>
+        <div class="meta" id="banner-sub">No active incidents. Performance healthy.</div>
+      </div></section>
 
-    <section class="card section">
-      <h2>Components</h2>
-      <div class="p grid-3" id="components"></div>
-    </section>
+      <section class="grid-3">
+        <article class="card"><div class="p"><h3>Uptime (7d)</h3><div class="kpi ok" id="uptime-7">99.97%</div><p class="meta">All systems nominal</p></div></article>
+        <article class="card"><div class="p"><h3>Incidents (30d)</h3><div class="kpi warn" id="inc-30">2</div><p class="meta">Minor impact</p></div></article>
+        <article class="card"><div class="p"><h3>MTTR</h3><div class="kpi" id="mttr">24m</div><p class="meta">Median time to resolve</p></div></article>
+      </section>
 
-    <section class="card section">
-      <h2>Active Maintenance</h2>
-      <div class="p list" id="maint-active"></div>
-    </section>
+      <section class="card section">
+        <h2>Components</h2>
+        <div class="p grid-3" id="components"></div>
+      </section>
 
-    <section class="card section">
-      <h2>Recent Incidents</h2>
-      <div class="p timeline" id="incidents"></div>
-    </section>
+      <section class="card section">
+        <h2>Active Maintenance</h2>
+        <div class="p list" id="maint-active"></div>
+      </section>
 
-    
-    <section class="card section">
-      <h2>Uptime History</h2>
-      <div class="p" id="uptime-graph-wrap">
-        <div id="uptime-details" class="meta" style="margin-bottom:8px">Hover over a day to see details.</div>
-        <svg id="uptime-graph" width="100%" height="220" viewBox="0 0 900 220" preserveAspectRatio="none" style="display:block"></svg>
-        <div class="p legend">
-          <span class="meta">Legend:</span>
-          <i class="ok"></i><span class="meta">Operational</span>
-          <i class="warn"></i><span class="meta">Degraded</span>
-          <i class="bad"></i><span class="meta">Partial outage</span>
+      <section class="card section">
+        <h2>Recent Incidents</h2>
+        <div class="p timeline" id="incidents"></div>
+      </section>
+
+      <section class="card section">
+        <h2>Uptime History</h2>
+        <div class="p" id="uptime-graph-wrap">
+          <div id="uptime-details" class="meta" style="margin-bottom:8px">Hover over a day to see details.</div>
+          <svg id="uptime-graph" width="100%" height="220" viewBox="0 0 900 220" preserveAspectRatio="none" style="display:block"></svg>
+          <div class="p legend">
+            <span class="meta">Legend:</span>
+            <i class="ok"></i><span class="meta">Operational</span>
+            <i class="warn"></i><span class="meta">Degraded</span>
+            <i class="bad"></i><span class="meta">Partial outage</span>
+          </div>
         </div>
-      </div>
-    </section>
-    
+      </section>
 
-    <section class="card section">
-      <h2>Past Maintenance</h2>
-      <div class="p list" id="maint-past"></div>
-    </section>
+      <section class="card section">
+        <h2>Past Maintenance</h2>
+        <div class="p list" id="maint-past"></div>
+      </section>
+    </div>
   </div>
-</div>
+
 <script>
 (function(){
   const comps = [
@@ -137,14 +164,13 @@
 
   // Dynamic banner logic
   function computeOverall(){
-    // Severity based on any component below thresholds or any incidents
     const compStatus = Array.from(cwrap.querySelectorAll('.meta'));
     let sev = 'ok';
     compStatus.forEach(m => {
       if(m.classList.contains('bad')) sev = 'bad';
       else if(m.classList.contains('warn') && sev !== 'bad') sev = 'warn';
     });
-    if(incidents.length && sev !== 'bad') sev = 'warn'; // incidents in last 30d => warn at least
+    if(incidents.length && sev !== 'bad') sev = 'warn';
     return sev;
   }
   function setBanner(){
@@ -168,27 +194,28 @@
     </div></article>`;
   }).join('');
 
-  // Uptime History (last 30 days)
+  // Uptime History (last 30 days) — (your code below expects #history; left intact)
   const hwrap = document.getElementById('history');
   const rows = ['Website','API','Checkout','Email','LMS','Search'];
-  rows.forEach(r=>{
-    const bars = Array.from({length:30}).map(_=>{
-      const roll = Math.random();
-      const cls = roll>0.98?'bad':(roll>0.92?'warn':'');
-      return `<i class="${cls}"></i>`;
-    }).join('');
-    hwrap.innerHTML += `<div class="hist-row"><div class="meta">${r}</div><div class="hist-bars">${bars}</div></div>`;
-  });
+  if(hwrap){
+    rows.forEach(r=>{
+      const bars = Array.from({length:30}).map(_=>{
+        const roll = Math.random();
+        const cls = roll>0.98?'bad':(roll>0.92?'warn':'');
+        return `<i class="${cls}"></i>`;
+      }).join('');
+      hwrap.innerHTML += `<div class="hist-row"><div class="meta">${r}</div><div class="hist-bars">${bars}</div></div>`;
+    });
+  }
 
-  // Active Maintenance
+  // Active / Past Maintenance
   const maw = document.getElementById('maint-active');
   maw.innerHTML = maintActive.length ? maintActive.map(m=>`<div class="row"><span>${m.title}</span><span class="meta">${m.window} • ${m.impact}</span></div>`).join('') : '<div class="meta">None</div>';
 
-  // Past Maintenance
   const mpw = document.getElementById('maint-past');
   mpw.innerHTML = maintPast.length ? maintPast.map(m=>`<div class="row"><span>${m.title}</span><span class="meta">${m.window} • ${m.result}</span></div>`).join('') : '<div class="meta">None</div>';
 
-  // Randomly refresh one component and recompute banner every ~7s
+  // Randomly refresh one component and recompute banner
   setInterval(()=>{
     const cards = cwrap.querySelectorAll('.card');
     if(cards.length){
@@ -218,17 +245,15 @@
 
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
 
-  // Generate fake status per day per component
-  const data = Array.from({length:days}, (_,d)=>{
-    return components.map(c=>{
+  const data = Array.from({length:days}, ()=>{
+    return components.map(()=>{
       const roll = Math.random();
       const cls = roll>0.98?'bad':(roll>0.92?'warn':'ok');
       const pct = cls==='ok' ? (99.9 + Math.random()*0.09) : (cls==='warn' ? (99.6 + Math.random()*0.29) : (97 + Math.random()*2.5));
-      return {comp:c, class:cls, pct: pct};
+      return { class:cls, pct };
     });
   });
 
-  // Draw cells
   const bg = document.createElementNS('http://www.w3.org/2000/svg','rect');
   bg.setAttribute('x', 0); bg.setAttribute('y', 0); bg.setAttribute('width', 900); bg.setAttribute('height', 220);
   bg.setAttribute('fill', 'transparent');
@@ -262,7 +287,7 @@
   const hl = document.createElementNS('http://www.w3.org/2000/svg','rect');
   hl.setAttribute('x', 0); hl.setAttribute('y', pad);
   hl.setAttribute('width', colW); hl.setAttribute('height', H - pad*2);
-  hl.setAttribute('fill', 'rgba(255,255,255,0.06)');
+  hl.setAttribute('fill', 'rgba(2,6,23,0.06)');
   hl.setAttribute('visibility', 'hidden');
   svg.appendChild(hl);
 
@@ -284,14 +309,17 @@
     hl.setAttribute('visibility','hidden');
     details.textContent = 'Hover over a day to see details.';
   });
-})();</script>
+})();
+</script>
 <script type="module">
-    import { bootLayout } from '/assets/js/layout.js';
-    import { mountCartUI, addToCart } from '/assets/js/cart.js';
-    bootLayout('home'); mountCartUI();
-    document.body.addEventListener('click', (e)=>{
-      const btn = e.target.closest('[data-buy]'); if(!btn) return;
-      addToCart({id:btn.dataset.id, title:btn.dataset.title, price:parseFloat(btn.dataset.price)});
-    });
-  </script>
-</body></html>
+  import { bootLayout } from '/assets/js/layout.js';
+  import { mountCartUI, addToCart } from '/assets/js/cart.js';
+  bootLayout('about'); /* match About page chrome/gradient */
+  mountCartUI();
+  document.body.addEventListener('click', (e)=>{
+    const btn = e.target.closest('[data-buy]'); if(!btn) return;
+    addToCart({id:btn.dataset.id, title:btn.dataset.title, price:parseFloat(btn.dataset.price)});
+  });
+</script>
+</body>
+</html>
