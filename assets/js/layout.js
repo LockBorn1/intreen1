@@ -25,7 +25,7 @@ export function navbar(active=""){
         <a href="/events/index.html" class="${active==='events'?'active':''}">Events</a>
         <a href="/progress/index.html" class="${active==='shop'?'active':''}">Progress</a>
         <a href="/jobs/index.html" class="${active==='jobs'?'active':''}">Jobs</a>
-        <a href="/e-learning/index.html" class="${active==='e-learning'?'active':''}">E‑Learning</a>
+        <a href="https://e-learning.intreen.com" class="${active==='e-learning'?'active':''}">E‑Learning</a>
         <a href="/status/index.html" class="${active==='status'?'active':''}">Status</a>
         <a href="/about/index.html" class="${active==='about'?'active':''}">About</a>
       </div>
