@@ -1,0 +1,19 @@
+
+/* Minimal, safe overrides — no JS */
+html, body, #__next { height: 100%; }
+body { display: flex; flex-direction: column; }
+#\__next main { flex: 1 0 auto; }
+#__next > footer { margin-top: auto; }
+
+/* Prevent overlapping cards: enforce a standard grid */
+[class*="consumerCardsContainer__"] {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0,1fr)) !important;
+  gap: 24px !important;
+}
+[class*="feedCardCell__"], .discover-vertical-event-card {
+  position: relative !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+img { max-width: 100%; height: auto; display: block; }

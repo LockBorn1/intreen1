@@ -1,0 +1,70 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Postmortem: 2025-09-20 API Errors • Intreen</title>
+<link rel="stylesheet" href="/assets/css/styles.css"/>
+  <link rel="stylesheet" href="/assets/css/gradient-theme.css"/>  <script src="/assets/js/gate.js" defer></script>
+<style>
+
+html, body { min-height: 100%; }
+body.status-gradient-enable {
+  background: linear-gradient(180deg, rgba(10,35,120,.35), rgba(10,35,120,.15)) fixed;
+  background-attachment: fixed;
+  background-size: cover;
+  color: #ffffff;
+}
+body.status-gradient-enable a { color: #ffffff; text-decoration: underline; }
+.status-gradient-enable .card,
+.status-gradient-enable .panel,
+.status-gradient-enable .container,
+.status-gradient-enable .content,
+.status-gradient-enable main,
+.status-gradient-enable section {
+  background: rgba(0,0,0,0.35);
+  border-radius: 12px;
+  padding: 1rem;
+}
+.status-gradient-enable, .status-gradient-enable * { text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
+/* === End injection === */
+</style><style>
+/* === Injected: Use site's blue-purple gradient on status pages (v3) === */
+html, body { min-height: 100%; }
+body.status-gradient-enable {
+  /* Use the SAME gradient as the homepage, leveraging the site's CSS variables */
+  background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end)) !important;
+  background-attachment: fixed;
+  background-size: cover;
+  color: #ffffff;
+}
+body.status-gradient-enable a { color: #ffffff; text-decoration: underline; }
+.status-gradient-enable .card,
+.status-gradient-enable .panel,
+.status-gradient-enable .container,
+.status-gradient-enable .content,
+.status-gradient-enable main,
+.status-gradient-enable section {
+  background: rgba(0,0,0,0.32);
+  border-radius: 12px;
+  padding: 1rem;
+}
+.status-gradient-enable, .status-gradient-enable * { text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
+/* === End injection === */
+</style></head>
+<body class="page status-gradient-enable">
+<div id="site-navbar"></div>
+<main class="container mt-8">
+  <article class="card p">
+    <h1>Postmortem: 2025-09-20 Elevated API errors</h1>
+    <p class="meta">Published 2025-09-22</p>
+    <h3>Summary</h3>
+    <p>Misconfigured cache layer caused elevated 5xx rates between 14:12–16:45 UTC.</p>
+    <h3>Impact</h3>
+    <p>~3% of API requests failed for ~2.5 hours.</p>
+    <h3>Root cause</h3>
+    <p>Incorrect TTL on a hot path leading to stale/invalid objects.</p>
+    <h3>Remediations</h3>
+    <ul><li>Fix cache TTL policy</li><li>Improve canary checks</li><li>Add error budget SLO alert</li></ul>
+  </article>
+</main><script type="module">import { bootLayout } from '/assets/js/layout.js'; bootLayout('status');</script>
+
+
+</body></html>

@@ -1,0 +1,63 @@
+
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Checkout • Intreen</title>
+<link rel="stylesheet" href="/assets/css/styles.css"/>
+  <link rel="stylesheet" href="/assets/css/gradient-theme.css"/>
+<style>
+  .checkout-layout{display:grid;grid-template-columns:2fr 1fr;gap:18px}
+  @media(max-width:900px){.checkout-layout{grid-template-columns:1fr}}
+  .panel{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px}
+  .panel.dark{background:#0f172a;color:#e5e7eb;border-color:#334155}
+  .field{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+  .field input{padding:12px;border:1px solid var(--border);border-radius:12px}
+  .inline{display:flex;gap:10px}
+  .inline .field{flex:1}
+  .summary-line{display:flex;justify-content:space-between;margin:6px 0}
+  .summary-total{display:flex;justify-content:space-between;margin-top:10px;font-weight:800}
+  .pay-btn{width:100%}
+</style>
+  <script src="/assets/js/gate.js" defer></script>
+</head><body>
+  <div id="site-navbar"></div>
+  <main class="container mt-8">
+    <h1>Checkout</h1>
+    <div class="checkout-layout" id="CHECKOUT_V2">
+      <section class="panel">
+        <h2>Billing details</h2>
+        <div class="inline">
+          <label class="field">First name<input id="first" required></label>
+          <label class="field">Last name<input id="last" required></label>
+        </div>
+        <label class="field">Email<input id="email" type="email" required></label>
+        <label class="field">Address<input id="addr" required></label>
+        <div class="inline">
+          <label class="field">City<input id="city" required></label>
+          <label class="field">ZIP<input id="zip" required></label>
+        </div>
+        <h2 class="mt-4">Card</h2>
+        <label class="field">Card number<input id="card" inputmode="numeric" placeholder="4242 4242 4242 4242" required></label>
+        <div class="inline">
+          <label class="field">Expiry (MM/YY)<input id="exp" placeholder="12/34" required></label>
+          <label class="field">CVC<input id="cvc" inputmode="numeric" required></label>
+        </div>
+        <button class="btn primary pay-btn" id="pay">Pay now</button>
+      </section>
+      <aside class="panel dark">
+        <h2>Your order</h2>
+        <div id="order-lines"></div>
+        <div class="summary-total"><span>Total</span><strong id="order-total">$0.00</strong></div>
+      </aside>
+    </div>
+  </main><script type="module">
+    import { bootLayout } from '/assets/js/layout.js';
+    import { mountCartUI } from '/assets/js/cart.js';
+    bootLayout('checkout'); mountCartUI();
+  </script>
+  <script type="module">
+    import { loadCartSummary } from '/assets/js/checkout.js';
+    loadCartSummary();
+  </script>
+
+
+</body></html>
