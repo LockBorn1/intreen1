@@ -1,90 +1,256 @@
-<!doctype html><html lang="en"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Intreen — Learn • Work • Grow</title>
-<link rel="stylesheet" href="/assets/css/styles.css"/>
-<link rel="stylesheet" href="/assets/css/gradient-theme.css"/>
-<script src="/assets/js/gate.js" defer></script>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Intreen — Learn • Work • Grow</title>
+  <meta name="description" content="Intreen is the gradient‑fresh workspace where people learn, work, and grow together. Courses, events, jobs, and community—beautifully connected.">
+  <link rel="preload" href="/assets/img/main-logo.webp" as="image" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/gradient-theme.css" />
+  <!-- keep gate for auth/login -->
+  <script src="/assets/js/gate.js" defer></script>
+  <style>
+    /* Page-specific light polish that plays nice with your existing theme */
+    :root { --maxw: 1200px; }
+    .container { max-width: var(--maxw); margin: 0 auto; padding: 0 18px; }
+    .mt-0{margin-top:0}.mt-1{margin-top:.5rem}.mt-2{margin-top:1rem}.mt-3{margin-top:1.5rem}.mt-4{margin-top:2rem}.mt-6{margin-top:3rem}.mt-8{margin-top:4rem}.mt-12{margin-top:6rem}
+    .grid{display:grid;gap:1rem}.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    @media (max-width: 980px){.cols-3,.cols-4{grid-template-columns:1fr 1fr}}@media (max-width: 640px){.cols-3,.cols-4{grid-template-columns:1fr}}
+    .card{background:#fff;border:1px solid var(--border, rgba(0,0,0,.08));border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.06);overflow:hidden}
+    .card .p{padding:18px}
+    .muted{color:var(--muted, #556)}
+    .pill{background:#fff;border:1px solid var(--border);box-shadow:0 6px 20px rgba(0,0,0,.05);border-radius:14px;padding:10px 14px;display:inline-flex;gap:8px;align-items:center}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;border-radius:14px;padding:12px 16px;border:1px solid transparent;cursor:pointer;text-decoration:none;font-weight:600}
+    .btn.primary{background:var(--g1, #5a66ff);color:#fff}
+    .btn.ghost{background:transparent;border-color:rgba(255,255,255,.5);color:#fff}
+    .btn.soft{background:#f7f7fb;border-color:#eee;color:#222}
+    .badge{font-size:.85rem;letter-spacing:.02em}
+    .hero-tall{min-height:72vh;position:relative}
+    .hero-overlay{position:absolute;inset:0;display:grid;place-items:center;padding:clamp(16px,4vw,48px);text-align:center}
+    .hero-overlay .inner{max-width:960px;margin:auto;color:#fff}
+    .hero-overlay h1{font-size:clamp(32px,6vw,64px);line-height:1.05;margin:0}
+    .hero-overlay p{font-size:clamp(16px,2.2vw,22px)}
+    .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+    .hero-slideshow{position:absolute;inset:0;overflow:hidden}
+    .hero-slideshow .slide{position:absolute;inset:0;opacity:0;transition:opacity 900ms ease}
+    .hero-slideshow .slide.active{opacity:1}
+    .hero-slideshow img{width:100%;height:100%;object-fit:cover;filter:brightness(.55)}
+
+    /* marquee */
+    .marquee{overflow:hidden;mask-image:linear-gradient(90deg,transparent,black 10%,black 90%,transparent)}
+    .marquee-row{display:flex;gap:32px;align-items:center;animation:revscroll 35s linear infinite}
+    .marquee .logo{height:28px;opacity:.8}
+    @keyframes revscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+    /* features */
+    .feature{display:flex;gap:14px;align-items:flex-start}
+    .feature .ico{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--g1,#6C63FF),var(--g2,#06B6D4));display:grid;place-items:center;color:#fff;font-weight:800}
+
+    /* steps */
+    .steps{counter-reset:step}
+    .step{display:flex;gap:14px;align-items:flex-start}
+    .step .num{width:36px;height:36px;border-radius:50%;background:var(--surface,#fff);border:1px solid var(--border);display:grid;place-items:center;font-weight:700}
+
+    /* testimonials */
+    .snap{display:flex;gap:16px;overflow:auto;padding-bottom:6px;scroll-snap-type:x mandatory}
+    .snap>*{scroll-snap-align:start;min-width:280px}
+    blockquote{font-size:1rem;line-height:1.5;margin:0}
+    .quote-mark{font-size:2rem;opacity:.35}
+
+    /* faq */
+    details{border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:#fff}
+    summary{font-weight:600;cursor:pointer}
+
+    /* footer */
+    footer{border-top:1px solid var(--border);padding:32px 0;margin-top:64px}
+
+    /* splash words on overlay */
+    #splash-words{position:absolute;bottom:8vh;left:50%;transform:translateX(-50%);font-weight:800;letter-spacing:.1em;color:#111;opacity:0}
+  </style>
 </head>
 <body>
+  <!-- splash overlay (kept) -->
   <div id="splash-overlay" style="position:fixed;inset:0;background:#ffffff;display:flex;align-items:center;justify-content:center;z-index:9999;overflow:hidden">
-    <img class="splash-bg-logo" src="/assets/img/main-logo.webp" alt="Intreen" style="max-width:48vw; width:360px; height:auto;">
+    <img class="splash-bg-logo" src="/assets/img/main-logo.webp" alt="Intreen" style="max-width:48vw;width:360px;height:auto" />
+    <div id="splash-words" aria-hidden="true"></div>
   </div>
 
+  <!-- same navbar mount point (kept) -->
   <div id="site-navbar"></div>
 
   <main>
+    <!-- HERO -->
     <section id="home-hero" class="hero-blue hero-tall">
       <div class="hero-slideshow" id="hero-slideshow">
-        <div class="slide active"><img src="https://picsum.photos/seed/intreen-1/1600/800" alt="Slide 1"/></div>
-        <div class="slide"><img src="https://picsum.photos/seed/intreen-2/1600/800" alt="Slide 2"/></div>
-        <div class="slide"><img src="https://picsum.photos/seed/intreen-3/1600/800" alt="Slide 3"/></div>
+        <div class="slide active"><img src="https://picsum.photos/seed/intreen-1/1600/900" alt="Community learning and collaboration" /></div>
+        <div class="slide"><img src="https://picsum.photos/seed/intreen-2/1600/900" alt="Team working session" /></div>
+        <div class="slide"><img src="https://picsum.photos/seed/intreen-3/1600/900" alt="Growth and progress charts" /></div>
       </div>
       <div class="hero-overlay">
-        <h1 class="lwgt moving"><span>Learn</span> • <span>Work</span> • <span>Grow</span> • <span>Thrive</span></h1>
-        <!-- arrows removed -->
+        <div class="inner">
+          <p class="badge pill">✨ Learn • Work • Grow • Thrive</p>
+          <h1>Everything you need to build skills, ship work, and grow your community</h1>
+          <p class="muted mt-1">Intreen connects courses, events, jobs, and commerce in one gradient‑fresh workspace—so teams and learners move faster, together.</p>
+          <div class="actions">
+            <a class="btn primary" data-gate="open" href="#login">Get started</a>
+            <a class="btn ghost" href="#features" aria-label="Explore features">Explore features</a>
+          </div>
+        </div>
       </div>
     </section>
 
-    <div style="height:64px" id="HOME_FOOTER_SPACER"></div>
-    <div style="height:72px" id="HOME_EXTRA_SPACER"></div>
-    <div id="HOME_V17_SPACER" style="height:72px"></div>
+    <!-- TRUST BAR / LOGO MARQUEE -->
+    <section class="container mt-6" aria-label="Trusted by">
+      <div class="muted" style="text-align:center;margin-bottom:12px">Trusted by modern teams and creators</div>
+      <div class="marquee">
+        <div class="marquee-row">
+          <img class="logo" src="/assets/img/logos/acme.svg" alt="Acme" />
+          <img class="logo" src="/assets/img/logos/blueharbor.svg" alt="Blue Harbor" />
+          <img class="logo" src="/assets/img/logos/solara.svg" alt="Solara Labs" />
+          <img class="logo" src="/assets/img/logos/tinyretail.svg" alt="Tiny Retail" />
+          <img class="logo" src="/assets/img/logos/emberly.svg" alt="Emberly" />
+          <img class="logo" src="/assets/img/logos/northpeak.svg" alt="Northpeak" />
+          <!-- duplicate once more so the scroll loops seamlessly -->
+          <img class="logo" src="/assets/img/logos/acme.svg" alt="Acme" />
+          <img class="logo" src="/assets/img/logos/blueharbor.svg" alt="Blue Harbor" />
+          <img class="logo" src="/assets/img/logos/solara.svg" alt="Solara Labs" />
+          <img class="logo" src="/assets/img/logos/tinyretail.svg" alt="Tiny Retail" />
+          <img class="logo" src="/assets/img/logos/emberly.svg" alt="Emberly" />
+          <img class="logo" src="/assets/img/logos/northpeak.svg" alt="Northpeak" />
+        </div>
+      </div>
+    </section>
 
-    <style>
-      .pill{background:#fff;border:1px solid var(--border);box-shadow:0 6px 20px rgba(0,0,0,.05);border-radius:14px;padding:12px 16px;display:inline-block}
-      @keyframes revscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-    </style>
+    <!-- VALUE PROPS / FEATURES -->
+    <section id="features" class="container mt-8">
+      <h2 class="mt-0">One connected workspace</h2>
+      <p class="muted">Stop stitching tools. Intreen brings your learning, work, and growth into a single flow.</p>
+      <div class="grid cols-3 mt-3">
+        <article class="card"><div class="p feature"><div class="ico">📚</div><div><h3>Courses & Paths</h3><p class="muted">Design beautiful curricula, modules, and checkpoints with progress you can trust.</p></div></div></article>
+        <article class="card"><div class="p feature"><div class="ico">🗓️</div><div><h3>Events & Live Sessions</h3><p class="muted">Host workshops, AMAs, and standups with RSVPs and reminders built‑in.</p></div></div></article>
+        <article class="card"><div class="p feature"><div class="ico">💼</div><div><h3>Jobs & Pipelines</h3><p class="muted">Showcase roles, screen applicants, and track hiring funnels side‑by‑side with learning.</p></div></div></article>
+        <article class="card"><div class="p feature"><div class="ico">🛒</div><div><h3>Commerce</h3><p class="muted">Sell memberships, seats, and add‑ons. Checkout that feels native to your brand.</p></div></div></article>
+        <article class="card"><div class="p feature"><div class="ico">📣</div><div><h3>Community</h3><p class="muted">Spaces, posts, and reactions that keep momentum high without context switching.</p></div></div></article>
+        <article class="card"><div class="p feature"><div class="ico">📊</div><div><h3>Insights</h3><p class="muted">Clean reporting on enrollments, engagement, conversions, and outcomes.</p></div></div></article>
+      </div>
+      <div class="actions mt-3"><a class="btn soft" href="#how">See how it works</a></div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how" class="container mt-12">
+      <h2 class="mt-0">How Intreen flows</h2>
+      <div class="grid cols-3 mt-3 steps">
+        <div class="card"><div class="p step"><div class="num">1</div><div><h3>Set your space</h3><p class="muted">Pick a template, plug in your brand gradient, and invite your first members.</p></div></div></div>
+        <div class="card"><div class="p step"><div class="num">2</div><div><h3>Publish & enroll</h3><p class="muted">Launch a course, list an event, or post a role—everything stays connected.</p></div></div></div>
+        <div class="card"><div class="p step"><div class="num">3</div><div><h3>Measure & scale</h3><p class="muted">Track progress and outcomes. Duplicate what works. Grow confidently.</p></div></div></div>
+      </div>
+      <div class="actions mt-3">
+        <a class="btn primary" data-gate="open" href="#login">Create your space</a>
+        <a class="btn soft" href="#testimonials">Read customer stories</a>
+      </div>
+    </section>
+
+    <!-- METRICS (fun, optional) -->
+    <section class="container mt-12" aria-label="Highlights">
+      <div class="grid cols-3">
+        <div class="card"><div class="p"><h3>4→1 tool stack</h3><p class="muted">Average teams consolidate from four tools down to one with Intreen.</p></div></div>
+        <div class="card"><div class="p"><h3>+18% conversion</h3><p class="muted">Cleaner paths from learn → work → hire lift enrollment and hiring conversions.</p></div></div>
+        <div class="card"><div class="p"><h3><span aria-hidden="true">⚡</span> Minutes to launch</h3><p class="muted">Start with templates and ship your first program before lunch.</p></div></div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS / SOCIAL PROOF -->
+    <section id="testimonials" class="container mt-12">
+      <h2 class="mt-0">What teams say</h2>
+      <div class="snap mt-2" aria-label="Customer quotes">
+        <article class="card"><div class="p"><div class="quote-mark">“</div><blockquote>Switched from 4 tools to 1 — saved thousands.</blockquote><p class="muted mt-1">— Acme Co.</p></div></article>
+        <article class="card"><div class="p"><div class="quote-mark">“</div><blockquote>Events + courses + jobs all together? Game changer.</blockquote><p class="muted mt-1">— Blue Harbor</p></div></article>
+        <article class="card"><div class="p"><div class="quote-mark">“</div><blockquote>Hiring pipeline + training in one dashboard.</blockquote><p class="muted mt-1">— Solara Labs</p></div></article>
+        <article class="card"><div class="p"><div class="quote-mark">“</div><blockquote>Store setup was painless — and sales grew 18%.</blockquote><p class="muted mt-1">— Tiny Retail</p></div></article>
+      </div>
+    </section>
+
+    <!-- CTA STRIP -->
+    <section class="container mt-12" id="cta">
+      <div class="card"><div class="p" style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between">
+        <div>
+          <h3 class="mt-0">Ready to launch your Intreen space?</h3>
+          <p class="muted">Bring your audience, your team, and your goals. We’ll bring the flow.</p>
+        </div>
+        <div class="actions">
+          <a class="btn primary" data-gate="open" href="#login">Get started free</a>
+          <a class="btn soft" href="#faq">Questions? Read the FAQ</a>
+        </div>
+      </div></div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="container mt-12">
+      <h2 class="mt-0">FAQ</h2>
+      <div class="grid cols-3 mt-2">
+        <details class="card"><summary>Can I use my own gradient theme?</summary><div class="p"><p>Yes—your current gradient theme is fully supported. Bring your brand colors and we’ll do the rest.</p></div></details>
+        <details class="card"><summary>How does login work?</summary><div class="p"><p>Gate.js powers sign‑in and access. Click any “Get started” button to open the gate and create your space.</p></div></details>
+        <details class="card"><summary>Do you support payments?</summary><div class="p"><p>Yes. Sell memberships, seats, or one‑off products right alongside your content.</p></div></details>
+      </div>
+    </section>
+
+    <div style="height:72px"></div>
   </main>
 
+  <footer>
+    <div class="container" style="display:flex;gap:18px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+      <div style="display:flex;gap:10px;align-items:center"><img src="/assets/img/main-logo.webp" alt="Intreen logo" width="28" height="28"/><strong>Intreen</strong></div>
+      <nav style="display:flex;gap:14px;flex-wrap:wrap"><a href="#features">Features</a><a href="#how">How it works</a><a href="#faq">FAQ</a><a href="#cta" class="btn soft">Get started</a></nav>
+    </div>
+  </footer>
+
+  <!-- ===== Scripts (kept + deduplicated) ===== -->
   <script>
-  (function() {
-    const overlay = document.getElementById('splash-overlay');
-    const img = document.querySelector('.splash-bg-logo');
-    if (img) { img.src = '/assets/img/main-logo.webp'; img.style.opacity = 1; }
-    // Only fade/remove if overlay exists AND the user is authenticated
-    if (overlay && sessionStorage.getItem('intreen_auth') === 'ok') {
-      setTimeout(() => {
-        overlay.style.transition = 'opacity 1400ms ease';
-        overlay.style.opacity = 0;
-        setTimeout(() => overlay.remove(), 650);
-      }, 800);
-    } else if (!overlay) {
-      // Ensure no ghost overlays block the UI
-      const ghosts = document.querySelectorAll('#splash-overlay');
-      ghosts.forEach(g => g.remove());
-    }
-  })();
+    // Splash logic — only remove overlay if authenticated
+    (function() {
+      const overlay = document.getElementById('splash-overlay');
+      const img = document.querySelector('.splash-bg-logo');
+      if (img) { img.src = '/assets/img/main-logo.webp'; img.style.opacity = 1; }
+      if (overlay && sessionStorage.getItem('intreen_auth') === 'ok') {
+        setTimeout(() => {
+          overlay.style.transition = 'opacity 1400ms ease';
+          overlay.style.opacity = 0;
+          setTimeout(() => overlay.remove(), 650);
+        }, 800);
+      }
+    })();
+
+    // Splash word sequence (optional flourish)
+    (function(){
+      const words = ["LEARN","WORK","GROW"]; const el = document.getElementById('splash-words'); const overlay = document.getElementById('splash-overlay');
+      if(!el) return; let i=0;
+      function showNext(){
+        el.style.opacity=0;
+        setTimeout(()=>{
+          el.textContent = words[i]; el.style.transition='opacity 500ms ease'; el.style.opacity=1; i++;
+          if(i<words.length){ setTimeout(showNext, 900); }
+          else if (overlay && sessionStorage.getItem('intreen_auth') === 'ok') {
+            setTimeout(()=>{ overlay.style.transition='opacity 1400ms ease'; overlay.style.opacity=0; setTimeout(()=>overlay.remove(), 700); }, 800);
+          }
+        }, 150);
+      }
+      showNext();
+    })();
+
+    // Hero slideshow (kept)
+    (function(){
+      const wrap = document.getElementById('hero-slideshow'); if(!wrap) return;
+      const slides = Array.from(wrap.querySelectorAll('.slide')); let i = 0, timer;
+      function show(n){ slides[i].classList.remove('active'); i = (n + slides.length) % slides.length; slides[i].classList.add('active'); }
+      function auto(){ timer = setInterval(()=>show(i+1), 4500); }
+      function reset(){ clearInterval(timer); auto(); }
+      wrap.addEventListener('mouseenter', ()=>clearInterval(timer));
+      wrap.addEventListener('mouseleave', reset); auto();
+    })();
   </script>
 
-  <script>
-  // SPLASH_SEQUENCE
-  (function(){
-    const words = ["LEARN","WORK","GROW"];
-    const el = document.getElementById('splash-words');
-    const overlay = document.getElementById('splash-overlay');
-    let i=0;
-    function showNext(){
-      if(!el) return;
-      el.style.opacity=0;
-      setTimeout(()=>{
-        el.textContent = words[i];
-        el.style.transition='opacity 500ms ease';
-        el.style.opacity=1;
-        i++;
-        if(i<words.length){ setTimeout(showNext, 900); }
-        else{
-          setTimeout(()=>{
-            if(!overlay) return;
-            overlay.style.transition='opacity 1400ms ease';
-            overlay.style.opacity=0;
-            setTimeout(()=>overlay.remove(), 700);
-          }, 800);
-        }
-      }, 150);
-    }
-    showNext();
-  })();
-  </script>
-
+  <!-- layout/cart hooks (kept as-is so existing navbar & UI mount) -->
   <script type="module">
     import { bootLayout } from '/assets/js/layout.js';
     import { mountCartUI, addToCart } from '/assets/js/cart.js';
@@ -94,147 +260,5 @@
       addToCart({id:btn.dataset.id, title:btn.dataset.title, price:parseFloat(btn.dataset.price)});
     });
   </script>
-
-  <script type="module">
-    import { bootLayout } from '/assets/js/layout.js';
-    import { mountCartUI, addToCart } from '/assets/js/cart.js';
-    bootLayout(); mountCartUI();
-    document.body.addEventListener('click', (e)=>{
-      const btn = e.target.closest('[data-buy]'); if(!btn) return;
-      addToCart({id:btn.dataset.id, title:btn.dataset.title, price:parseFloat(btn.dataset.price)});
-    });
-  </script>
-
-  <script>
-  /* hero slideshow */
-  (function(){
-    const wrap = document.getElementById('hero-slideshow');
-    if(!wrap) return;
-    const slides = Array.from(wrap.querySelectorAll('.slide'));
-    const prev = document.querySelector('.hero-arrows .prev'); // arrows removed; these will be null
-    const next = document.querySelector('.hero-arrows .next');
-    let i = 0, timer;
-
-    function show(n){
-      slides[i].classList.remove('active');
-      i = (n + slides.length) % slides.length;
-      slides[i].classList.add('active');
-    }
-    function auto(){ timer = setInterval(()=>show(i+1), 4500); }
-    function reset(){ clearInterval(timer); auto(); }
-
-    // No listeners for prev/next since arrows are gone
-    wrap.addEventListener('mouseenter', ()=>clearInterval(timer));
-    wrap.addEventListener('mouseleave', reset);
-
-    auto();
-  })();
-  </script>
-
-
-
-
-<section class="container tight mt-8">
-      <h2>Trusted By Teams</h2>
-      <div class="grid cols-4 mt-2">
-        <article class="card"><div class="p"><h3>Acme Co.</h3><p class="meta">“Switched from 4 tools to 1 — saved thousands.”</p></div></article>
-        <article class="card"><div class="p"><h3>Blue Harbor</h3><p class="meta">“Events + courses + jobs all together? Game changer.”</p></div></article>
-        <article class="card"><div class="p"><h3>Solara Labs</h3><p class="meta">“Hiring pipeline + training in one dashboard.”</p></div></article>
-        <article class="card"><div class="p"><h3>Tiny Retail</h3><p class="meta">“Store setup was painless — and sales grew 18%.”</p></div></article>
-      </div>
-    </section>
-
-
-    
-<script>
-  (function() {
-    const overlay = document.getElementById('splash-overlay');
-    const img = document.querySelector('.splash-bg-logo');
-    if (img) { img.src = '/assets/img/main-logo.webp'; img.style.opacity = 1; }
-    // Only fade/remove if overlay exists AND the user is authenticated
-    if (overlay && sessionStorage.getItem('intreen_auth') === 'ok') {
-      setTimeout(() => {
-        overlay.style.transition = 'opacity 1400ms ease';
-        overlay.style.opacity = 0;
-        setTimeout(() => overlay.remove(), 650);
-      }, 800);
-    } else if (!overlay) {
-      // Ensure no ghost overlays block the UI
-      const ghosts = document.querySelectorAll('#splash-overlay');
-      ghosts.forEach(g => g.remove());
-    }
-  })();
-  </script>
-<script>
-  // SPLASH_SEQUENCE
-  (function(){
-    const words = ["LEARN","WORK","GROW"];
-    const el = document.getElementById('splash-words');
-    const overlay = document.getElementById('splash-overlay');
-    let i=0;
-    function showNext(){
-      if(!el) return;
-      el.style.opacity=0;
-      setTimeout(()=>{
-        el.textContent = words[i];
-        el.style.transition='opacity 500ms ease';
-        el.style.opacity=1;
-        i++;
-        if(i<words.length){ setTimeout(showNext, 900); }
-        else{
-          setTimeout(()=>{
-            if(!overlay) return;
-            overlay.style.transition='opacity 1400ms ease';
-            overlay.style.opacity=0;
-            setTimeout(()=>overlay.remove(), 700);
-          }, 800);
-        }
-      }, 150);
-    }
-    showNext();
-  })();
-  </script>
-<script type="module">
-    import { bootLayout } from '/assets/js/layout.js';
-    import { mountCartUI, addToCart } from '/assets/js/cart.js';
-    bootLayout('home'); mountCartUI();
-    document.body.addEventListener('click', (e)=>{
-      const btn = e.target.closest('[data-buy]'); if(!btn) return;
-      addToCart({id:btn.dataset.id, title:btn.dataset.title, price:parseFloat(btn.dataset.price)});
-    });
-  </script>
-<script type="module">
-    import { bootLayout } from '/assets/js/layout.js';
-    import { mountCartUI, addToCart } from '/assets/js/cart.js';
-    bootLayout(); mountCartUI();
-    document.body.addEventListener('click', (e)=>{
-      const btn = e.target.closest('[data-buy]'); if(!btn) return;
-      addToCart({id:btn.dataset.id, title:btn.dataset.title, price:parseFloat(btn.dataset.price)});
-    });
-  </script>
-<script>
-  /* hero slideshow */
-  (function(){
-    const wrap = document.getElementById('hero-slideshow');
-    if(!wrap) return;
-    const slides = Array.from(wrap.querySelectorAll('.slide'));
-    const prev = document.querySelector('.hero-arrows .prev'); // arrows removed; these will be null
-    const next = document.querySelector('.hero-arrows .next');
-    let i = 0, timer;
-
-    function show(n){
-      slides[i].classList.remove('active');
-      i = (n + slides.length) % slides.length;
-      slides[i].classList.add('active');
-    }
-    function auto(){ timer = setInterval(()=>show(i+1), 4500); }
-    function reset(){ clearInterval(timer); auto(); }
-
-    // No listeners for prev/next since arrows are gone
-    wrap.addEventListener('mouseenter', ()=>clearInterval(timer));
-    wrap.addEventListener('mouseleave', reset);
-
-    auto();
-  })();
-  </script>
-</body></html>
+</body>
+</html>
