@@ -3,259 +3,70 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Intreen — Hire • Train • Host</title>
-  <meta name="description" content="Intreen is the all‑in‑one platform where businesses post jobs and events, run training courses, and manage hiring—together in one flow.">
-  <link rel="preload" href="/assets/img/main-logo.webp" as="image" />
+  <title>Intreen — Connecting Talent with Opportunity</title>
   <link rel="stylesheet" href="/assets/css/styles.css" />
   <link rel="stylesheet" href="/assets/css/gradient-theme.css" />
   <script src="/assets/js/gate.js" defer></script>
   <style>
-    :root{
-      --ink-900:#0e1223; --ink-800:#1b2340; --ink-invert:#ffffff;
-      --surface:#ffffff; --surface-veil:rgba(15,20,40,.75); --glass:rgba(255,255,255,.12);
-      --border:rgba(20,24,40,.12); --accent:#111827; --accent-ink:#ffffff; --accent-soft:#f4f6ff; --maxw:1200px;
-    }
-    .container{max-width:var(--maxw);margin:0 auto;padding:0 18px}
-    .mt-0{margin-top:0}.mt-1{margin-top:.5rem}.mt-2{margin-top:1rem}.mt-3{margin-top:1.5rem}.mt-4{margin-top:2rem}.mt-6{margin-top:3rem}.mt-8{margin-top:4rem}.mt-12{margin-top:6rem}
-    .grid{display:grid;gap:1rem}.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
-    @media (max-width:980px){.cols-4,.cols-3{grid-template-columns:1fr 1fr}.cols-2{grid-template-columns:1fr}}
-    @media (max-width:640px){.cols-4,.cols-3{grid-template-columns:1fr}}
-
-    .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.06);overflow:hidden}
-    .card .p{padding:18px}
-    h1,h2,h3{color:var(--ink-900);letter-spacing:.01em}
-    p{color:var(--ink-800)} .muted{color:#5a607a}
-
-    .btn{display:inline-flex;align-items:center;gap:.5rem;border-radius:14px;padding:12px 16px;border:1px solid transparent;cursor:pointer;text-decoration:none;font-weight:700;letter-spacing:.01em}
-    .btn.primary{background:var(--accent);color:var(--accent-ink)}
-    .btn.ghost{background:transparent;border-color:rgba(255,255,255,.6);color:#fff}
-    .btn.soft{background:var(--accent-soft);color:var(--ink-900);border-color:#e6e9ff}
-
-    .hero-tall{min-height:76vh;position:relative}
-    .hero-slideshow{position:absolute;inset:0;overflow:hidden}
-    .hero-slideshow .slide{position:absolute;inset:0;opacity:0;transition:opacity 900ms ease}
-    .hero-slideshow .slide.active{opacity:1}
-    .hero-slideshow img{width:100%;height:100%;object-fit:cover}
-    .hero-overlay{position:absolute;inset:0;display:grid;place-items:center;padding:clamp(16px,4vw,48px);text-align:center}
-    .hero-overlay::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg, var(--surface-veil), rgba(0,0,0,.35));backdrop-filter:saturate(1.2) blur(2px)}
-    .hero-overlay .inner{position:relative;max-width:980px;margin:auto;color:var(--ink-invert)}
-    .hero-overlay h1{font-size:clamp(36px,6.2vw,68px);line-height:1.04;margin:0;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.25)}
-    .hero-overlay p{font-size:clamp(16px,2.1vw,22px);color:#eef1ff}
-    .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px}
-    .badge{display:inline-block;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:999px;padding:6px 12px;font-weight:700}
-
-    .feature{display:flex;gap:14px;align-items:flex-start}
-    .feature .ico{width:44px;height:44px;border-radius:12px;background:#111827;color:#fff;display:grid;place-items:center;font-weight:800}
-
-    .steps{counter-reset:step}
-    .step{display:flex;gap:14px;align-items:flex-start}
-    .step .num{width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid var(--border);display:grid;place-items:center;font-weight:800}
-
-    .marquee{overflow:hidden;mask-image:linear-gradient(90deg,transparent,black 10%,black 90%,transparent)}
-    .marquee-row{display:flex;gap:32px;align-items:center;animation:scrollx 35s linear infinite}
-    .marquee .logo{height:28px;opacity:.9;filter:grayscale(100%)}
-    @keyframes scrollx{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-
-    .snap{display:flex;gap:16px;overflow:auto;padding-bottom:6px;scroll-snap-type:x mandatory}
-    .snap>*{scroll-snap-align:start;min-width:280px}
-    blockquote{font-size:1rem;line-height:1.5;margin:0}
-
-    details{border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:#fff}
-    summary{font-weight:700;cursor:pointer}
-
-    /* splash words */
-    #splash-words{position:absolute;bottom:8vh;left:50%;transform:translateX(-50%);font-weight:800;letter-spacing:.1em;color:#111;opacity:0}
+    body{margin:0;font-family:'Inter',sans-serif;color:#111;overflow-x:hidden}
+    .hero-section{display:flex;align-items:center;justify-content:center;padding:60px 20px;min-height:80vh;position:relative;background:linear-gradient(135deg,#5636f5,#7a6ff0,#8b91f3)}
+    .hero-container{display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap;max-width:1200px;margin:auto}
+    .hero-logo img{max-width:260px;height:auto;box-shadow:0 6px 18px rgba(0,0,0,0.2);border-radius:12px;background:white;padding:12px}
+    .hero-content{text-align:center;max-width:600px;color:#fff}
+    .hero-content h1{font-size:2.2rem;margin-bottom:12px;font-weight:800;text-shadow:0 2px 4px rgba(0,0,0,0.3)}
+    .hero-content p{font-size:1.1rem;line-height:1.5;color:#e9ecff}
+    .btn-primary{margin-top:18px;display:inline-block;background:#fff;color:#5636f5;font-weight:700;padding:12px 24px;border-radius:8px;text-decoration:none;transition:all .3s}
+    .btn-primary:hover{background:#f1f1f1}
+    .reviews-section{background:#fff;padding:50px 20px;text-align:center}
+    .reviews-section h2{font-size:1.8rem;margin-bottom:20px;font-weight:700;color:#111}
+    .reviews-track{overflow:hidden;position:relative}
+    .reviews-row{display:flex;gap:20px;animation:scrollReviews 45s linear infinite}
+    .review{flex:0 0 320px;background:#f8f8ff;border-radius:12px;padding:18px;box-shadow:0 4px 10px rgba(0,0,0,0.08)}
+    .stars{color:#ffbb33;font-size:1.1rem;margin-bottom:8px}
+    @keyframes scrollReviews{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
   </style>
 </head>
 <body>
-  <!-- splash overlay (kept) -->
-  <div id="splash-overlay" style="position:fixed;inset:0;background:#ffffff;display:flex;align-items:center;justify-content:center;z-index:9999;overflow:hidden">
-    <img class="splash-bg-logo" src="/assets/img/main-logo.webp" alt="Intreen" style="max-width:48vw;width:360px;height:auto" />
-    <div id="splash-words" aria-hidden="true"></div>
-  </div>
-
-  <!-- same navbar mount point (kept) -->
   <div id="site-navbar"></div>
-
   <main>
-    <!-- HERO -->
-    <section id="home-hero" class="hero-blue hero-tall">
-      <div class="hero-slideshow" id="hero-slideshow">
-        <div class="slide active"><img src="https://picsum.photos/seed/intreen-1/1600/900" alt="Modern team collaborating" /></div>
-        <div class="slide"><img src="https://picsum.photos/seed/intreen-2/1600/900" alt="Training and onboarding" /></div>
-        <div class="slide"><img src="https://picsum.photos/seed/intreen-3/1600/900" alt="Company event and hiring" /></div>
-      </div>
-      <div class="hero-overlay">
-        <div class="inner">
-          <span class="badge">ALL‑IN‑ONE FOR BUSINESSES</span>
-          <h1>Post jobs, host events, and train employees — in one place</h1>
-          <p class="mt-1">Intreen unifies your job board and ATS, live events, and employee training into a single workflow so hiring and upskilling feel seamless.</p>
-          <div class="actions">
-            <a class="btn primary" data-gate="open" href="#login">Post a job</a>
-            <a class="btn ghost" data-gate="open" href="#login">Create a course</a>
-            <a class="btn ghost" data-gate="open" href="#login">Host an event</a>
-          </div>
+    <section class="hero-section">
+      <div class="hero-container">
+        <div class="hero-logo"><img src="/assets/img/main-logo.webp" alt="Intreen logo"></div>
+        <div class="hero-content">
+          <h1>Connecting Talent with Opportunity<br>Meet the Faces Driving Success</h1>
+          <p>Join Intreen — where businesses post jobs, host events, and build employee growth through e-learning.</p>
+          <a href="#login" class="btn-primary" data-gate="open">Become a Member</a>
         </div>
       </div>
     </section>
 
-    <!-- TRUST BAR with inline SVG placeholders (no external assets needed) -->
-    <section class="container mt-6" aria-label="Trusted by">
-      <div class="muted" style="text-align:center;margin-bottom:12px">Trusted by modern operations teams</div>
-      <div class="marquee">
-        <div class="marquee-row">
-          <img class="logo" alt="Acme" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='48'><rect width='100%' height='100%' rx='8' fill='%23f1f3f5' stroke='%23d0d5dd'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%23555'>Acme</text></svg>" />
-          <img class="logo" alt="Blue Harbor" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='48'><rect width='100%' height='100%' rx='8' fill='%23f1f3f5' stroke='%23d0d5dd'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%23555'>Blue%20Harbor</text></svg>" />
-          <img class="logo" alt="Solara Labs" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='48'><rect width='100%' height='100%' rx='8' fill='%23f1f3f5' stroke='%23d0d5dd'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%23555'>Solara%20Labs</text></svg>" />
-          <img class="logo" alt="Tiny Retail" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='48'><rect width='100%' height='100%' rx='8' fill='%23f1f3f5' stroke='%23d0d5dd'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%23555'>Tiny%20Retail</text></svg>" />
-          <img class="logo" alt="Emberly" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='48'><rect width='100%' height='100%' rx='8' fill='%23f1f3f5' stroke='%23d0d5dd'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%23555'>Emberly</text></svg>" />
-          <img class="logo" alt="Northpeak" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='48'><rect width='100%' height='100%' rx='8' fill='%23f1f3f5' stroke='%23d0d5dd'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%23555'>Northpeak</text></svg>" />
-          <!-- loop -->
-          <img class="logo" alt="Acme" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='48'><rect width='100%' height='100%' rx='8' fill='%23f1f3f5' stroke='%23d0d5dd'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%23555'>Acme</text></svg>" />
-          <img class="logo" alt="Blue Harbor" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='48'><rect width='100%' height='100%' rx='8' fill='%23f1f3f5' stroke='%23d0d5dd'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%23555'>Blue%20Harbor</text></svg>" />
-          <img class="logo" alt="Solara Labs" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='48'><rect width='100%' height='100%' rx='8' fill='%23f1f3f5' stroke='%23d0d5dd'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%23555'>Solara%20Labs</text></svg>" />
-          <img class="logo" alt="Tiny Retail" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='48'><rect width='100%' height='100%' rx='8' fill='%23f1f3f5' stroke='%23d0d5dd'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%23555'>Tiny%20Retail</text></svg>" />
-          <img class="logo" alt="Emberly" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='48'><rect width='100%' height='100%' rx='8' fill='%23f1f3f5' stroke='%23d0d5dd'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%23555'>Emberly</text></svg>" />
-          <img class="logo" alt="Northpeak" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='48'><rect width='100%' height='100%' rx='8' fill='%23f1f3f5' stroke='%23d0d5dd'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%23555'>Northpeak</text></svg>" />
+    <section class="reviews-section">
+      <h2>Why our customers choose us</h2>
+      <div class="reviews-track">
+        <div class="reviews-row">
+          <div class="review"><div class="stars">★★★★★</div><p>“Launched our shop in a day.”</p><p>— Jordan S.</p></div>
+          <div class="review"><div class="stars">★★★★★</div><p>“Events + LMS = growth.”</p><p>— Alex R.</p></div>
+          <div class="review"><div class="stars">★★★★★</div><p>“Costs down, productivity up.”</p><p>— Maria L.</p></div>
+          <div class="review"><div class="stars">★★★★★</div><p>“One place for hiring and learning.”</p><p>— Taylor M.</p></div>
+          <div class="review"><div class="stars">★★★★★</div><p>“Our new hires were productive day one.”</p><p>— Devin C.</p></div>
+          <!-- Duplicate for seamless scrolling -->
+          <div class="review"><div class="stars">★★★★★</div><p>“Launched our shop in a day.”</p><p>— Jordan S.</p></div>
+          <div class="review"><div class="stars">★★★★★</div><p>“Events + LMS = growth.”</p><p>— Alex R.</p></div>
+          <div class="review"><div class="stars">★★★★★</div><p>“Costs down, productivity up.”</p><p>— Maria L.</p></div>
+          <div class="review"><div class="stars">★★★★★</div><p>“One place for hiring and learning.”</p><p>— Taylor M.</p></div>
+          <div class="review"><div class="stars">★★★★★</div><p>“Our new hires were productive day one.”</p><p>— Devin C.</p></div>
         </div>
       </div>
     </section>
-
-    <!-- CORE VALUE PROPS FOR BUSINESSES -->
-    <section id="features" class="container mt-8">
-      <h2 class="mt-0">Everything hiring & training needs—together</h2>
-      <p class="muted">Run your talent funnel and employee growth without hopping tools.</p>
-      <div class="grid cols-3 mt-3">
-        <article class="card"><div class="p feature"><div class="ico">💼</div><div><h3>Job Board + ATS</h3><p class="muted">Publish roles, intake candidates, and track stages with notes and tags.</p></div></div></article>
-        <article class="card"><div class="p feature"><div class="ico">📚</div><div><h3>Courses & LMS</h3><p class="muted">Build onboarding paths and compliance training with completion tracking.</p></div></div></article>
-        <article class="card"><div class="p feature"><div class="ico">🗓️</div><div><h3>Events & Sessions</h3><p class="muted">Host hiring fairs, demos, and internal workshops with RSVPs and reminders.</p></div></div></article>
-        <article class="card"><div class="p feature"><div class="ico">👥</div><div><h3>Candidate CRM</h3><p class="muted">Centralize profiles, resumes, and communication—keep momentum moving.</p></div></div></article>
-        <article class="card"><div class="p feature"><div class="ico">🔐</div><div><h3>Roles & Access</h3><p class="muted">HR, managers, and instructors each get the right view with permissions.</p></div></div></article>
-        <article class="card"><div class="p feature"><div class="ico">⚙️</div><div><h3>Automations</h3><p class="muted">Triggers for enrollments, stage changes, and reminders cut down busywork.</p></div></div></article>
-      </div>
-    </section>
-
-    <!-- USE CASES -->
-    <section id="use-cases" class="container mt-12">
-      <h2 class="mt-0">Popular use cases</h2>
-      <div class="grid cols-3 mt-3">
-        <article class="card"><div class="p"><h3>Hiring events</h3><p class="muted">Run virtual or on‑site hiring days, collect RSVPs, and auto‑create candidate profiles.</p></div></article>
-        <article class="card"><div class="p"><h3>New‑hire onboarding</h3><p class="muted">Kick off day‑1 courses, paperwork tasks, and manager check‑ins.</p></div></article>
-        <article class="card"><div class="p"><h3>Compliance training</h3><p class="muted">Assign annual modules, track completion, and export reports when audits hit.</p></div></article>
-      </div>
-    </section>
-
-    <!-- INTEGRATIONS (emoji placeholders for now) -->
-    <section id="integrations" class="container mt-12">
-      <h2 class="mt-0">Works with your stack</h2>
-      <p class="muted">Connect mail, calendars, video, and HRIS. Keep it simple.</p>
-      <div class="grid cols-4 mt-3">
-        <article class="card"><div class="p feature"><div class="ico">📧</div><div><h3>Email</h3><p class="muted">Gmail / Outlook</p></div></div></article>
-        <article class="card"><div class="p feature"><div class="ico">🎥</div><div><h3>Meetings</h3><p class="muted">Zoom / Meet</p></div></div></article>
-        <article class="card"><div class="p feature"><div class="ico">📅</div><div><h3>Calendar</h3><p class="muted">Google / Office</p></div></div></article>
-        <article class="card"><div class="p feature"><div class="ico">🧾</div><div><h3>HRIS</h3><p class="muted">CSV / API</p></div></div></article>
-      </div>
-    </section>
-
-    <!-- STARTER TEMPLATES -->
-    <section id="templates" class="container mt-12">
-      <h2 class="mt-0">Starter templates</h2>
-      <div class="grid cols-3 mt-3">
-        <article class="card"><div class="p"><h3>Job Fair</h3><p class="muted">Landing + RSVP + pipeline.</p><div class="actions mt-2"><a class="btn soft" data-gate="open" href="#login">Use template</a></div></div></article>
-        <article class="card"><div class="p"><h3>Onboarding Path</h3><p class="muted">30‑day course with checkpoints.</p><div class="actions mt-2"><a class="btn soft" data-gate="open" href="#login">Use template</a></div></div></article>
-        <article class="card"><div class="p"><h3>Compliance 101</h3><p class="muted">Annual training with due dates.</p><div class="actions mt-2"><a class="btn soft" data-gate="open" href="#login">Use template</a></div></div></article>
-      </div>
-    </section>
-
-    <!-- LIGHT METRICS -->
-    <section class="container mt-12" aria-label="Highlights">
-      <div class="grid cols-3">
-        <div class="card"><div class="p"><h3>1 platform</h3><p class="muted">Jobs, events, and training live together—goodbye scattered tools.</p></div></div>
-        <div class="card"><div class="p"><h3>Faster onboarding</h3><p class="muted">Move hires from offer to productive with guided learning paths.</p></div></div>
-        <div class="card"><div class="p"><h3>Happier teams</h3><p class="muted">Managers see progress. Candidates feel momentum. Ops has control.</p></div></div>
-      </div>
-    </section>
-
-    <!-- TESTIMONIALS -->
-    <section id="testimonials" class="container mt-12">
-      <h2 class="mt-0">What ops teams say</h2>
-      <div class="snap mt-2" aria-label="Customer quotes">
-        <article class="card"><div class="p"><blockquote>“We consolidated hiring events and onboarding into one dashboard.”</blockquote><p class="muted mt-1">— Acme Co.</p></div></article>
-        <article class="card"><div class="p"><blockquote>“Posting jobs and enrolling new hires in training now happens in one flow.”</blockquote><p class="muted mt-1">— Blue Harbor</p></div></article>
-        <article class="card"><div class="p"><blockquote>“Compliance courses and applicant stages finally talk to each other.”</blockquote><p class="muted mt-1">— Solara Labs</p></div></article>
-      </div>
-    </section>
-
-    <!-- CTA STRIP (no footer requested) -->
-    <section class="container mt-12" id="cta">
-      <div class="card"><div class="p" style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between">
-        <div>
-          <h3 class="mt-0">Ready to post jobs, host events, and train—together?</h3>
-          <p class="muted">Spin up your Intreen space and streamline hiring & learning.</p>
-        </div>
-        <div class="actions">
-          <a class="btn primary" data-gate="open" href="#login">Get started</a>
-          <a class="btn soft" href="#features">Explore features</a>
-        </div>
-      </div></div>
-    </section>
-
-    <div style="height:72px"></div>
   </main>
 
-  <!-- ===== Scripts (kept + refined) ===== -->
   <script>
-    // Splash logic — only remove overlay if authenticated
-    (function() {
-      const overlay = document.getElementById('splash-overlay');
-      const img = document.querySelector('.splash-bg-logo');
-      if (img) { img.src = '/assets/img/main-logo.webp'; img.style.opacity = 1; }
-      if (overlay && sessionStorage.getItem('intreen_auth') === 'ok') {
-        setTimeout(() => {
-          overlay.style.transition = 'opacity 1400ms ease';
-          overlay.style.opacity = 0;
-          setTimeout(() => overlay.remove(), 650);
-        }, 800);
-      }
-    })();
-
-    // Splash word sequence
-    (function(){
-      const words = ["HIRE","TRAIN","HOST"]; const el = document.getElementById('splash-words'); const overlay = document.getElementById('splash-overlay');
-      if(!el) return; let i=0;
-      function showNext(){
-        el.style.opacity=0;
-        setTimeout(()=>{
-          el.textContent = words[i]; el.style.transition='opacity 500ms ease'; el.style.opacity=1; i++;
-          if(i<words.length){ setTimeout(showNext, 900); }
-          else if (overlay && sessionStorage.getItem('intreen_auth') === 'ok') {
-            setTimeout(()=>{ overlay.style.transition='opacity 1400ms ease'; overlay.style.opacity=0; setTimeout(()=>overlay.remove(), 700); }, 800);
-          }
-        }, 150);
-      }
-      showNext();
-    })();
-
-    // Hero slideshow
-    (function(){
-      const wrap = document.getElementById('hero-slideshow'); if(!wrap) return;
-      const slides = Array.from(wrap.querySelectorAll('.slide')); let i = 0, timer;
-      function show(n){ slides[i].classList.remove('active'); i = (n + slides.length) % slides.length; slides[i].classList.add('active'); }
-      function auto(){ timer = setInterval(()=>show(i+1), 4500); }
-      function reset(){ clearInterval(timer); auto(); }
-      wrap.addEventListener('mouseenter', ()=>clearInterval(timer));
-      wrap.addEventListener('mouseleave', reset); auto();
-    })();
+    // Splash gate auth kept minimal
+    (function(){const overlay=document.getElementById('splash-overlay');if(overlay&&sessionStorage.getItem('intreen_auth')==='ok'){overlay.style.display='none';}})();
   </script>
-
   <script type="module">
     import { bootLayout } from '/assets/js/layout.js';
-    import { mountCartUI, addToCart } from '/assets/js/cart.js';
-    bootLayout('home'); mountCartUI();
-    document.body.addEventListener('click', (e)=>{
-      const btn = e.target.closest('[data-buy]'); if(!btn) return;
-      addToCart({id:btn.dataset.id, title:btn.dataset.title, price:parseFloat(btn.dataset.price)});
-    });
+    bootLayout('home');
   </script>
 </body>
 </html>
